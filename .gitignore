@@ -1,0 +1,15 @@
+docs/build/
+__pycache__
+*.egg-info/
+*.pyc
+.DS_Store
+.vscode/
+build/
+dist/
+
+# Unit test / coverage reports
+
+.coverage
+coverage.*
+coverage.xml
+.tox/
