@@ -8,13 +8,16 @@
     :license: BSD, see LICENSE for details.
 """
 from pathlib import Path
-from typing import Any, Dict, Set, Union
+from typing import Any, Dict, Set, Union, cast
 from sphinx.config import Config
 from sphinx.application import Sphinx
 from sphinx.environment import BuildEnvironment
+from sphinx.domains.std import StandardDomain
+from docutils.nodes import Node
 from sphinx.util import logging
 from sphinx.util.fileutil import copy_asset
-from .directive import ExerciseDirective, SolutionDirective
+from sphinx.util.nodes import clean_astext
+from .directive import ExerciseDirective
 from .nodes import (
     enumerable_node,
     unenumerable_node,
@@ -26,6 +29,7 @@ from .nodes import (
     visit_linked_node,
     depart_linked_node,
 )
+
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +77,32 @@ def copy_asset_files(app: Sphinx, exc: Union[bool, Exception]):
             copy_asset(path, str(Path(app.outdir).joinpath("_static").absolute()))
 
 
+def process_docs(app: Sphinx, document: Node) -> None:
+
+    domain = cast(StandardDomain, app.env.get_domain("std"))
+
+    # Traverse exercise nodes
+    for node in document.traverse():
+        docname, labelid, sectname = "", "", ""
+        if node.__class__ == enumerable_node or node.__class__ == unenumerable_node:
+            name = node.get("names", [])[0]
+            labelid = document.nameids[name]
+            docname = app.env.docname
+            sectname = clean_astext(node[0])
+            # typ = domain.get_enumerable_node_type(node)
+
+            if sectname and node.__class__ == unenumerable_node:
+                sectname = sectname.replace("Exercise ", "")
+
+            # if not sectname:
+            #     if node.__class__ == enumerable_node:
+            #         typ = domain.get_enumerable_node_type(node)
+            #         sectname = f"{typ.title()}"
+
+            domain.anonlabels[name] = docname, labelid
+            domain.labels[name] = docname, labelid, sectname
+
+
 def setup(app: Sphinx) -> Dict[str, Any]:
 
     app.add_css_file("exercise.css")
@@ -80,11 +110,12 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.connect("config-inited", init_numfig)
     # app.connect("env-purge-doc", purge_exercises)
     # app.connect("env-merge-info", merge_exercises)
+    app.connect("doctree-read", process_docs)
 
     app.add_enumerable_node(
         enumerable_node,
         "exercise",
-        None,
+        get_title,
         singlehtml=(visit_enumerable_node, depart_enumerable_node),
         html=(visit_enumerable_node, depart_enumerable_node),
     )
@@ -102,10 +133,14 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     )
 
     app.add_directive("exercise", ExerciseDirective)
-    app.add_directive("solution", SolutionDirective)
+    # app.add_directive("solution", SolutionDirective)
 
     return {
         "version": "builtin",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
+
+
+def get_title(self):
+    return self[0].astext()

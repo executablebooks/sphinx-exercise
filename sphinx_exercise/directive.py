@@ -10,7 +10,6 @@ A custom Sphinx Directive
 from typing import List
 from docutils.nodes import Node
 
-
 from sphinx.util.docutils import SphinxDirective
 from docutils.parsers.rst import directives
 from .nodes import enumerable_node, unenumerable_node, linked_node
@@ -41,39 +40,17 @@ class ExerciseDirective(SphinxDirective):
         if not hasattr(env, "exercise_list"):
             env.exercise_list = {}
 
-        # If class in options add to class array
-        classes, class_name = [self.name], self.options.get("class", [])
+        # Take care of class option
+        classes, class_name = [self.name], self.options.get("class", "")
         if class_name:
             classes.extend(class_name)
 
-        label = self.options.get("label", "")
-        # If label
-        if label:
-            self.options["noindex"] = False
-            node_id = f"{label}"
-        else:
-            self.options["noindex"] = True
-            label = f"{self.env.docname}-{self.name}-{serial_no}"
-            node_id = f"{self.env.docname}-{self.name}-{serial_no}"
-        ids = [node_id]
-
-        # Duplicate label warning
-        if not label == "" and label in env.exercise_list.keys():
-            docpath = env.doc2path(env.docname)
-            path = docpath[: docpath.rfind(".")]
-            other_path = env.doc2path(env.exercise_list[label]["docname"])
-            msg = (
-                f"duplicate {self.name} label '{label}', other instance in {other_path}"
-            )
-            logger.warning(msg, location=path, color="red")
-
         title_text = ""
-
         if "nonumber" in self.options:
-            title_text = f"{self.name.title()}"
+            title_text = f"{self.name.title()} "
 
         if self.arguments != []:
-            title_text += f" ({self.arguments[0]})"
+            title_text += f"{self.arguments[0]}"
 
         textnodes, messages = self.state.inline_text(title_text, self.lineno)
 
@@ -85,22 +62,29 @@ class ExerciseDirective(SphinxDirective):
         else:
             node = enumerable_node()
 
-        node.document = self.state.document
-
         node += nodes.title(title_text, "", *textnodes)
         node += section
 
+        label = self.options.get("label", "")
+        if label:
+            self.options["noindex"] = False
+        else:
+            self.options["noindex"] = True
+            label = f"{self.env.docname}-{self.name}-{serial_no}"
+
+        self.options["name"] = label
+
         # Set node attributes
-        node["ids"].extend(ids)
         node["classes"].extend(classes)
-        node["title"] = title_text
-        node["label"] = label
-        node["type"] = self.name
+        node["ids"].append(label)
+        node["docname"] = self.env.docname
+        node.document = self.state.document
+
+        self.add_name(node)
 
         env.exercise_list[label] = {
             "docname": env.docname,
             "type": self.name,
-            "ids": ids,
             "label": label,
             "prio": 0,
             "nonumber": True if "nonumber" in self.options else False,

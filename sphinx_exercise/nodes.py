@@ -26,6 +26,7 @@ def visit_enumerable_node(self, node: Node) -> None:
 
 
 def depart_enumerable_node(self, node: Node) -> None:
+    # add target node
     self.depart_admonition(node)
 
 

@@ -35,16 +35,23 @@ div.exercise p.admonition-title::before {
 * Solution *
 *********************************************/
 div.solution{
-  padding: .6rem .8rem !important;
+  padding-left: 0rem !important;
+  padding-right: 0rem !important;
   border-left: .2rem solid var(--grey-border-color);
   background-color: none;
 }
 
 div.solution p.admonition-title {
+  padding: .6rem .4rem .6rem 1.6rem;
   background-color: transparent;
   text-decoration: none;
 }
 
-div.solution p.admonition-title a{
+div.solution p.admonition-title a {
   color: #333 !important;
+}
+
+/* Remove content box */
+div.solution p.admonition-title::before {
+  content: none;
 }
