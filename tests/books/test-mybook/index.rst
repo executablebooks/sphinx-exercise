@@ -5,13 +5,30 @@ A Test Program!
    :maxdepth: 1
    :hidden:
 
-   exercise/_exercise_nonumber
-   exercise/_exercise_labeled_titled_with_classname
-   exercise/_exercise_numbered_reference
-   exercise/_exercise_text_reference
-   exercise/_exercise_title_with_inline_math
-   exercise/_exercise_with_labeled_math
-   exercise/_exercise_unlabeled_math
+   exercise/_enum_mathtitle_label
+   exercise/_enum_notitle_label
+   exercise/_enum_title_class_label
+   exercise/_enum_title_nolabel
+   exercise/_enum_ref_notitle
+   exercise/_enum_ref_title
+   exercise/_enum_ref_mathtitle
+   exercise/_enum_numref_notitle
+   exercise/_enum_numref_title
+   exercise/_enum_numref_mathtitle
+
+   exercise/_unenum_mathtitle_label
+   exercise/_unenum_notitle_label
+   exercise/_unenum_title_class_label
+   exercise/_unenum_title_nolabel
+   exercise/_unenum_ref_notitle
+   exercise/_unenum_ref_title
+   exercise/_unenum_ref_mathtitle
+   exercise/_unenum_numref_notitle
+   exercise/_unenum_numref_title
+   exercise/_unenum_numref_mathtitle
+
+
+
    solution/_solution_with_duplicate_label
    solution/_solution_missing_arg
    solution/_solution_ref_with_nonumber_notitle
