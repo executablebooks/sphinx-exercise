@@ -27,20 +27,22 @@ A Test Program!
    exercise/_unenum_numref_title
    exercise/_unenum_numref_mathtitle
 
+   exercise/_enum_duplicate_label
 
+   solution/_linked_enum
+   solution/_linked_enum_class
+   solution/_linked_missing_arg
+   solution/_linked_unenum_mathtitle
+   solution/_linked_unenum_mathtitle2
+   solution/_linked_unenum_notitle
+   solution/_linked_unenum_title
+   solution/_linked_wrong_targetlabel
 
-   solution/_solution_with_duplicate_label
-   solution/_solution_missing_arg
-   solution/_solution_ref_with_nonumber_notitle
-   solution/_solution_ref_with_nonumber_title
-   solution/_solution_ref_with_nonumber_title_inlinemath
-   solution/_solution_ref_with_nonumber_title_inlinemath2
-   solution/_solution_ref_with_number
-   solution/_solution_ref_wrong_solution_ref
-   solution/_solution_with_exercise_nonumber_notitle
-   solution/_solution_with_exercise_nonumber_title
-   solution/_solution_with_exercise_nonumber_title_inlinemath
-   solution/_solution_with_exercise_nonumber_title_inlinemath2
-   solution/_solution_with_exercise_number
-   solution/_solution_with_label_and_class
-   solution/_solution_with_wrong_exlabel
+   solution/_linked_ref_unenum_notitle
+   solution/_linked_ref_unenum_title
+   solution/_linked_ref_unenum_mathtitle
+   solution/_linked_ref_unenum_mathtitle2
+   solution/_linked_ref_enum
+
+   solution/_linked_ref_wronglabel
+   solution/_linked_duplicate_label

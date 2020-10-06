@@ -1,9 +1,9 @@
-_solution_with_exercise_nonumber_title
-======================================
+_linked_unenum_notitle
+======================
 
 
-.. exercise:: This is a title
-	:label: ex-nonumber-title
+.. exercise::
+	:label: ex-nonumber-notitle
 	:nonumber:
 
 	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -13,7 +13,7 @@ _solution_with_exercise_nonumber_title
 	Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 
-.. solution:: ex-nonumber-title
-	:label: sol-nonumber-title
+.. solution:: ex-nonumber-notitle
+	:label: sol-nonumber-notitle
 
 	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.

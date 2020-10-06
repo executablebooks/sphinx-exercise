@@ -1,5 +1,5 @@
-_solution_with_exercise_nonumber_title_inlinemath
-=================================================
+_linked_unenum_mathtitle
+========================
 
 
 .. exercise:: This is a title :math:`\mathbb{R}`

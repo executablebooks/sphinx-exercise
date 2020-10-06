@@ -1,5 +1,5 @@
-_solution_with_label_and_class
-==============================
+_linked_enum_class
+==================
 
 .. solution:: ex-number
 	:label: solution-label

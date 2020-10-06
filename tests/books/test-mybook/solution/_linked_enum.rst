@@ -1,5 +1,5 @@
-_solution_with_exercise_number
-==============================
+_linked_enum
+============
 
 
 .. exercise:: This is a title

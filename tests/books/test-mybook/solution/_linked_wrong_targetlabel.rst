@@ -1,5 +1,5 @@
-_solution_with_wrong_exlabel
-============================
+_linked_wrong_targetlabel
+=========================
 
 .. solution:: wrong-ex-label
 
