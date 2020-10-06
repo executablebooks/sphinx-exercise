@@ -51,6 +51,10 @@ div.solution p.admonition-title a {
   color: #333 !important;
 }
 
+div.solution div.section {
+  padding: .6rem 1rem;
+}
+
 /* Remove content box */
 div.solution p.admonition-title::before {
   content: none;

@@ -12,7 +12,7 @@ from docutils.nodes import Node
 
 from sphinx.util.docutils import SphinxDirective
 from docutils.parsers.rst import directives
-from .nodes import enumerable_node, unenumerable_node, linked_node
+from .local_nodes import enumerable_node, unenumerable_node, linked_node
 from docutils import nodes
 from sphinx.util import logging
 
@@ -34,23 +34,23 @@ class ExerciseDirective(SphinxDirective):
     }
 
     def run(self) -> List[Node]:
-        env = self.env
-        serial_no = env.new_serialno()
+        serial_no = self.env.new_serialno()
 
-        if not hasattr(env, "exercise_list"):
-            env.exercise_list = {}
+        if not hasattr(self.env, "exercise_list"):
+            self.env.exercise_list = {}
 
         # Take care of class option
         classes, class_name = [self.name], self.options.get("class", "")
         if class_name:
             classes.extend(class_name)
 
-        title_text = ""
+        title_text, _ = "", ""
         if "nonumber" in self.options:
             title_text = f"{self.name.title()} "
 
         if self.arguments != []:
-            title_text += f"{self.arguments[0]}"
+            title_text += f"({self.arguments[0]})"
+            _ += self.arguments[0]
 
         textnodes, messages = self.state.inline_text(title_text, self.lineno)
 
@@ -77,21 +77,18 @@ class ExerciseDirective(SphinxDirective):
         # Set node attributes
         node["classes"].extend(classes)
         node["ids"].append(label)
+        node["label"] = label
         node["docname"] = self.env.docname
         node.document = self.state.document
 
         self.add_name(node)
 
-        env.exercise_list[label] = {
-            "docname": env.docname,
+        self.env.exercise_list[label] = {
             "type": self.name,
-            "label": label,
-            "prio": 0,
-            "nonumber": True if "nonumber" in self.options else False,
-            "title": self.arguments[0] if self.arguments != [] else "",
+            "docname": self.env.docname,
             "node": node,
+            "title": _,
         }
-
         return [node]
 
 
@@ -107,70 +104,55 @@ class SolutionDirective(SphinxDirective):
         "label": directives.unchanged_required,
         "class": directives.class_option,
     }
+    title_text = f"{name.title()} to "
 
     def run(self):
-        env = self.env
-        serial_no = env.new_serialno()
-        self.options["nonumber"] = True
+        serial_no = self.env.new_serialno()
 
-        if not hasattr(env, "exercise_list"):
-            env.exercise_list = {}
+        if not hasattr(self.env, "exercise_list"):
+            self.env.exercise_list = {}
 
-        # If class in options add to class array
+        # Take care of class option
         classes, class_name = [self.name], self.options.get("class", [])
         if class_name:
             classes.extend(class_name)
 
-        label = self.options.get("label", "")
-        # If label
-        if label:
-            self.options["noindex"] = False
-            node_id = f"{label}"
-        else:
-            self.options["noindex"] = True
-            label = f"{self.env.docname}-{self.name}-{serial_no}"
-            node_id = f"{self.env.docname}-{self.name}-{serial_no}"
-        ids = [node_id]
+        target_label = self.arguments[0]
 
-        # Duplicate label warning
-        if not label == "" and label in env.exercise_list.keys():
-            docpath = env.doc2path(env.docname)
-            path = docpath[: docpath.rfind(".")]
-            other_path = env.doc2path(env.exercise_list[label]["docname"])
-            msg = (
-                f"duplicate {self.name} label '{label}', other instance in {other_path}"
-            )
-            logger.warning(msg, location=path, color="red")
-
-        title_text = ""
-
-        if self.arguments != []:
-            title_text = self.arguments[0]
+        textnodes, messages = self.state.inline_text(self.title_text, self.lineno)
 
         section = nodes.section(ids=[f"{self.name}-content"])
         self.state.nested_parse(self.content, self.content_offset, section)
 
         node = linked_node()
         node.document = self.state.document
-
+        node += nodes.title(self.title_text, "", *textnodes)
         node += section
 
-        # Set node attributes
-        node["ids"].extend(ids)
-        node["classes"].extend(classes)
-        node["title"] = title_text
-        node["label"] = label
-        node["type"] = self.name
+        label = self.options.get("label", "")
+        if label:
+            self.options["noindex"] = False
+        else:
+            self.options["noindex"] = True
+            label = f"{self.env.docname}-{self.name}-{serial_no}"
 
-        env.exercise_list[label] = {
-            "docname": env.docname,
+        self.options["name"] = label
+
+        # Set node attributes
+        node["classes"].extend(classes)
+        node["ids"].append(label)
+        node["label"] = label
+        node["docname"] = self.env.docname
+        node["target_label"] = target_label
+        node.document = self.state.document
+
+        self.add_name(node)
+
+        self.env.exercise_list[label] = {
             "type": self.name,
-            "ids": ids,
-            "label": label,
-            "prio": 0,
-            "nonumber": True if "nonumber" in self.options else False,
-            "title": self.arguments[0] if self.arguments != [] else "",
+            "docname": self.env.docname,
             "node": node,
+            "title": "",
         }
 
         return [node]
