@@ -72,6 +72,14 @@ class ExerciseDirective(SphinxDirective):
             self.options["noindex"] = True
             label = f"{self.env.docname}-{self.name}-{serial_no}"
 
+        # Duplicate label warning
+        if not label == "" and label in self.env.exercise_list.keys():
+            path = self.env.doc2path(self.env.docname)[:-3]
+            other_path = self.env.doc2path(self.env.exercise_list[label]["docname"])
+            msg = f"duplicate label: {label}; other instance in {other_path}"
+            logger.warning(msg, location=path, color="red")
+            return []
+
         self.options["name"] = label
 
         # Set node attributes
@@ -135,6 +143,14 @@ class SolutionDirective(SphinxDirective):
         else:
             self.options["noindex"] = True
             label = f"{self.env.docname}-{self.name}-{serial_no}"
+
+        # Duplicate label warning
+        if not label == "" and label in self.env.exercise_list.keys():
+            path = self.env.doc2path(self.env.docname)[:-3]
+            other_path = self.env.doc2path(self.env.exercise_list[label]["docname"])
+            msg = f"duplicate label: {label}; other instance in {other_path}"
+            logger.warning(msg, location=path, color="red")
+            return []
 
         self.options["name"] = label
 

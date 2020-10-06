@@ -84,7 +84,6 @@ def copy_asset_files(app: Sphinx, exc: Union[bool, Exception]):
 
 
 def doctree_read(app: Sphinx, document: Node) -> None:
-    logger.warning("DOCTREE READ", color="purple")
     domain = cast(StandardDomain, app.env.get_domain("std"))
 
     # Traverse extension nodes
@@ -158,7 +157,7 @@ class DoctreeResolve:
             # target_labelid not found
             docpath = self.env.doc2path(self.builder.current_docname)
             path = docpath[: docpath.rfind(".")]
-            msg = f"label '{target_labelid}' not found"
+            msg = f"undefined label: {target_labelid}"
             logger.warning(msg, location=path, color="red")
             node[0].insert(1, nodes.Text("Exercise", "Exercise"))
             self.env.exercise_list[node.get("label", "")]["node"] = node
