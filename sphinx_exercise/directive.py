@@ -74,7 +74,8 @@ class ExerciseDirective(SphinxDirective):
 
         # Duplicate label warning
         if not label == "" and label in self.env.exercise_list.keys():
-            path = self.env.doc2path(self.env.docname)[:-3]
+            docpath = self.env.doc2path(self.env.docname)
+            path = docpath[: docpath.rfind(".")]
             other_path = self.env.doc2path(self.env.exercise_list[label]["docname"])
             msg = f"duplicate label: {label}; other instance in {other_path}"
             logger.warning(msg, location=path, color="red")
@@ -146,7 +147,8 @@ class SolutionDirective(SphinxDirective):
 
         # Duplicate label warning
         if not label == "" and label in self.env.exercise_list.keys():
-            path = self.env.doc2path(self.env.docname)[:-3]
+            docpath = self.env.doc2path(self.env.docname)
+            path = docpath[: docpath.rfind(".")]
             other_path = self.env.doc2path(self.env.exercise_list[label]["docname"])
             msg = f"duplicate label: {label}; other instance in {other_path}"
             logger.warning(msg, location=path, color="red")

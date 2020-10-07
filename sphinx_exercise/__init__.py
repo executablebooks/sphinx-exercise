@@ -19,7 +19,6 @@ from docutils import nodes
 from sphinx.util import logging
 from sphinx.util.fileutil import copy_asset
 from .directive import ExerciseDirective, SolutionDirective
-import docutils
 from .local_nodes import (
     enumerable_node,
     unenumerable_node,
@@ -97,31 +96,12 @@ def doctree_read(app: Sphinx, document: Node) -> None:
 
             # If solution node
             if is_linked_node(node):
-                target_labelid = node.get("target_label", "")
-                target_attr = app.env.exercise_list.get(target_labelid, {})
-                target_node = target_attr.get("node", Node)
-                target_title = target_attr.get("title", "")
                 sectname = "Solution to "
-
-                # If target node is unenumerable, fix title
-                if is_unenumerable_node(target_node):
-                    # If title exists, append to sectname
-                    # note that math role has already been
-                    # introduced
-                    if target_title:
-                        sectname += target_title
-                    else:
-                        # If node doesn't have a title,
-                        # append "Exercise"
-                        sectname += "Exercise"
-                # # If node is enumerable, target node number hasn't been assigned
-                # yet so the replacing of the sectname of enumerable_targets
-                # should take place during doctree-resolve.
             else:
                 # If other node, simply add :math: to title
                 # to allow for easy parsing in ref_node
                 for item in node[0]:
-                    if item.__class__ == docutils.nodes.math:
+                    if isinstance(item, nodes.math):
                         sectname += f":math:`{item.astext()}` "
                         continue
                     sectname += f"{item.astext()} "
@@ -186,7 +166,7 @@ class DoctreeResolve:
                 # Remove parans
                 title = target_node[0]
 
-                if len(title) == 1 and self._is_node_type(title[0], nodes.Text):
+                if len(title) == 1 and isinstance(title[0], nodes.Text):
                     _ = (
                         title[0]
                         .replace("Exercise", "")
@@ -224,17 +204,17 @@ class DoctreeResolve:
     def _update_title(self, title):
         inline = nodes.inline()
 
-        if len(title) == 1 and self._is_node_type(title[0], nodes.Text):
+        if len(title) == 1 and isinstance(title[0], nodes.Text):
             _ = title[0][0].replace("(", "").replace(")", "")
             inline += nodes.Text(_, _)
         else:
             for ii in range(len(title)):
                 item = title[ii]
 
-                if ii == 0 and self._is_node_type(item, nodes.Text):
+                if ii == 0 and isinstance(item, nodes.Text):
                     _ = item.replace("Exercise", "").replace("(", "").lstrip()
                     title.replace(title[ii], nodes.Text(_, _))
-                elif ii == len(title) - 1 and self._is_node_type(item, nodes.Text):
+                elif ii == len(title) - 1 and isinstance(item, nodes.Text):
                     _ = item.replace(")", "").rstrip()
                     if _:
                         title.replace(title[ii], nodes.Text(_, _))
@@ -243,6 +223,12 @@ class DoctreeResolve:
                 inline += title[ii]
 
         return inline
+
+    def _has_math_child(self, node):
+        for item in node:
+            if isinstance(item, nodes.math):
+                return True
+        return False
 
     def _update_ref(self, node: Node, labelid: str) -> None:
         source_attr = self.env.exercise_list[labelid]
@@ -254,20 +240,21 @@ class DoctreeResolve:
             target_attr = self.env.exercise_list[target_labelid]
             target_node = target_attr.get("node", Node)
 
-            # TODO: fix node.astext()
             if is_enumerable_node(target_node) and node.astext() == default_title:
                 node.replace(node[0], source_node[0][0][0])
                 return
 
-            # TODO: fix ":math:"
-            if (
-                is_unenumerable_node(target_node)
-                and target_attr
-                and ":math:" in node.astext()
-            ):
-                title = self._update_title(target_node[0])
-                title.insert(0, nodes.Text(default_title, default_title))
-                node.replace(node[0], title)
+            if is_unenumerable_node(target_node) and node.astext() == default_title:
+                if target_attr.get("title"):
+                    if self._has_math_child(target_node[0]):
+                        title = self._update_title(target_node[0])
+                        title.insert(0, nodes.Text(default_title, default_title))
+                        node.replace(node[0], title)
+                    else:
+                        text = target_attr.get("title", "")
+                        node[0].insert(len(node[0]), nodes.Text(text, text))
+                else:
+                    node[0].insert(len(node[0]), nodes.Text("Exercise", "Exercise"))
         else:
             # If no node.astext() simply add "Exercise"
             if is_enumerable_node(source_node) and not node.astext():
@@ -275,7 +262,6 @@ class DoctreeResolve:
                 node[0].insert(0, text)
                 return
 
-            # TODO: fix ":math:"
             if ":math:" in node.astext():
                 title = self._update_title(source_node[0])
                 node.replace(node[0], title)
@@ -285,11 +271,38 @@ class DoctreeResolve:
         source_node = source_attr.get("node", Node)
         node_title = node.get("title", "")
 
-        if node_title and ":math:" in node.astext() and "{name}" in node_title:
-            title = self._update_title(source_node[0])
-            _ = node_title[: node_title.find("{name}")]
-            title.insert(0, nodes.Text(_, _))
-            node.replace(node[0], title)
+        if "{name}" in node_title and self._has_math_child(source_node[0]):
+
+            newtitle = nodes.inline()
+            for item in node_title.split():
+                if item == "{name}":
+                    for _ in self._update_title(source_node[0]):
+                        newtitle += _
+                elif item == "{number}" or item == "%s":
+                    source_docname = source_attr.get("docname", "")
+                    source_type = self.domain.get_enumerable_node_type(source_node)
+                    source_number = self.domain.get_fignumber(
+                        self.env, self.builder, source_type, source_docname, source_node
+                    )
+                    source_num = ".".join(map(str, source_number))
+                    newtitle += nodes.Text(source_num, source_num)
+                else:
+                    newtitle += nodes.Text(item, item)
+                newtitle += nodes.Text(" ", " ")
+
+            if newtitle[len(newtitle) - 1].astext() == " ":
+                newtitle.pop()
+            node.replace(node[0], newtitle)
+
+    def _get_refuri(self, node):
+        id_ = ""
+        if node.get("refuri", ""):
+            id_ = node.get("refuri", "")
+
+        if node.get("refid", ""):
+            id_ = node.get("refid", "")
+
+        return id_.split("#")[-1]
 
     def process(self, doctree: nodes.document, docname: str) -> None:
 
@@ -301,18 +314,17 @@ class DoctreeResolve:
         for node in doctree.traverse():
 
             # If node type is ref
-            if self._is_node_type(node, nodes.reference):
-                labelid = node.get("refuri", "").split("#")[-1]
+            if isinstance(node, nodes.reference):
+                labelid = self._get_refuri(node)
 
                 # If extension directive referenced
                 if labelid in self.env.exercise_list:
-
                     # Update displayed href text
                     self._update_ref(node, labelid)
 
             # If node type is numref
-            if self._is_node_type(node, number_reference):
-                labelid = node.get("refuri", "").split("#")[-1]
+            if isinstance(node, number_reference):
+                labelid = self._get_refuri(node)
 
                 # If extension directive referenced
                 if labelid in self.env.exercise_list:

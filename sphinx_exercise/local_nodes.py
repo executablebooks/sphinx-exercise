@@ -16,15 +16,15 @@ logger = logging.getLogger(__name__)
 
 
 def is_enumerable_node(node):
-    return node.__class__ == enumerable_node
+    return isinstance(node, enumerable_node)
 
 
 def is_unenumerable_node(node):
-    return node.__class__ == unenumerable_node
+    return isinstance(node, unenumerable_node)
 
 
 def is_linked_node(node):
-    return node.__class__ == linked_node
+    return isinstance(node, linked_node)
 
 
 def is_extension_node(node):
