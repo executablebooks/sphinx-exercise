@@ -99,8 +99,8 @@ def test_warnings(app, warnings):
         "_linked_unenum_title.rst: WARNING: undefined label: wrong-ex-label"
         in warnings(app)
     )
-    assert "_enum_duplicate_label..rst: WARNING: duplicate label: dup;" in warnings(app)
+    assert "_enum_duplicate_label.rst: WARNING: duplicate label: dup;" in warnings(app)
     assert (
-        "_linked_duplicate_label..rst: WARNING: duplicate label: sol-duplicate-label;"
+        "_linked_duplicate_label.rst: WARNING: duplicate label: sol-duplicate-label;"
         in warnings(app)
     )
