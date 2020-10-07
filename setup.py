@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "v0.0.1"
+VERSION = "v0.1.0"
 
 LONG_DESCRIPTION = """
 This package contains a [Sphinx](http://www.sphinx-doc.org/en/master/) extension
@@ -25,7 +25,7 @@ extras = {
         "pytest-cov",
         "pytest-regressions",
         "beautifulsoup4",
-        "myst-parser",
+        "myst-nb",
     ],
     "rtd": [
         "sphinx>=3.0",
@@ -57,4 +57,23 @@ setup(
     extras_require=extras,
     include_package_data=True,
     namespace=["sphinx1"],
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Environment :: Plugins",
+        "Environment :: Web Environment",
+        "Framework :: Sphinx :: Extension",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python",
+        "Topic :: Documentation :: Sphinx",
+        "Topic :: Documentation",
+        "Topic :: Software Development :: Documentation",
+        "Topic :: Text Processing",
+        "Topic :: Utilities",
+    ],
 )
