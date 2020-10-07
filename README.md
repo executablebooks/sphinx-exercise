@@ -18,11 +18,11 @@ To get started with `sphinx-exercise`, first install it through `pip`:
 pip install sphinx-exercise
 ```
 
-then, add `sphinx.exercise` to your sphinx `extensions` in the `conf.py`
+then, add `sphinx_exercise` to your sphinx `extensions` in the `conf.py`
 
 ```python
 ...
-extensions = ["sphinx.exercise"]
+extensions = ["sphinx_exercise"]
 ...
 ```
 
