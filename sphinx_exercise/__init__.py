@@ -272,13 +272,13 @@ class DoctreeResolve:
         node_title = node.get("title", "")
 
         if "{name}" in node_title and self._has_math_child(source_node[0]):
-
             newtitle = nodes.inline()
             for item in node_title.split():
                 if item == "{name}":
+                    # use extend instead?
                     for _ in self._update_title(source_node[0]):
                         newtitle += _
-                elif item == "{number}" or item == "%s":
+                elif item == "{number}":
                     source_docname = source_attr.get("docname", "")
                     source_type = self.domain.get_enumerable_node_type(source_node)
                     source_number = self.domain.get_fignumber(
