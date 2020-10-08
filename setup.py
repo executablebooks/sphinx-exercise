@@ -56,7 +56,6 @@ setup(
     install_requires=["docutils>=0.15", "sphinx", "sphinx-book-theme"],
     extras_require=extras,
     include_package_data=True,
-    namespace=["sphinx1"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Plugins",
