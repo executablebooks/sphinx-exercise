@@ -26,6 +26,7 @@ A Test Program!
    exercise/_unenum_numref_notitle
    exercise/_unenum_numref_title
    exercise/_unenum_numref_mathtitle
+   exercise/_enum_numref_placeholders
 
    exercise/_enum_duplicate_label
 
