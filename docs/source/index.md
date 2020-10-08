@@ -8,7 +8,10 @@ syntax
 testing
 ```
 
-[![Documentation Status](https://readthedocs.org/projects/sphinx-exercise/badge/?version=latest)](https://sphinx-exercise.readthedocs.io/en/latest/?badge=latest)
+
+[![Documentation Status][rtd-badge]][rtd-link]
+[![Github-CI][github-ci]][github-link]
+[![Coverage Status][codecov-badge]][codecov-link]
 
 **An exercise extension for Sphinx**.
 
@@ -64,3 +67,12 @@ extensions = ["sphinx_exercise"]
 ```
 
 you may then build using `make html` and the extension will be used by your `Sphinx` project.
+
+
+
+[rtd-badge]: https://readthedocs.org/projects/ebp-sphinx-exercise/badge/?version=latest
+[rtd-link]: https://ebp-sphinx-exercise.readthedocs.io/en/latest/?badge=latest
+[github-ci]: https://github.com/executablebooks/sphinx-exercise/workflows/continuous-integration/badge.svg?branch=master
+[github-link]: https://github.com/executablebooks/sphinx-exercise
+[codecov-badge]: https://codecov.io/gh/executablebooks/sphinx-exercise/branch/master/graph/badge.svg
+[codecov-link]: https://codecov.io/gh/executablebooks/sphinx-exercise
