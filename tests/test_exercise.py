@@ -44,6 +44,7 @@ def test_exercise(app, idir, file_regression):
         "_unenum_numref_mathtitle.html",
         "_unenum_numref_notitle.html",
         "_unenum_numref_title.html",
+        "_enum_numref_placeholders.html",
     ],
 )
 def test_reference(app, idir, file_regression):
