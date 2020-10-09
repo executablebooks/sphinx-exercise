@@ -182,3 +182,51 @@ static int factorial(int n){
 }
 ```
 ````
+
+
+## How to Hide Directives
+
+Directives can be hidden using the `dropdown` class which is available through [Sphinx Book Theme](https://sphinx-book-theme.readthedocs.io/en/latest/index.html). For Sphinx projects, add `"sphinx_book_theme"` to your `html_theme` in the `conf.py` to activate the theme in your Sphinx configuration
+
+```md
+...
+html_theme = "sphinx_book_theme"
+...
+```
+
+Jupyter Book's default theme is Sphinx Book Theme; therefore, Jupyter Book projects can utilize `dropdown` without having to activate the theme in your Sphinx configuration.
+
+
+To hide the directive, simply add `:class: dropdown` as a directive option.
+
+**Example**
+
+```{exercise}
+:class: dropdown
+
+Recall that $n!$ is read as "$n$ factorial" and defined as
+$n! = n \times (n - 1) \times \cdots \times 2 \times 1$.
+
+There are functions to compute this in various modules, but let's
+write our own version as an exercise.
+
+In particular, write a function `factorial` such that `factorial(n)` returns $n!$
+for any positive integer $n$.
+```
+
+**MyST Syntax**:
+
+````
+```{exercise}
+:class: dropdown
+
+Recall that $n!$ is read as "$n$ factorial" and defined as
+$n! = n \times (n - 1) \times \cdots \times 2 \times 1$.
+
+There are functions to compute this in various modules, but let's
+write our own version as an exercise.
+
+In particular, write a function `factorial` such that `factorial(n)` returns $n!$
+for any positive integer $n$.
+```
+````
