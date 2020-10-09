@@ -43,10 +43,6 @@ div.solution p.admonition-title {
   text-decoration: none;
 }
 
-div.solution p.admonition-title a {
-  color: #333 !important;
-}
-
 /* Remove content box */
 div.solution p.admonition-title::before {
   content: none;

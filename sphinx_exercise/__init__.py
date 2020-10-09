@@ -192,10 +192,12 @@ class DoctreeResolve:
         )
         refnode["refuri"] += "#" + target_labelid
         inline = nodes.inline()
-        for item in node[0]:
+        title_node = node[0][0]
+        for item in node[0][1:]:
             inline.append(item)
         refnode += inline
         newnode += refnode
+        newnode.insert(0, title_node)
         node[0].replace_self(newnode)
 
         # update node
@@ -241,7 +243,7 @@ class DoctreeResolve:
             target_node = target_attr.get("node", Node)
 
             if is_enumerable_node(target_node) and node.astext() == default_title:
-                node.replace(node[0], source_node[0][0][0])
+                node[0].extend(source_node[0][1][0])
                 return
 
             if is_unenumerable_node(target_node) and node.astext() == default_title:
