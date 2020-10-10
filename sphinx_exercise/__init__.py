@@ -315,6 +315,9 @@ class DoctreeResolve:
         # Traverse ref and numref nodes
         for node in doctree.traverse():
 
+            if not hasattr(self.env, "exercise_list"):
+                continue
+
             # If node type is ref
             if isinstance(node, nodes.reference):
                 labelid = self._get_refuri(node)
