@@ -1,5 +1,36 @@
 # Changelog
 
+## [v0.1.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.1.1) (2020-10-10)
+
+[Full Changelog](https://github.com/executablebooks/sphinx-exercise/compare/v0.1.0...v0.1.1)
+
+### Improved 👌
+
+Made bottom and top padding of directives the same as admonitions in order to fix any other padding issues when the directives use the dropdown class option. We also updated the link of the solution directive title to target only the exercise portion in order to avoid confusion.
+
+### Fixes 🐛
+
+Fixed `doctree-resolve` method in the event the extension is imported but not used.
+
+### Documentation improvements 📚
+
+Introduced documentation on how to hide directives.
+
+**Implemented enhancements:**
+
+- Make bottom/top padding the same as admonitions [\#10](https://github.com/executablebooks/sphinx-exercise/issues/10)
+
+**Closed issues:**
+
+- \[ENH\] Add solution block with linking to an exercise [\#19](https://github.com/executablebooks/sphinx-exercise/issues/19)
+
+**Merged pull requests:**
+
+- 👌 IMPROVE: Link exercise portion of solution title in directive [\#20](https://github.com/executablebooks/sphinx-exercise/pull/20) ([najuzilu](https://github.com/najuzilu))
+- 🚀 RELEASE: v0.1.0 [\#17](https://github.com/executablebooks/sphinx-exercise/pull/17) ([najuzilu](https://github.com/najuzilu))
+- 🐛 FIX: Check during doctree-resolve if env has attribute [\#16](https://github.com/executablebooks/sphinx-exercise/pull/16) ([najuzilu](https://github.com/najuzilu))
+- 👌 IMPROVE: Make padding the same as admonitions [\#15](https://github.com/executablebooks/sphinx-exercise/pull/15) ([najuzilu](https://github.com/najuzilu))
+
 ## [v0.1.0](https://github.com/executablebooks/sphinx-exercise/tree/v0.1.0) (2020-10-08)
 
 [Full Changelog](https://github.com/executablebooks/sphinx-exercise/compare/8dd98b62aab873e660c8b09dcb88e22c082b1368...v0.1.0)
