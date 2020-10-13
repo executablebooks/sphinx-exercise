@@ -230,3 +230,65 @@ In particular, write a function `factorial` such that `factorial(n)` returns $n!
 for any positive integer $n$.
 ```
 ````
+
+## Custom CSS or JavaScript
+
+Custom JavaScript scripts and CSS rules will allow you to add additional functionality or customize how elements are displayed. If you'd like to include custom CSS or JavaScript scripts in Jupyter Book, simply add any files ending in `.css` or `.js` under a `_static` folder. Any files under this folder will be automatically copied into the built book.
+
+In Sphinx, this can be achieved by specifying the path of your `_static` folder and including CSS/JavaScript files by using the options `html_css_files` and `html_js_files` in `conf.py`:
+
+```python
+# conf.py
+
+html_static_path = ["_static"]
+
+# CSS files
+html_css_files = ["custom.css",]
+# JS files
+html_js_files = ["custom.js",]
+```
+
+For example, to include the following CSS content which changes the default color of an exercise directive named "orange" under `docs/_static/custom.css`:
+
+```
+/* docs/_static/custom.css */
+
+:root {
+    --background-color: rgba(253, 126, 20, .3);
+    --border-color: #fd7e14;
+}
+
+div.orange {
+    background-color: var(--background-color);
+    border-color: var(--border-color);
+}
+
+div.orange p.admonition-title {
+    background-color: var(--background-color);
+}
+```
+
+Add `html_static_path` and `html_css_files` under `conf.py`:
+
+```python
+# conf.py
+
+html_static_path = ['../_static']
+html_css_files = ['custom.css']
+```
+
+These steps will change the default color of the exercise directive named "orange" displayed below
+
+````md
+```{exercise}
+:class: orange
+
+This is an example of how to introduce custom CSS.
+```
+````
+
+```{exercise}
+:class: orange
+
+This is an example of how to introduce custom CSS.
+```
