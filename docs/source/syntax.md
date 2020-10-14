@@ -194,18 +194,27 @@ static int factorial(int n){
 
 ### Hide Content
 
-The content of directives can be hidden using the `dropdown` class which is available through [Sphinx Book Theme](https://sphinx-book-theme.readthedocs.io/en/latest/index.html). For Sphinx projects, add `"sphinx_book_theme"` to your `html_theme` in the `conf.py` to activate the theme in your Sphinx configuration
+The content of directives can be hidden using the `dropdown` class which is available through [sphinx-togglebutton](https://sphinx-togglebutton.readthedocs.io/en/latest/). For Sphinx projects, add `"sphinx_togglebutton"` to your `extensions` list in `conf.py` to activate the extension
 
 ```python
-...
-html_theme = "sphinx_book_theme"
-...
+extensions = [
+    ...
+    "sphinx_togglebutton"
+    ...
+]
 ```
 
-Jupyter Book's default theme is Sphinx Book Theme; therefore, Jupyter Book projects can utilize `dropdown` without having to activate the theme in your Sphinx configuration.
+For Jupyter Book projects, add `sphinx_togglebutton` under `extra_extensions`
 
+```yaml
+sphinx:
+    extra_extensions:
+        - sphinx_togglebutton
+```
 
 To hide the content, simply add `:class: dropdown` as a directive option.
+
+For more use cases see [sphinx-togglebutton](https://sphinx-togglebutton.readthedocs.io/en/latest/#usage).
 
 **Example**
 
