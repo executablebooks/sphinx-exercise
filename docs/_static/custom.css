@@ -1,0 +1,17 @@
+/*********************************************
+* Change the color of orange named objects *
+*********************************************/
+
+:root {
+	--background-color: rgba(253, 126, 20, .3);
+	--border-color: #fd7e14;
+}
+
+div.orange {
+	background-color: var(--background-color);
+	border-color: var(--border-color);
+}
+
+div.orange p.admonition-title {
+	background-color: var(--background-color);
+}
