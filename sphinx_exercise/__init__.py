@@ -340,6 +340,8 @@ class DoctreeResolve:
 
 def setup(app: Sphinx) -> Dict[str, Any]:
 
+    app.add_config_value("hide_solutions", False, "env")
+
     app.add_css_file("exercise.css")
     app.connect("build-finished", copy_asset_files)
     app.connect("config-inited", init_numfig)

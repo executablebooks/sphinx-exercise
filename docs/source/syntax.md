@@ -18,6 +18,9 @@ An exercise directive can be included using the `exercise` pattern. The directiv
 * `nonumber` : flag (empty)
 
     Turns off exercise auto numbering.
+* `hidden` : flag (empty)
+
+    Removes the directive from the final output.
 
 **Example**
 
@@ -76,6 +79,9 @@ A solution directive can be included using the `solution` pattern. It takes in t
 * `class` : text
 
     Value of the solution’s class attribute which can be used to add custom CSS or JavaScript.
+* `hidden` : flag (empty)
+
+    Removes the directive from the final output.
 
 ```{note}
 The title of the solution directive links directly to the referred directive.
@@ -184,20 +190,31 @@ static int factorial(int n){
 ````
 
 
-## How to Hide Directives
+## Hide or Remove Directives
 
-Directives can be hidden using the `dropdown` class which is available through [Sphinx Book Theme](https://sphinx-book-theme.readthedocs.io/en/latest/index.html). For Sphinx projects, add `"sphinx_book_theme"` to your `html_theme` in the `conf.py` to activate the theme in your Sphinx configuration
+### Hide Content
 
-```md
-...
-html_theme = "sphinx_book_theme"
-...
+The content of directives can be hidden using the `dropdown` class which is available through [sphinx-togglebutton](https://sphinx-togglebutton.readthedocs.io/en/latest/). For Sphinx projects, add `"sphinx_togglebutton"` to your `extensions` list in `conf.py` to activate the extension
+
+```python
+extensions = [
+    ...
+    "sphinx_togglebutton"
+    ...
+]
 ```
 
-Jupyter Book's default theme is Sphinx Book Theme; therefore, Jupyter Book projects can utilize `dropdown` without having to activate the theme in your Sphinx configuration.
+For Jupyter Book projects, add `sphinx_togglebutton` under `extra_extensions`
 
+```yaml
+sphinx:
+    extra_extensions:
+        - sphinx_togglebutton
+```
 
-To hide the directive, simply add `:class: dropdown` as a directive option.
+To hide the content, simply add `:class: dropdown` as a directive option.
+
+For more use cases see [sphinx-togglebutton](https://sphinx-togglebutton.readthedocs.io/en/latest/#usage).
 
 **Example**
 
@@ -230,6 +247,36 @@ In particular, write a function `factorial` such that `factorial(n)` returns $n!
 for any positive integer $n$.
 ```
 ````
+
+### Remove Directives
+
+Any specific directive can be hidden by introducing the `:hidden:` option. For example, the following example will not be displayed
+
+````md
+```{exercise}
+    :hidden:
+
+    This is a hidden exercise directive.
+```
+````
+
+```{exercise}
+    :hidden:
+
+    This is a hidden exercise directive.
+```
+
+### Remove All Solutions
+
+All solution directives can be removed from the final output by setting `hide_solutions` to `True`. For Sphinx projects, add the configuration key in the `conf.py` file. Jupyter Book projects, should set the configuration key in `_config.yml` as follows
+
+```yaml
+...
+sphinx:
+  config:
+    hide_solutions: True
+...
+```
 
 ## Custom CSS or JavaScript
 

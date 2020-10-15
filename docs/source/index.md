@@ -27,12 +27,12 @@ sphinx-exercise `0.1.1` is in a development stage and may change rapidly.
 The **exercise** directive is
 
 1. automatically numbered
-2. supports options such as `class`, `label`, and `nonumber`
+2. supports options such as `class`, `label`, `nonumber`, and `hidden`
 3. can easily be referenced through `ref` and `numref` roles
 
 The **solution** directive
 
-1. supports options such as `class` and `label`
+1. supports options such as `class`, `label`, and `hidden`
 2. can be referenced through `ref` role
 
 (getting-started)=
