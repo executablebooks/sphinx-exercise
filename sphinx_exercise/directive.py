@@ -12,7 +12,7 @@ from docutils.nodes import Node
 
 from sphinx.util.docutils import SphinxDirective
 from docutils.parsers.rst import directives
-from .nodes import exercise_node, unenumerable_node, linked_node
+from .nodes import exercise_node, unenumerable_node, solution_node
 from docutils import nodes
 from sphinx.util import logging
 
@@ -25,9 +25,6 @@ class CustomDirective(SphinxDirective):
     name = ""
 
     def run(self) -> List[Node]:
-        # print("Inside directive function")
-        # import pdb;
-        # pdb.set_trace()
         if self.name == "solution" and self.env.app.config.hide_solutions:
             return []
 
@@ -40,7 +37,7 @@ class CustomDirective(SphinxDirective):
         if class_name:
             classes.extend(class_name)
 
-        title_text, title = "", ""
+        title_text = ""
         if self.name == "exercise":
 
             if self.arguments != []:
@@ -61,7 +58,7 @@ class CustomDirective(SphinxDirective):
             else:
                 node = exercise_node()
         else:
-            node = linked_node()
+            node = solution_node()
 
         node += nodes.title(title_text, "", *textnodes)
         node += section

@@ -14,26 +14,20 @@ from sphinx.writers.latex import LaTeXTranslator
 
 logger = logging.getLogger(__name__)
 
-
-def is_enumerable_node(node):
-    return isinstance(node, exercise_node)
-
-
-def is_unenumerable_node(node):
-    return isinstance(node, unenumerable_node)
-
-
-def is_linked_node(node):
-    return isinstance(node, linked_node)
-
-
-def is_extension_node(node):
-    return (
-        is_enumerable_node(node) or is_unenumerable_node(node) or is_linked_node(node)
-    )
+CR = "\n"
+latex_admonition_start = CR + "\\begin{sphinxadmonition}{note}"
+latex_admonition_end = "\\end{sphinxadmonition}" + CR
 
 
 class exercise_node(nodes.Admonition, nodes.Element):
+    pass
+
+
+class solution_node(nodes.Admonition, nodes.Element):
+    pass
+
+
+class unenumerable_node(nodes.Admonition, nodes.Element):
     pass
 
 
@@ -42,7 +36,7 @@ def visit_enumerable_node(self, node: Node) -> None:
 
 
 def depart_enumerable_node(self, node: Node) -> None:
-    typ = 'exercise'
+    typ = "exercise"
     if isinstance(self, LaTeXTranslator):
         number = get_node_number(self, node, typ)
         idx = list_rindex(self.body, latex_admonition_start) + 2
@@ -51,15 +45,9 @@ def depart_enumerable_node(self, node: Node) -> None:
     else:
         # Find index in list of 'Proof #'
         number = get_node_number(self, node, typ)
-        import pdb;
-        pdb.set_trace()
         idx = self.body.index(f"{typ} {number} ")
         self.body[idx] = f"{typ.title()} {number} "
         self.body.append("</div>")
-
-
-class unenumerable_node(nodes.Admonition, nodes.Element):
-    pass
 
 
 def visit_unenumerable_node(self, node: Node) -> None:
@@ -70,16 +58,59 @@ def depart_unenumerable_node(self, node: Node) -> None:
     self.depart_admonition(node)
 
 
-class linked_node(nodes.Admonition, nodes.Element):
-    pass
-
-
-def visit_linked_node(self, node: Node) -> None:
+def visit_solution_node(self, node: Node) -> None:
     self.visit_admonition(node)
 
 
-def depart_linked_node(self, node: Node) -> None:
+def depart_solution_node(self, node: Node) -> None:
     self.depart_admonition(node)
+
+
+def is_exercise_node(node):
+    return isinstance(node, exercise_node)
+
+
+def is_unenumerable_node(node):
+    return isinstance(node, unenumerable_node)
+
+
+def is_solution_node(node):
+    return isinstance(node, solution_node)
+
+
+def is_extension_node(node):
+    return (
+        is_exercise_node(node) or is_unenumerable_node(node) or is_solution_node(node)
+    )
+
+
+def find_parent(env, node, parent_tag):
+    """Find the nearest parent node with the given tagname."""
+    while True:
+        node = node.parent
+        if node is None:
+            return None
+        # parent should be a document in toc
+        if (
+            "docname" in node.attributes
+            and env.titles[node.attributes["docname"]].astext().lower()
+            in node.attributes["names"]
+        ):
+            return node.attributes["docname"]
+
+    if node.tagname == parent_tag:
+        return node.attributes["docname"]
+
+    return None
+
+
+def list_rindex(li, x) -> int:
+    """Getting the last occurence of an item in a list."""
+    for i in reversed(range(len(li))):
+        if li[i] == x:
+            return i
+    raise ValueError("{} is not in list".format(x))
+
 
 def get_node_number(self, node: Node, typ) -> str:
     """Get the number for the directive node for HTML."""
@@ -93,3 +124,9 @@ def get_node_number(self, node: Node, typ) -> str:
         fignumbers = self.builder.fignumbers
     number = fignumbers.get(typ, {}).get(ids, ())
     return ".".join(map(str, number))
+
+
+NODE_TYPES = {
+    "exercise": {"node": exercise_node, "type": "exercise"},
+    "solution": {"node": solution_node, "type": "solution"},
+}
