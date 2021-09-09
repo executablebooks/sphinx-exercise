@@ -12,7 +12,7 @@ from docutils.nodes import Node
 
 from sphinx.util.docutils import SphinxDirective
 from docutils.parsers.rst import directives
-from .local_nodes import enumerable_node, unenumerable_node, linked_node
+from .nodes import exercise_node, unenumerable_node, linked_node
 from docutils import nodes
 from sphinx.util import logging
 
@@ -25,6 +25,9 @@ class CustomDirective(SphinxDirective):
     name = ""
 
     def run(self) -> List[Node]:
+        # print("Inside directive function")
+        # import pdb;
+        # pdb.set_trace()
         if self.name == "solution" and self.env.app.config.hide_solutions:
             return []
 
@@ -39,12 +42,10 @@ class CustomDirective(SphinxDirective):
 
         title_text, title = "", ""
         if self.name == "exercise":
-            if "nonumber" in self.options:
-                title_text = f"{self.name.title()} "
 
             if self.arguments != []:
                 title_text += f"({self.arguments[0]})"
-                title += self.arguments[0]
+                # title += self.arguments[0]
         else:
             title_text = f"{self.name.title()} to "
             target_label = self.arguments[0]
@@ -58,7 +59,7 @@ class CustomDirective(SphinxDirective):
             if "nonumber" in self.options:
                 node = unenumerable_node()
             else:
-                node = enumerable_node()
+                node = exercise_node()
         else:
             node = linked_node()
 
@@ -88,6 +89,7 @@ class CustomDirective(SphinxDirective):
         node["ids"].append(label)
         node["label"] = label
         node["docname"] = self.env.docname
+        node["title"] = title_text
         node["hidden"] = True if "hidden" in self.options else False
         node.document = self.state.document
 
@@ -100,7 +102,7 @@ class CustomDirective(SphinxDirective):
             "type": self.name,
             "docname": self.env.docname,
             "node": node,
-            "title": title,
+            "title": title_text,
             "hidden": node.get("hidden", bool),
         }
 

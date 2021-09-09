@@ -19,8 +19,8 @@ from docutils import nodes
 from sphinx.util import logging
 from sphinx.util.fileutil import copy_asset
 from .directive import ExerciseDirective, SolutionDirective
-from .local_nodes import (
-    enumerable_node,
+from .nodes import (
+    exercise_node,
     unenumerable_node,
     linked_node,
     visit_enumerable_node,
@@ -65,9 +65,12 @@ def merge_exercises(
 def init_numfig(app: Sphinx, config: Config) -> None:
     """Initialize exercise numfig format."""
 
+    # print("Inside numfig function")
+    # import pdb;
+    # pdb.set_trace()
     config["numfig"] = True
     numfig_format = {
-        "exercise": "Exercise %s",
+        "exercise": "exercise %s",
     }
     numfig_format.update(config.numfig_format)
     config.numfig_format = numfig_format
@@ -90,6 +93,9 @@ def doctree_read(app: Sphinx, document: Node) -> None:
         docname, labelid, sectname = "", "", ""
 
         if is_extension_node(node):
+            # print("Inside doctree read function")
+            # import pdb;
+            # pdb.set_trace()
             name = node.get("names", [])[0]
             labelid = document.nameids[name]
             docname = app.env.docname
@@ -106,7 +112,7 @@ def doctree_read(app: Sphinx, document: Node) -> None:
                         continue
                     sectname += f"{item.astext()} "
 
-                # Lastly, remove parans from title
+                # Lastly, remove params from title
                 _r, _l = sectname.rfind(")"), sectname.find("(") + 1
                 sectname = sectname[_l:_r].strip()
 
@@ -123,6 +129,8 @@ class DoctreeResolve:
         self.env = app.env
         self.docname = docname
         self.domain = cast(StandardDomain, app.env.get_domain("std"))
+        # import pdb;
+        # pdb.set_trace()
         self.process(doctree, docname)
 
     def _is_node_type(self, node: Node, node_type: Any) -> bool:
@@ -139,14 +147,14 @@ class DoctreeResolve:
             path = docpath[: docpath.rfind(".")]
             msg = f"undefined label: {target_labelid}"
             logger.warning(msg, location=path, color="red")
-            node[0].insert(1, nodes.Text("Exercise", "Exercise"))
+            #node[0].insert(1, nodes.Text("Exercise", "Exercise"))
             self.env.exercise_list[node.get("label", "")]["node"] = node
             return
 
         target_node = target_attr.get("node", Node)
 
         # If linked node references an enumerable node
-        # then replace title to "Solution to Exercise #"
+        # then replace title to "Solution to exercise #"
 
         if is_enumerable_node(target_node):
             target_docname = target_attr.get("docname", "")
@@ -169,7 +177,7 @@ class DoctreeResolve:
                 if len(title) == 1 and isinstance(title[0], nodes.Text):
                     _ = (
                         title[0]
-                        .replace("Exercise", "")
+                        .replace("exercise", "")
                         .replace("(", "")
                         .replace(")", "")
                         .strip()
@@ -180,7 +188,7 @@ class DoctreeResolve:
                     new_title.insert(0, node[0][0])
                     node.replace(node[0], new_title)
             else:
-                text = "Exercise"
+                #text = "Exercise"
                 node[0].insert(1, nodes.Text(text, text))
 
         # Create a reference
@@ -214,7 +222,7 @@ class DoctreeResolve:
                 item = title[ii]
 
                 if ii == 0 and isinstance(item, nodes.Text):
-                    _ = item.replace("Exercise", "").replace("(", "").lstrip()
+                    _ = item.replace("exercise", "").replace("(", "").lstrip()
                     title.replace(title[ii], nodes.Text(_, _))
                 elif ii == len(title) - 1 and isinstance(item, nodes.Text):
                     _ = item.replace(")", "").rstrip()
@@ -235,7 +243,8 @@ class DoctreeResolve:
     def _update_ref(self, node: Node, labelid: str) -> None:
         source_attr = self.env.exercise_list[labelid]
         source_node = source_attr.get("node", Node)
-
+        # import pdb;
+        # pdb.set_trace()
         if is_linked_node(source_node):
             default_title = "Solution to "
             target_labelid = source_node.get("target_label", "")
@@ -256,11 +265,12 @@ class DoctreeResolve:
                         text = target_attr.get("title", "")
                         node[0].insert(len(node[0]), nodes.Text(text, text))
                 else:
-                    node[0].insert(len(node[0]), nodes.Text("Exercise", "Exercise"))
+                    print("What are you doing here?")
+                    #node[0].insert(len(node[0]), nodes.Text("Exercise", "Exercise"))
         else:
             # If no node.astext() simply add "Exercise"
             if is_enumerable_node(source_node) and not node.astext():
-                text = nodes.Text("Exercise", "Exercise")
+                #text = nodes.Text("Exercise", "Exercise")
                 node[0].insert(0, text)
                 return
 
@@ -272,7 +282,8 @@ class DoctreeResolve:
         source_attr = self.env.exercise_list[labelid]
         source_node = source_attr.get("node", Node)
         node_title = node.get("title", "")
-
+        # import pdb;
+        # pdb.set_trace()
         if "{name}" in node_title and self._has_math_child(source_node[0]):
             newtitle = nodes.inline()
             for item in node_title.split():
@@ -308,6 +319,8 @@ class DoctreeResolve:
 
     def process(self, doctree: nodes.document, docname: str) -> None:
 
+        # import pdb;
+        # pdb.set_trace()
         # # If linked node, update title
         for node in doctree.traverse(linked_node):
             self._update_linked_node_title(node)
@@ -343,16 +356,16 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("hide_solutions", False, "env")
 
     app.add_css_file("exercise.css")
-    app.connect("build-finished", copy_asset_files)
-    app.connect("config-inited", init_numfig)
-    app.connect("env-purge-doc", purge_exercises)
-    app.connect("env-merge-info", merge_exercises)
-    app.connect("doctree-read", doctree_read)
+    app.connect("config-inited", init_numfig) #1
+    app.connect("env-purge-doc", purge_exercises) #5 per file
+    app.connect("doctree-read", doctree_read) #8
+    app.connect("env-merge-info", merge_exercises) #9
+    app.connect("build-finished", copy_asset_files) #16
 
     app.add_enumerable_node(
-        enumerable_node,
+        exercise_node,
         "exercise",
-        get_title,
+        None,
         singlehtml=(visit_enumerable_node, depart_enumerable_node),
         html=(visit_enumerable_node, depart_enumerable_node),
     )
