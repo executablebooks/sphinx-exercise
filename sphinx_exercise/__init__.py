@@ -138,9 +138,6 @@ class DoctreeResolve:
             target_attr = self.env.exercise_list[target_labelid]
         except Exception:
             # target_labelid not found
-            import pdb
-
-            pdb.set_trace()
             docpath = self.env.doc2path(self.builder.current_docname)
             path = docpath[: docpath.rfind(".")]
             msg = f"undefined label: {target_labelid}"

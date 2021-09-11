@@ -25,23 +25,22 @@ class CustomDirective(SphinxDirective):
     name = ""
 
     def run(self) -> List[Node]:
-        if self.name == "solution" and self.env.app.config.hide_solutions:
+        env = self.env
+        typ = self.name
+        if typ == "solution" and env.app.config.hide_solutions:
             return []
 
-        serial_no = self.env.new_serialno()
+        serial_no = env.new_serialno()
 
-        if not hasattr(self.env, "exercise_list"):
-            self.env.exercise_list = {}
+        if not hasattr(env, "exercise_list"):
+            env.exercise_list = {}
 
-        classes, class_name = [self.name], self.options.get("class", "")
+        classes, class_name = [typ], self.options.get("class", "")
         if class_name:
             classes.extend(class_name)
 
         title_text = ""
-        if self.name == "exercise":
-            if "nonumber" in self.options:
-                title_text = f"{self.name.title()} "
-
+        if typ == "exercise":
             if self.arguments != []:
                 title_text += f"({self.arguments[0]})"
                 # title += self.arguments[0]
@@ -50,10 +49,10 @@ class CustomDirective(SphinxDirective):
 
         textnodes, messages = self.state.inline_text(title_text, self.lineno)
 
-        section = nodes.section(ids=[f"{self.name}-content"])
+        section = nodes.section(ids=[f"{typ}-content"])
         self.state.nested_parse(self.content, self.content_offset, section)
 
-        if self.name == "exercise":
+        if typ == "exercise":
             if "nonumber" in self.options:
                 node = exercise_unenumerable_node()
             else:
@@ -69,13 +68,13 @@ class CustomDirective(SphinxDirective):
             self.options["noindex"] = False
         else:
             self.options["noindex"] = True
-            label = f"{self.env.docname}-{self.name}-{serial_no}"
+            label = f"{env.docname}-{typ}-{serial_no}"
 
         # Duplicate label warning
-        if not label == "" and label in self.env.exercise_list.keys():
-            docpath = self.env.doc2path(self.env.docname)
+        if not label == "" and label in env.exercise_list.keys():
+            docpath = env.doc2path(env.docname)
             path = docpath[: docpath.rfind(".")]
-            other_path = self.env.doc2path(self.env.exercise_list[label]["docname"])
+            other_path = env.doc2path(env.exercise_list[label]["docname"])
             msg = f"duplicate label: {label}; other instance in {other_path}"
             logger.warning(msg, location=path, color="red")
             return []
@@ -86,18 +85,19 @@ class CustomDirective(SphinxDirective):
         node["classes"].extend(classes)
         node["ids"].append(label)
         node["label"] = label
-        node["docname"] = self.env.docname
+        node["docname"] = env.docname
         node["title"] = title_text
+        node["type"] = typ
         node["hidden"] = True if "hidden" in self.options else False
         node.document = self.state.document
 
-        if self.name == "solution":
+        if typ == "solution":
             node["target_label"] = target_label
 
         self.add_name(node)
-        self.env.exercise_list[label] = {
-            "type": self.name,
-            "docname": self.env.docname,
+        env.exercise_list[label] = {
+            "type": typ,
+            "docname": env.docname,
             "node": node,
             "title": title_text,
             "hidden": node.get("hidden", bool),

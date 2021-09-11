@@ -48,7 +48,6 @@ def depart_enumerable_node(self, node: Node) -> None:
         self.body.insert(idx, f"{typ.title()} {number}")
         self.body.append(latex_admonition_end)
     else:
-        # Find index in list of 'Proof #'
         number = get_node_number(self, node, typ)
         idx = self.body.index(f"{typ} {number} ")
         self.body[idx] = f"{typ.title()} {number} "
@@ -93,15 +92,17 @@ def depart_solution_node(self, node: Node) -> None:
         target_node = target_attr.get("node", Node)
         if is_exercise_node(target_node):
             target_number = get_node_number(self, target_node, "exercise")
+            target_text = "Exercise %s" % target_number
         else:
             target_number = ""
+            target_text = target_node.attributes["title"] or "Exercise"
         number = get_node_number(self, node, "solution")
         idx = self.body.index(f"{typ} {number} ")
         ref_idx = idx + 2
         reference = self.body[ref_idx]
         self.body.pop(ref_idx)
         self.body.insert(idx - 1, reference)
-        self.body[idx + 1] = f"Solution to Exercise {target_number} "
+        self.body[idx + 1] = f"Solution to {target_text} "
     else:
         number = get_node_number(self, node, typ)
         idx = self.body.index(f"{typ} {number} ")
