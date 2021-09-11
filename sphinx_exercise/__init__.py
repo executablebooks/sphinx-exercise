@@ -21,20 +21,21 @@ from sphinx.util.fileutil import copy_asset
 from .directive import ExerciseDirective, SolutionDirective
 from .nodes import (
     exercise_node,
-    unenumerable_node,
+    exercise_unenumerable_node,
     solution_node,
     visit_enumerable_node,
     depart_enumerable_node,
-    visit_unenumerable_node,
-    depart_unenumerable_node,
+    visit_exercise_unenumerable_node,
+    depart_exercise_unenumerable_node,
     visit_solution_node,
     depart_solution_node,
     is_solution_node,
     is_exercise_node,
     is_unenumerable_node,
     is_extension_node,
+    NODE_TYPES,
 )
-
+from sphinx.transforms.post_transforms import SphinxPostTransform
 
 logger = logging.getLogger(__name__)
 
@@ -66,9 +67,9 @@ def init_numfig(app: Sphinx, config: Config) -> None:
     """Initialize exercise numfig format."""
 
     config["numfig"] = True
-    numfig_format = {
-        "exercise": "exercise %s",
-    }
+    numfig_format = {}
+    for typ in NODE_TYPES.keys():
+        numfig_format[typ] = typ + " %s"
     numfig_format.update(config.numfig_format)
     config.numfig_format = numfig_format
 
@@ -137,11 +138,14 @@ class DoctreeResolve:
             target_attr = self.env.exercise_list[target_labelid]
         except Exception:
             # target_labelid not found
+            import pdb
+
+            pdb.set_trace()
             docpath = self.env.doc2path(self.builder.current_docname)
             path = docpath[: docpath.rfind(".")]
             msg = f"undefined label: {target_labelid}"
             logger.warning(msg, location=path, color="red")
-            # node[0].insert(1, nodes.Text("Exercise", "Exercise"))
+            node[0].insert(1, docutil_nodes.Text("Exercise", "Exercise"))
             self.env.exercise_list[node.get("label", "")]["node"] = node
             return
 
@@ -182,7 +186,7 @@ class DoctreeResolve:
                     new_title.insert(0, node[0][0])
                     node.replace(node[0], new_title)
             else:
-                # text = "Exercise"
+                text = "exercise"
                 node[0].insert(1, docutil_nodes.Text(text, text))
 
         # Create a reference
@@ -312,9 +316,9 @@ class DoctreeResolve:
 
     def process(self, doctree: docutil_nodes.document, docname: str) -> None:
 
-        # # If linked node, update title
-        for node in doctree.traverse(solution_node):
-            self._update_solution_node_title(node)
+        # If linked node, update title
+        # for node in doctree.traverse(solution_node):
+        #     self._update_solution_node_title(node)
 
         # Traverse ref and numref nodes
         for node in doctree.traverse():
@@ -323,13 +327,15 @@ class DoctreeResolve:
                 continue
 
             # If node type is ref
-            if isinstance(node, docutil_nodes.reference):
-                labelid = self._get_refuri(node)
+            # if isinstance(node, docutil_nodes.reference):
+            #     labelid = self._get_refuri(node)
 
-                # If extension directive referenced
-                if labelid in self.env.exercise_list:
-                    # Update displayed href text
-                    self._update_ref(node, labelid)
+            #     # If extension directive referenced
+            #     if labelid in self.env.exercise_list:
+            #         # Update displayed href text
+            #         import pdb;
+            #         pdb.set_trace()
+            #         #self._update_ref(node, labelid)
 
             # If node type is numref
             if isinstance(node, number_reference):
@@ -340,6 +346,45 @@ class DoctreeResolve:
 
                     # Update displayed href text
                     self._update_numref(node, labelid)
+
+
+class solutionTransorm(SphinxPostTransform):
+    default_priority = 1000
+
+    def run(self):
+        for node in self.document.traverse(solution_node):
+            target_labelid = node.get("target_label", "")
+
+            try:
+                target_attr = self.env.exercise_list[target_labelid]
+            except Exception:
+                # target_labelid not found
+                msg = f"undefined label: {target_labelid}"
+                logger.warning(msg, location=node.attributes["docname"], color="red")
+                return
+
+            # Create a reference
+            refuri = self.app.builder.get_relative_uri(
+                self.env.docname, target_attr.get("docname", "")
+            )
+            refuri += "#" + target_labelid
+
+            # create a text for the reference node
+            title = node.attributes["title"]
+            reference = docutil_nodes.reference(
+                "",
+                "",
+                internal=True,
+                refuri=refuri,
+                anchorname="",
+                *[docutil_nodes.Text(title)],
+            )
+            newnode = docutil_nodes.title("")
+            newnode.append(reference)
+            node[0].replace_self(newnode)
+
+            # update node
+            self.env.exercise_list[node.get("label", "")]["node"] = node
 
 
 def setup(app: Sphinx) -> Dict[str, Any]:
@@ -359,23 +404,32 @@ def setup(app: Sphinx) -> Dict[str, Any]:
         None,
         singlehtml=(visit_enumerable_node, depart_enumerable_node),
         html=(visit_enumerable_node, depart_enumerable_node),
+        latex=(visit_enumerable_node, depart_enumerable_node),
     )
 
     app.add_node(
-        unenumerable_node,
-        singlehtml=(visit_unenumerable_node, depart_unenumerable_node),
-        html=(visit_unenumerable_node, depart_unenumerable_node),
+        exercise_unenumerable_node,
+        singlehtml=(
+            visit_exercise_unenumerable_node,
+            depart_exercise_unenumerable_node,
+        ),
+        html=(visit_exercise_unenumerable_node, depart_exercise_unenumerable_node),
+        latex=(visit_exercise_unenumerable_node, depart_exercise_unenumerable_node),
     )
 
-    app.add_node(
+    app.add_enumerable_node(
         solution_node,
+        "solution",
+        None,
         singlehtml=(visit_solution_node, depart_solution_node),
         html=(visit_solution_node, depart_solution_node),
+        latex=(visit_solution_node, depart_solution_node),
     )
 
     app.add_directive("exercise", ExerciseDirective)
     app.add_directive("solution", SolutionDirective)
 
+    app.add_post_transform(solutionTransorm)
     app.connect("doctree-resolved", DoctreeResolve)
 
     return {

@@ -12,7 +12,7 @@ from docutils.nodes import Node
 
 from sphinx.util.docutils import SphinxDirective
 from docutils.parsers.rst import directives
-from .nodes import exercise_node, unenumerable_node, solution_node
+from .nodes import exercise_node, exercise_unenumerable_node, solution_node
 from docutils import nodes
 from sphinx.util import logging
 
@@ -39,12 +39,13 @@ class CustomDirective(SphinxDirective):
 
         title_text = ""
         if self.name == "exercise":
+            if "nonumber" in self.options:
+                title_text = f"{self.name.title()} "
 
             if self.arguments != []:
                 title_text += f"({self.arguments[0]})"
                 # title += self.arguments[0]
         else:
-            title_text = f"{self.name.title()} to "
             target_label = self.arguments[0]
 
         textnodes, messages = self.state.inline_text(title_text, self.lineno)
@@ -54,7 +55,7 @@ class CustomDirective(SphinxDirective):
 
         if self.name == "exercise":
             if "nonumber" in self.options:
-                node = unenumerable_node()
+                node = exercise_unenumerable_node()
             else:
                 node = exercise_node()
         else:
@@ -94,7 +95,6 @@ class CustomDirective(SphinxDirective):
             node["target_label"] = target_label
 
         self.add_name(node)
-
         self.env.exercise_list[label] = {
             "type": self.name,
             "docname": self.env.docname,
