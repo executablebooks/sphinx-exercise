@@ -49,8 +49,9 @@ def depart_enumerable_node(self, node: Node) -> None:
         self.body.append(latex_admonition_end)
     else:
         number = get_node_number(self, node, typ)
-        idx = self.body.index(f"{typ} {number} ")
-        self.body[idx] = f"{typ.title()} {number} "
+        if number:
+            idx = self.body.index(f"{typ} {number} ")
+            self.body[idx] = f"{typ.title()} {number} "
         self.body.append("</div>")
 
 
