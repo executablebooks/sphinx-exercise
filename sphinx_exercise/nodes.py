@@ -11,6 +11,7 @@ from docutils.nodes import Node
 from sphinx.util import logging
 from docutils import nodes
 from sphinx.writers.latex import LaTeXTranslator
+from .utils import get_node_number, find_parent
 
 logger = logging.getLogger(__name__)
 
@@ -66,16 +67,12 @@ def visit_exercise_unenumerable_node(self, node: Node) -> None:
 
 def depart_exercise_unenumerable_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
-    title = node.attributes.get("title", "")
     if isinstance(self, LaTeXTranslator):
         idx = list_rindex(self.body, latex_admonition_start) + 2
         self.body.insert(idx, f"{typ.title()}")
         self.body.append(latex_admonition_end)
     else:
-        if title == "":
-            idx = list_rindex(self.body, '<p class="admonition-title">') + 1
-        else:
-            idx = list_rindex(self.body, title)
+        idx = list_rindex(self.body, '<p class="admonition-title">') + 1
         element = f"<span>{typ.title()} </span>"
         self.body.insert(idx, element)
         self.body.append("</div>")
@@ -85,18 +82,38 @@ def visit_solution_node(self, node: Node) -> None:
     self.body.append(self.starttag(node, "div", CLASS="admonition"))
 
 
+def return_exercise_html(self, node, elem):
+    text = self.body
+    editedtext = []
+    label = node.attributes["label"]
+    title = node.attributes["title"]
+    number = get_node_number(self, node, "exercise")
+    for index, item in enumerate(text):
+        if f'id="{label}"' in item:
+            editedtext = text[index:]
+    if len(editedtext):
+        idx_start = editedtext.index(elem)
+        idx_end = editedtext.index("</p>\n")
+        text = "".join(editedtext[idx_start + 1 : idx_end])
+        if number or not title:
+            return text[: text.index("</span>") + len("</span>")]
+        else:
+            text = text[text.index("</span>") + len("</span>") :]
+            text = text.replace("(", "", 1)
+            text = rreplace(text, ")", "", 1)
+            return text
+
+
 def depart_solution_node(self, node: Node) -> None:
     target_labelid = node.get("target_label", "")
     typ = "solution"
     if target_labelid in self.builder.env.exercise_list:
         target_attr = self.builder.env.exercise_list[target_labelid]
         target_node = target_attr.get("node", Node)
-        if is_exercise_node(target_node):
-            target_number = get_node_number(self, target_node, "exercise")
-            target_text = "Exercise %s" % target_number
-        else:
-            target_number = ""
-            target_text = target_node.attributes["title"] or "Exercise"
+
+        target_text = return_exercise_html(
+            self, target_node, '<p class="admonition-title">'
+        )
         number = get_node_number(self, node, "solution")
         idx = self.body.index(f"{typ} {number} ")
         ref_idx = idx + 2
@@ -129,24 +146,10 @@ def is_extension_node(node):
     )
 
 
-def find_parent(env, node, parent_tag):
-    """Find the nearest parent node with the given tagname."""
-    while True:
-        node = node.parent
-        if node is None:
-            return None
-        # parent should be a document in toc
-        if (
-            "docname" in node.attributes
-            and env.titles[node.attributes["docname"]].astext().lower()
-            in node.attributes["names"]
-        ):
-            return node.attributes["docname"]
-
-    if node.tagname == parent_tag:
-        return node.attributes["docname"]
-
-    return None
+def rreplace(s, old, new, occurrence):
+    # taken from https://stackoverflow.com/a/2556252
+    li = s.rsplit(old, occurrence)
+    return new.join(li)
 
 
 def list_rindex(li, x) -> int:
@@ -155,20 +158,6 @@ def list_rindex(li, x) -> int:
         if li[i] == x:
             return i
     raise ValueError("{} is not in list".format(x))
-
-
-def get_node_number(self, node: Node, typ) -> str:
-    """Get the number for the directive node for HTML."""
-    ids = node.attributes.get("ids", [])[0]
-    if isinstance(self, LaTeXTranslator):
-        docname = find_parent(self.builder.env, node, "section")
-        fignumbers = self.builder.env.toc_fignumbers.get(
-            docname, {}
-        )  # Latex does not have builder.fignumbers
-    else:
-        fignumbers = self.builder.fignumbers
-    number = fignumbers.get(typ, {}).get(ids, ())
-    return ".".join(map(str, number))
 
 
 NODE_TYPES = {
