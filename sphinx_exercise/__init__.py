@@ -163,7 +163,8 @@ def process_reference(self, node, default_title=""):
         source_node = self.env.exercise_list[label].get("node")
         if is_solution_node(source_node):
             target_label = source_node.attributes.get("target_label", "")
-            default_title = "Solution to "
+            if node.astext().strip() == "Solution to":
+                default_title = node.astext()
         else:
             target_label = source_node.attributes.get("label", "")
         target_attr = self.env.exercise_list[target_label]
@@ -177,23 +178,25 @@ def process_reference(self, node, default_title=""):
                 if ":math:" in node.astext():
                     title = _update_title(source_node[0])
                     node.replace(node[0], title)
-                # import pdb;
-                # pdb.set_trace()
 
         if is_unenumerable_node(target_node):
-            if target_attr.get("title"):
-                if _has_math_child(target_node[0]):
-                    title = _update_title(target_node[0])
-                    title.insert(0, docutil_nodes.Text(default_title, default_title))
-                    node.replace(node[0], title)
-                else:
-                    if default_title:
+            if default_title:
+                if target_attr.get("title"):
+                    if _has_math_child(target_node[0]):
+                        title = _update_title(target_node[0])
+                        title.insert(
+                            0, docutil_nodes.Text(default_title, default_title)
+                        )
+                        node.replace(node[0], title)
+                    else:
                         text = target_attr.get("title", "")
+                        if text[0] == "(" and text[-1] == ")":
+                            text = text[1:-1]
                         node[0].insert(len(node[0]), docutil_nodes.Text(text, text))
-            # else:
-            #     node[0].insert(
-            #         len(node[0]), docutil_nodes.Text("Exercise", "Exercise")
-            #     )
+            else:
+                if ":math:" in node.astext():
+                    title = _update_title(source_node[0])
+                    node.replace(node[0], title)
 
 
 class solutionTransorm(SphinxPostTransform):

@@ -49,7 +49,7 @@ def depart_enumerable_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
         number = get_node_number(self, node, typ)
         idx = list_rindex(self.body, latex_admonition_start) + 2
-        self.body.insert(idx, f"{typ.title()} {number}")
+        self.body.insert(idx, f"{typ.title()} {number} ")
         self.body.append(latex_admonition_end)
     else:
         number = get_node_number(self, node, typ)
@@ -75,7 +75,7 @@ def depart_exercise_unenumerable_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
         idx = list_rindex(self.body, latex_admonition_start) + 2
-        self.body.insert(idx, f"{typ.title()}")
+        self.body.insert(idx, f"{typ.title()} ")
         self.body.append(latex_admonition_end)
     else:
         idx = list_rindex(self.body, '<p class="admonition-title">') + 1
@@ -85,15 +85,26 @@ def depart_exercise_unenumerable_node(self, node: Node) -> None:
 
 
 def visit_solution_node(self, node: Node) -> None:
-    self.body.append(self.starttag(node, "div", CLASS="admonition"))
+    if isinstance(self, LaTeXTranslator):
+        docname = find_parent(self.builder.env, node, "section")
+        self.body.append("\\label{" + f"{docname}:{node.attributes['label']}" + "}")
+        self.body.append(latex_admonition_start)
+    else:
+        self.body.append(self.starttag(node, "div", CLASS="admonition"))
 
 
 def depart_solution_node(self, node: Node) -> None:
     typ = "solution"
-    number = get_node_number(self, node, typ)
-    idx = self.body.index(f"{typ.title()} {number} ")
-    self.body.pop(idx)
-    self.body.append("</div>")
+    if isinstance(self, LaTeXTranslator):
+        idx = list_rindex(self.body, latex_admonition_start) + 2
+        self.body.pop(idx)
+        self.body.insert(idx, f"{typ.title()} ")
+        self.body.append(latex_admonition_end)
+    else:
+        number = get_node_number(self, node, typ)
+        idx = self.body.index(f"{typ.title()} {number} ")
+        self.body.pop(idx)
+        self.body.append("</div>")
 
 
 def is_exercise_node(node):
