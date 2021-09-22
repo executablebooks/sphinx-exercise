@@ -38,6 +38,9 @@ def visit_enumerable_node(self, node: Node) -> None:
         self.body.append("\\label{" + f"{docname}:{node.attributes['label']}" + "}")
         self.body.append(latex_admonition_start)
     else:
+        for title in node.traverse(nodes.title):
+            if "Exercise" in title.astext():
+                title[0] = nodes.Text("")
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
 
 
@@ -51,7 +54,7 @@ def depart_enumerable_node(self, node: Node) -> None:
     else:
         number = get_node_number(self, node, typ)
         if number:
-            idx = self.body.index(f"{typ} {number} ")
+            idx = self.body.index(f"{typ.title()} {number} ")
             self.body[idx] = f"{typ.title()} {number} "
         self.body.append("</div>")
 
@@ -62,6 +65,9 @@ def visit_exercise_unenumerable_node(self, node: Node) -> None:
         self.body.append("\\label{" + f"{docname}:{node.attributes['label']}" + "}")
         self.body.append(latex_admonition_start)
     else:
+        for title in node.traverse(nodes.title):
+            if "Exercise" in title.astext():
+                title[0] = nodes.Text("")
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
 
 
@@ -82,49 +88,11 @@ def visit_solution_node(self, node: Node) -> None:
     self.body.append(self.starttag(node, "div", CLASS="admonition"))
 
 
-def return_exercise_html(self, node, elem):
-    text = self.body
-    editedtext = []
-    label = node.attributes["label"]
-    title = node.attributes["title"]
-    number = get_node_number(self, node, "exercise")
-    for index, item in enumerate(text):
-        if f'id="{label}"' in item:
-            editedtext = text[index:]
-    if len(editedtext):
-        idx_start = editedtext.index(elem)
-        idx_end = editedtext.index("</p>\n")
-        text = "".join(editedtext[idx_start + 1 : idx_end])
-        if number or not title:
-            return text[: text.index("</span>") + len("</span>")]
-        else:
-            text = text[text.index("</span>") + len("</span>") :]
-            text = text.replace("(", "", 1)
-            text = rreplace(text, ")", "", 1)
-            return text
-
-
 def depart_solution_node(self, node: Node) -> None:
-    target_labelid = node.get("target_label", "")
     typ = "solution"
-    if target_labelid in self.builder.env.exercise_list:
-        target_attr = self.builder.env.exercise_list[target_labelid]
-        target_node = target_attr.get("node", Node)
-
-        target_text = return_exercise_html(
-            self, target_node, '<p class="admonition-title">'
-        )
-        number = get_node_number(self, node, "solution")
-        idx = self.body.index(f"{typ} {number} ")
-        ref_idx = idx + 2
-        reference = self.body[ref_idx]
-        self.body.pop(ref_idx)
-        self.body.insert(idx - 1, reference)
-        self.body[idx + 1] = f"Solution to {target_text} "
-    else:
-        number = get_node_number(self, node, typ)
-        idx = self.body.index(f"{typ} {number} ")
-        self.body[idx] = f"{typ.title()} {number} "
+    number = get_node_number(self, node, typ)
+    idx = self.body.index(f"{typ.title()} {number} ")
+    self.body.pop(idx)
     self.body.append("</div>")
 
 

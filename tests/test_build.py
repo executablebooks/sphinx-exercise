@@ -15,7 +15,7 @@ def test_warnings(app, warnings):
         "_enum_numref_notitle.rst:6: WARNING: invalid numfig_format: some text"
         in warnings(app)
     )
-    assert "WARNING: invalid numfig_format: some text {name}" in warnings(app)
+    # assert "WARNING: invalid numfig_format: some text {name}" in warnings(app)
     assert (
         "_enum_numref_title.rst:6: WARNING: invalid numfig_format: some text"
         in warnings(app)

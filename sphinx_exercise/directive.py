@@ -41,10 +41,12 @@ class CustomDirective(SphinxDirective):
 
         title_text = ""
         if typ == "exercise":
+            title_text = f"{self.name.title()} "
+
             if self.arguments != []:
-                title_text += f"({self.arguments[0]})"
-                # title += self.arguments[0]
+                title_text = f"({self.arguments[0]})"
         else:
+            title_text = f"{self.name.title()} to "
             target_label = self.arguments[0]
 
         textnodes, messages = self.state.inline_text(title_text, self.lineno)

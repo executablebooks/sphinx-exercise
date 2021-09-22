@@ -13,6 +13,7 @@ from sphinx.config import Config
 from sphinx.application import Sphinx
 from sphinx.environment import BuildEnvironment
 from sphinx.domains.std import StandardDomain
+from sphinx.addnodes import number_reference
 from docutils.nodes import Node
 from docutils import nodes as docutil_nodes
 from sphinx.util import logging
@@ -65,11 +66,10 @@ def merge_exercises(
 
 def init_numfig(app: Sphinx, config: Config) -> None:
     """Initialize exercise numfig format."""
-
     config["numfig"] = True
     numfig_format = {}
     for typ in NODE_TYPES.keys():
-        numfig_format[typ] = typ + " %s"
+        numfig_format[typ] = typ.title() + " %s"
     numfig_format.update(config.numfig_format)
     config.numfig_format = numfig_format
 
@@ -99,8 +99,18 @@ def doctree_read(app: Sphinx, document: Node) -> None:
             if is_solution_node(node):
                 sectname = "Solution to "
             else:
+                # If other node, simply add :math: to title
+                # to allow for easy parsing in ref_node
                 for item in node[0]:
+                    if isinstance(item, docutil_nodes.math):
+                        sectname += f":math:`{item.astext()}` "
+                        continue
                     sectname += f"{item.astext()} "
+
+                # Lastly, remove parans from title
+                _r, _l = sectname.rfind(")"), sectname.find("(") + 1
+                sectname = sectname[_l:_r].strip()
+
             domain.anonlabels[name] = docname, labelid
             domain.labels[name] = docname, labelid, sectname
 
@@ -136,18 +146,74 @@ def _update_title(title):
     return inline
 
 
+def _get_refuri(node):
+    id_ = ""
+    if node.get("refuri", ""):
+        id_ = node.get("refuri", "")
+
+    if node.get("refid", ""):
+        id_ = node.get("refid", "")
+
+    return id_.split("#")[-1]
+
+
+def process_reference(self, node, default_title=""):
+    label = _get_refuri(node)
+    if label in self.env.exercise_list:
+        source_node = self.env.exercise_list[label].get("node")
+        if is_solution_node(source_node):
+            target_label = source_node.attributes.get("target_label", "")
+            default_title = "Solution to "
+        else:
+            target_label = source_node.attributes.get("label", "")
+        target_attr = self.env.exercise_list[target_label]
+        target_node = target_attr.get("node", Node)
+        if is_exercise_node(target_node):
+            if default_title:
+                number = get_node_number(self.app, target_node, "exercise")
+                node.insert(len(node[0]), docutil_nodes.Text(" Exercise " + number))
+                return
+            else:
+                if ":math:" in node.astext():
+                    title = _update_title(source_node[0])
+                    node.replace(node[0], title)
+                # import pdb;
+                # pdb.set_trace()
+
+        if is_unenumerable_node(target_node):
+            if target_attr.get("title"):
+                if _has_math_child(target_node[0]):
+                    title = _update_title(target_node[0])
+                    title.insert(0, docutil_nodes.Text(default_title, default_title))
+                    node.replace(node[0], title)
+                else:
+                    if default_title:
+                        text = target_attr.get("title", "")
+                        node[0].insert(len(node[0]), docutil_nodes.Text(text, text))
+            # else:
+            #     node[0].insert(
+            #         len(node[0]), docutil_nodes.Text("Exercise", "Exercise")
+            #     )
+
+
 class solutionTransorm(SphinxPostTransform):
     default_priority = 1000
 
     def run(self):
+
+        for node in self.document.traverse(docutil_nodes.reference):
+            process_reference(self, node)
+
         for node in self.document.traverse(solution_node):
             target_labelid = node.get("target_label", "")
             try:
                 target_attr = self.env.exercise_list[target_labelid]
             except Exception:
                 # target_labelid not found
+                docpath = self.env.doc2path(self.app.builder.current_docname)
+                path = docpath[: docpath.rfind(".")]
                 msg = f"undefined label: {target_labelid}"
-                logger.warning(msg, location=node.attributes["docname"], color="red")
+                logger.warning(msg, location=path, color="red")
                 return
 
             # Create a reference
@@ -158,52 +224,52 @@ class solutionTransorm(SphinxPostTransform):
 
             # create a text for the reference node
             title = node.attributes["title"]
+            newtitle = docutil_nodes.inline("", docutil_nodes.Text(title))
             reference = docutil_nodes.reference(
                 "",
                 "",
                 internal=True,
                 refuri=refuri,
                 anchorname="",
-                *[docutil_nodes.Text(title)],
+                *[newtitle],
             )
+            process_reference(self, reference, "Solution to ")
             newnode = docutil_nodes.title("")
             newnode.append(reference)
             node[0].replace_self(newnode)
-
             # update node
             self.env.exercise_list[node.get("label", "")]["node"] = node
 
-        for node in self.document.traverse(docutil_nodes.reference):
-            if "Solution to" in node.astext():
-                default_title = "Solution to "
-                label = node.attributes["refid"]
-                source_node = self.env.exercise_list[label].get("node")
-                target_label = source_node.attributes["target_label"]
-                target_attr = self.env.exercise_list[target_label]
-                target_node = target_attr.get("node", Node)
+        for node in self.document.traverse(number_reference):
+            labelid = _get_refuri(node)
 
-                if is_exercise_node(target_node) and node.astext() == default_title:
-                    number = get_node_number(self.app, target_node, "exercise")
-                    node[0].insert(
-                        len(node[0]), docutil_nodes.Text(" Exercise " + number)
-                    )
-                    return
+            # If extension directive referenced
+            if labelid in self.env.exercise_list:
+                source_attr = self.env.exercise_list[labelid]
+                source_node = source_attr.get("node", Node)
+                node_title = node.get("title", "")
 
-                if is_unenumerable_node(target_node) and node.astext() == default_title:
-                    if target_attr.get("title"):
-                        if _has_math_child(target_node[0]):
-                            title = _update_title(target_node[0])
-                            title.insert(
-                                0, docutil_nodes.Text(default_title, default_title)
+                if "{name}" in node_title and _has_math_child(source_node[0]):
+                    newtitle = docutil_nodes.inline()
+                    for item in node_title.split():
+                        if item == "{name}":
+                            # use extend instead?
+                            for _ in _update_title(source_node[0]):
+                                newtitle += _
+                        elif item == "{number}":
+                            source_type = source_node.attributes["type"]
+                            source_number = get_node_number(
+                                self.app, source_node, source_type
                             )
-                            node.replace(node[0], title)
+                            source_num = ".".join(map(str, source_number))
+                            newtitle += docutil_nodes.Text(source_num, source_num)
                         else:
-                            text = target_attr.get("title", "")
-                            node[0].insert(len(node[0]), docutil_nodes.Text(text, text))
-                    else:
-                        node[0].insert(
-                            len(node[0]), docutil_nodes.Text("Exercise", "Exercise")
-                        )
+                            newtitle += docutil_nodes.Text(item, item)
+                        newtitle += docutil_nodes.Text(" ", " ")
+
+                    if newtitle[len(newtitle) - 1].astext() == " ":
+                        newtitle.pop()
+                    node.replace(node[0], newtitle)
 
 
 def setup(app: Sphinx) -> Dict[str, Any]:
@@ -255,7 +321,3 @@ def setup(app: Sphinx) -> Dict[str, Any]:
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
-
-
-def get_title(self):
-    return self[0].astext()
