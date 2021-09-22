@@ -199,13 +199,19 @@ def process_reference(self, node, default_title=""):
                     node.replace(node[0], title)
 
 
-class solutionTransorm(SphinxPostTransform):
-    default_priority = 1000
+class ReferenceTransform(SphinxPostTransform):
+    default_priority = 998
 
     def run(self):
 
         for node in self.document.traverse(docutil_nodes.reference):
             process_reference(self, node)
+
+
+class SolutionTransorm(SphinxPostTransform):
+    default_priority = 999
+
+    def run(self):
 
         for node in self.document.traverse(solution_node):
             target_labelid = node.get("target_label", "")
@@ -242,6 +248,12 @@ class solutionTransorm(SphinxPostTransform):
             node[0].replace_self(newnode)
             # update node
             self.env.exercise_list[node.get("label", "")]["node"] = node
+
+
+class NumberReferenceTransform(SphinxPostTransform):
+    default_priority = 1000
+
+    def run(self):
 
         for node in self.document.traverse(number_reference):
             labelid = _get_refuri(node)
@@ -317,7 +329,9 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_directive("exercise", ExerciseDirective)
     app.add_directive("solution", SolutionDirective)
 
-    app.add_post_transform(solutionTransorm)
+    app.add_post_transform(ReferenceTransform)
+    app.add_post_transform(SolutionTransorm)
+    app.add_post_transform(NumberReferenceTransform)
 
     return {
         "version": "builtin",
