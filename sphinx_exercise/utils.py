@@ -1,4 +1,5 @@
 from sphinx.writers.latex import LaTeXTranslator
+from docutils import nodes as docutil_nodes
 
 
 def find_parent(env, node, parent_tag):
@@ -32,3 +33,23 @@ def get_node_number(self, node, typ) -> str:
     fignumbers = self.builder.env.toc_fignumbers.get(docname, {})
     number = fignumbers.get(typ, {}).get(ids, ())
     return ".".join(map(str, number))
+
+
+def has_math_child(node):
+    """ Check if a parent node as a math child node. """
+    for item in node:
+        if isinstance(item, docutil_nodes.math):
+            return True
+    return False
+
+
+def get_refuri(node):
+    """ Check both refuri and refid, to see which one is available. """
+    id_ = ""
+    if node.get("refuri", ""):
+        id_ = node.get("refuri", "")
+
+    if node.get("refid", ""):
+        id_ = node.get("refid", "")
+
+    return id_.split("#")[-1]

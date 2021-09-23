@@ -9,7 +9,7 @@ Enumerable and unenumerable nodes
 """
 from docutils.nodes import Node
 from sphinx.util import logging
-from docutils import nodes
+from docutils import nodes as docutil_nodes
 from sphinx.writers.latex import LaTeXTranslator
 from .utils import get_node_number, find_parent
 
@@ -20,15 +20,15 @@ latex_admonition_start = CR + "\\begin{sphinxadmonition}{note}"
 latex_admonition_end = "\\end{sphinxadmonition}" + CR
 
 
-class exercise_node(nodes.Admonition, nodes.Element):
+class exercise_node(docutil_nodes.Admonition, docutil_nodes.Element):
     pass
 
 
-class solution_node(nodes.Admonition, nodes.Element):
+class solution_node(docutil_nodes.Admonition, docutil_nodes.Element):
     pass
 
 
-class exercise_unenumerable_node(nodes.Admonition, nodes.Element):
+class exercise_unenumerable_node(docutil_nodes.Admonition, docutil_nodes.Element):
     pass
 
 
@@ -38,14 +38,14 @@ def visit_enumerable_node(self, node: Node) -> None:
         self.body.append("\\label{" + f"{docname}:{node.attributes['label']}" + "}")
         self.body.append(latex_admonition_start)
     else:
-        for title in node.traverse(nodes.title):
+        for title in node.traverse(docutil_nodes.title):
             if "Exercise" in title.astext():
-                title[0] = nodes.Text("")
+                title[0] = docutil_nodes.Text("")
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
 
 
 def depart_enumerable_node(self, node: Node) -> None:
-    typ = "exercise"
+    typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
         number = get_node_number(self, node, typ)
         idx = list_rindex(self.body, latex_admonition_start) + 2
@@ -65,9 +65,9 @@ def visit_exercise_unenumerable_node(self, node: Node) -> None:
         self.body.append("\\label{" + f"{docname}:{node.attributes['label']}" + "}")
         self.body.append(latex_admonition_start)
     else:
-        for title in node.traverse(nodes.title):
+        for title in node.traverse(docutil_nodes.title):
             if "Exercise" in title.astext():
-                title[0] = nodes.Text("")
+                title[0] = docutil_nodes.Text("")
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
 
 
@@ -94,7 +94,7 @@ def visit_solution_node(self, node: Node) -> None:
 
 
 def depart_solution_node(self, node: Node) -> None:
-    typ = "solution"
+    typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
         idx = list_rindex(self.body, latex_admonition_start) + 2
         self.body.pop(idx)

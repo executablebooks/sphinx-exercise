@@ -36,9 +36,10 @@ from .nodes import (
     NODE_TYPES,
 )
 from sphinx.transforms.post_transforms import SphinxPostTransform
-from .utils import get_node_number
+from .utils import get_node_number, get_refuri, has_math_child
 
 logger = logging.getLogger(__name__)
+SOLUTION_PLACEHOLDER_TEXT = "Solution to "
 
 
 def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
@@ -97,7 +98,7 @@ def doctree_read(app: Sphinx, document: Node) -> None:
 
             # If solution node
             if is_solution_node(node):
-                sectname = "Solution to "
+                sectname = SOLUTION_PLACEHOLDER_TEXT
             else:
                 # If other node, simply add :math: to title
                 # to allow for easy parsing in ref_node
@@ -115,14 +116,7 @@ def doctree_read(app: Sphinx, document: Node) -> None:
             domain.labels[name] = docname, labelid, sectname
 
 
-def _has_math_child(node):
-    for item in node:
-        if isinstance(item, docutil_nodes.math):
-            return True
-    return False
-
-
-def _update_title(title):
+def update_title(title):
     inline = docutil_nodes.inline()
 
     if len(title) == 1 and isinstance(title[0], docutil_nodes.Text):
@@ -146,19 +140,14 @@ def _update_title(title):
     return inline
 
 
-def _get_refuri(node):
-    id_ = ""
-    if node.get("refuri", ""):
-        id_ = node.get("refuri", "")
-
-    if node.get("refid", ""):
-        id_ = node.get("refid", "")
-
-    return id_.split("#")[-1]
+def process_math_placeholder(node, update_title, source_node):
+    if ":math:" in node.astext():
+        title = update_title(source_node[0])
+        return node.replace(node[0], title)
 
 
 def process_reference(self, node, default_title=""):
-    label = _get_refuri(node)
+    label = get_refuri(node)
     if label in self.env.exercise_list:
         source_node = self.env.exercise_list[label].get("node")
         if is_solution_node(source_node):
@@ -175,15 +164,13 @@ def process_reference(self, node, default_title=""):
                 node.insert(len(node[0]), docutil_nodes.Text(" Exercise " + number))
                 return
             else:
-                if ":math:" in node.astext():
-                    title = _update_title(source_node[0])
-                    node.replace(node[0], title)
+                node = process_math_placeholder(node, update_title, source_node)
 
         if is_unenumerable_node(target_node):
             if default_title:
                 if target_attr.get("title"):
-                    if _has_math_child(target_node[0]):
-                        title = _update_title(target_node[0])
+                    if has_math_child(target_node[0]):
+                        title = update_title(target_node[0])
                         title.insert(
                             0, docutil_nodes.Text(default_title, default_title)
                         )
@@ -194,9 +181,7 @@ def process_reference(self, node, default_title=""):
                             text = text[1:-1]
                         node[0].insert(len(node[0]), docutil_nodes.Text(text, text))
             else:
-                if ":math:" in node.astext():
-                    title = _update_title(source_node[0])
-                    node.replace(node[0], title)
+                node = process_math_placeholder(node, update_title, source_node)
 
 
 class ReferenceTransform(SphinxPostTransform):
@@ -242,7 +227,7 @@ class SolutionTransorm(SphinxPostTransform):
                 anchorname="",
                 *[newtitle],
             )
-            process_reference(self, reference, "Solution to ")
+            process_reference(self, reference, SOLUTION_PLACEHOLDER_TEXT)
             newnode = docutil_nodes.title("")
             newnode.append(reference)
             node[0].replace_self(newnode)
@@ -256,7 +241,7 @@ class NumberReferenceTransform(SphinxPostTransform):
     def run(self):
 
         for node in self.document.traverse(number_reference):
-            labelid = _get_refuri(node)
+            labelid = get_refuri(node)
 
             # If extension directive referenced
             if labelid in self.env.exercise_list:
@@ -264,12 +249,12 @@ class NumberReferenceTransform(SphinxPostTransform):
                 source_node = source_attr.get("node", Node)
                 node_title = node.get("title", "")
 
-                if "{name}" in node_title and _has_math_child(source_node[0]):
+                if "{name}" in node_title and has_math_child(source_node[0]):
                     newtitle = docutil_nodes.inline()
                     for item in node_title.split():
                         if item == "{name}":
                             # use extend instead?
-                            for _ in _update_title(source_node[0]):
+                            for _ in update_title(source_node[0]):
                                 newtitle += _
                         elif item == "{number}":
                             source_type = source_node.attributes["type"]
