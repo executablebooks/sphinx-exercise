@@ -39,7 +39,8 @@ from sphinx.transforms.post_transforms import SphinxPostTransform
 from .utils import get_node_number, get_refuri, has_math_child
 
 logger = logging.getLogger(__name__)
-SOLUTION_PLACEHOLDER_TEXT = "Solution to "
+SOLUTION_PLACEHOLDER = "Solution to "
+MATH_PLACEHOLDER = ":math:"
 
 
 def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
@@ -98,13 +99,13 @@ def doctree_read(app: Sphinx, document: Node) -> None:
 
             # If solution node
             if is_solution_node(node):
-                sectname = SOLUTION_PLACEHOLDER_TEXT
+                sectname = SOLUTION_PLACEHOLDER
             else:
                 # If other node, simply add :math: to title
                 # to allow for easy parsing in ref_node
                 for item in node[0]:
                     if isinstance(item, docutil_nodes.math):
-                        sectname += f":math:`{item.astext()}` "
+                        sectname += f"{MATH_PLACEHOLDER}`{item.astext()}` "
                         continue
                     sectname += f"{item.astext()} "
 
@@ -141,7 +142,7 @@ def update_title(title):
 
 
 def process_math_placeholder(node, update_title, source_node):
-    if ":math:" in node.astext():
+    if MATH_PLACEHOLDER in node.astext():
         title = update_title(source_node[0])
         return node.replace(node[0], title)
 
@@ -227,7 +228,7 @@ class SolutionTransorm(SphinxPostTransform):
                 anchorname="",
                 *[newtitle],
             )
-            process_reference(self, reference, SOLUTION_PLACEHOLDER_TEXT)
+            process_reference(self, reference, SOLUTION_PLACEHOLDER)
             newnode = docutil_nodes.title("")
             newnode.append(reference)
             node[0].replace_self(newnode)
