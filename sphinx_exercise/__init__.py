@@ -18,6 +18,9 @@ from docutils.nodes import Node
 from docutils import nodes as docutil_nodes
 from sphinx.util import logging
 from sphinx.util.fileutil import copy_asset
+from sphinx.builders.latex import LaTeXBuilder
+from sphinx.transforms.post_transforms import SphinxPostTransform
+
 from .directive import ExerciseDirective, SolutionDirective
 from .nodes import (
     exercise_node,
@@ -35,8 +38,7 @@ from .nodes import (
     is_extension_node,
     NODE_TYPES,
 )
-from sphinx.transforms.post_transforms import SphinxPostTransform
-from .utils import get_node_number, get_refuri, has_math_child
+from .utils import get_node_number, get_refuri, has_math_child, find_parent
 
 logger = logging.getLogger(__name__)
 
@@ -217,7 +219,11 @@ class SolutionTransorm(SphinxPostTransform):
                 target_attr = self.env.exercise_list[target_labelid]
             except Exception:
                 # target_labelid not found
-                docpath = self.env.doc2path(self.app.builder.current_docname)
+                if isinstance(self.app.builder, LaTeXBuilder):
+                    docname = find_parent(self.app.builder.env, node, "section")
+                else:
+                    docname = self.app.builder.current_docname
+                docpath = self.env.doc2path(docname)
                 path = docpath[: docpath.rfind(".")]
                 msg = f"undefined label: {target_labelid}"
                 logger.warning(msg, location=path, color="red")

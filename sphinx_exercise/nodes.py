@@ -60,6 +60,7 @@ def _remove_placeholder_title_exercise(typ, node):
 def visit_enumerable_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
+        _remove_placeholder_title_exercise(typ, node)
         _visit_nodes_latex(self, node, find_parent)
     else:
         _remove_placeholder_title_exercise(typ, node)
@@ -81,6 +82,7 @@ def depart_enumerable_node(self, node: Node) -> None:
 def visit_exercise_unenumerable_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
+        _remove_placeholder_title_exercise(typ, node)
         _visit_nodes_latex(self, node, find_parent)
     else:
         _remove_placeholder_title_exercise(typ, node)
