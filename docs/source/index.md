@@ -16,11 +16,7 @@ testing
 **An exercise extension for Sphinx**.
 
 This package contains a [Sphinx](http://www.sphinx-doc.org/en/master/) extension
-for producing exercise and solution directives.
-
-```{warning}
-sphinx-exercise `0.1.1` is in a development stage and may change rapidly.
-```
+for producing exercise and solution directives, for html and pdf outputs.
 
 **Features**:
 

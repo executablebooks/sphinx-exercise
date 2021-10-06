@@ -26,6 +26,7 @@ extras = {
         "pytest-regressions",
         "beautifulsoup4",
         "myst-nb",
+        "texsoup",
     ],
     "rtd": [
         "sphinx>=3.0",

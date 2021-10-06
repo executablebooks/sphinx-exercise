@@ -11,7 +11,7 @@ from docutils.nodes import Node
 from sphinx.util import logging
 from docutils import nodes as docutil_nodes
 from sphinx.writers.latex import LaTeXTranslator
-from .utils import get_node_number, find_parent
+from .utils import get_node_number, find_parent, list_rindex
 
 logger = logging.getLogger(__name__)
 
@@ -32,15 +32,38 @@ class exercise_unenumerable_node(docutil_nodes.Admonition, docutil_nodes.Element
     pass
 
 
+def _visit_nodes_latex(self, node, find_parent):
+    """ Function to handle visit_node for latex. """
+    docname = find_parent(self.builder.env, node, "section")
+    self.body.append(
+        "\\phantomsection \\label{" + f"{docname}:{node.attributes['label']}" + "}"
+    )
+    self.body.append(latex_admonition_start)
+
+
+def _depart_nodes_latex(self, node, title, pop_index=False):
+    """ Function to handle depart_node for latex. """
+    idx = list_rindex(self.body, latex_admonition_start) + 2
+    if pop_index:
+        self.body.pop(idx)
+    self.body.insert(idx, title)
+    self.body.append(latex_admonition_end)
+
+
+def _remove_placeholder_title_exercise(typ, node):
+    """ Removing the exercise placeholder we put in title earlier."""
+    for title in node.traverse(docutil_nodes.title):
+        if typ.title() in title.astext():
+            title[0] = docutil_nodes.Text("")
+
+
 def visit_enumerable_node(self, node: Node) -> None:
+    typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
-        docname = find_parent(self.builder.env, node, "section")
-        self.body.append("\\label{" + f"{docname}:{node.attributes['label']}" + "}")
-        self.body.append(latex_admonition_start)
+        _remove_placeholder_title_exercise(typ, node)
+        _visit_nodes_latex(self, node, find_parent)
     else:
-        for title in node.traverse(docutil_nodes.title):
-            if "Exercise" in title.astext():
-                title[0] = docutil_nodes.Text("")
+        _remove_placeholder_title_exercise(typ, node)
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
 
 
@@ -48,35 +71,28 @@ def depart_enumerable_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
         number = get_node_number(self, node, typ)
-        idx = list_rindex(self.body, latex_admonition_start) + 2
-        self.body.insert(idx, f"{typ.title()} {number} ")
-        self.body.append(latex_admonition_end)
+        _depart_nodes_latex(self, node, f"{typ.title()} {number} ")
     else:
         number = get_node_number(self, node, typ)
-        if number:
-            idx = self.body.index(f"{typ.title()} {number} ")
-            self.body[idx] = f"{typ.title()} {number} "
+        idx = list_rindex(self.body, f"{typ.title()} {number} ")
+        self.body[idx] = f"{typ.title()} {number} "
         self.body.append("</div>")
 
 
 def visit_exercise_unenumerable_node(self, node: Node) -> None:
+    typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
-        docname = find_parent(self.builder.env, node, "section")
-        self.body.append("\\label{" + f"{docname}:{node.attributes['label']}" + "}")
-        self.body.append(latex_admonition_start)
+        _remove_placeholder_title_exercise(typ, node)
+        _visit_nodes_latex(self, node, find_parent)
     else:
-        for title in node.traverse(docutil_nodes.title):
-            if "Exercise" in title.astext():
-                title[0] = docutil_nodes.Text("")
+        _remove_placeholder_title_exercise(typ, node)
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
 
 
 def depart_exercise_unenumerable_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
-        idx = list_rindex(self.body, latex_admonition_start) + 2
-        self.body.insert(idx, f"{typ.title()} ")
-        self.body.append(latex_admonition_end)
+        _depart_nodes_latex(self, node, f"{typ.title()} ")
     else:
         idx = list_rindex(self.body, '<p class="admonition-title">') + 1
         element = f"<span>{typ.title()} </span>"
@@ -86,9 +102,7 @@ def depart_exercise_unenumerable_node(self, node: Node) -> None:
 
 def visit_solution_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
-        docname = find_parent(self.builder.env, node, "section")
-        self.body.append("\\label{" + f"{docname}:{node.attributes['label']}" + "}")
-        self.body.append(latex_admonition_start)
+        _visit_nodes_latex(self, node, find_parent)
     else:
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
 
@@ -96,13 +110,10 @@ def visit_solution_node(self, node: Node) -> None:
 def depart_solution_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
-        idx = list_rindex(self.body, latex_admonition_start) + 2
-        self.body.pop(idx)
-        self.body.insert(idx, f"{typ.title()} ")
-        self.body.append(latex_admonition_end)
+        _depart_nodes_latex(self, node, f"{typ.title()} to ", True)
     else:
         number = get_node_number(self, node, typ)
-        idx = self.body.index(f"{typ.title()} {number} ")
+        idx = list_rindex(self.body, f"{typ.title()} {number} ")
         self.body.pop(idx)
         self.body.append("</div>")
 
@@ -111,7 +122,7 @@ def is_exercise_node(node):
     return isinstance(node, exercise_node)
 
 
-def is_unenumerable_node(node):
+def is_exercise_unenumerable_node(node):
     return isinstance(node, exercise_unenumerable_node)
 
 
@@ -121,7 +132,9 @@ def is_solution_node(node):
 
 def is_extension_node(node):
     return (
-        is_exercise_node(node) or is_unenumerable_node(node) or is_solution_node(node)
+        is_exercise_node(node)
+        or is_exercise_unenumerable_node(node)
+        or is_solution_node(node)
     )
 
 
@@ -129,14 +142,6 @@ def rreplace(s, old, new, occurrence):
     # taken from https://stackoverflow.com/a/2556252
     li = s.rsplit(old, occurrence)
     return new.join(li)
-
-
-def list_rindex(li, x) -> int:
-    """Getting the last occurence of an item in a list."""
-    for i in reversed(range(len(li))):
-        if li[i] == x:
-            return i
-    raise ValueError("{} is not in list".format(x))
 
 
 NODE_TYPES = {

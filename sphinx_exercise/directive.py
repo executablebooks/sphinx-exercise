@@ -39,7 +39,8 @@ class CustomDirective(SphinxDirective):
         if class_name:
             classes.extend(class_name)
 
-        title_text = ""
+        # Have a dummy title text if no title specified, as 'std' domain needs
+        # a title to process it as enumerable node.
         if typ == "exercise":
             title_text = f"{self.name.title()} "
 
@@ -49,11 +50,7 @@ class CustomDirective(SphinxDirective):
             title_text = f"{self.name.title()} to "
             target_label = self.arguments[0]
 
-        textnodes, messages = self.state.inline_text(title_text, self.lineno)
-
-        section = nodes.section(ids=[f"{typ}-content"])
-        self.state.nested_parse(self.content, self.content_offset, section)
-
+        # selecting the type of node
         if typ == "exercise":
             if "nonumber" in self.options:
                 node = exercise_unenumerable_node()
@@ -61,6 +58,11 @@ class CustomDirective(SphinxDirective):
                 node = exercise_node()
         else:
             node = solution_node()
+
+        # state parsing
+        section = nodes.section(ids=[f"{typ}-content"])
+        textnodes, messages = self.state.inline_text(title_text, self.lineno)
+        self.state.nested_parse(self.content, self.content_offset, section)
 
         node += nodes.title(title_text, "", *textnodes)
         node += section

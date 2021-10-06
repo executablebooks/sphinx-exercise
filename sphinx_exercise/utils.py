@@ -1,3 +1,4 @@
+# Utility functions
 from sphinx.writers.latex import LaTeXTranslator
 from docutils import nodes as docutil_nodes
 
@@ -53,3 +54,11 @@ def get_refuri(node):
         id_ = node.get("refid", "")
 
     return id_.split("#")[-1]
+
+
+def list_rindex(li, x) -> int:
+    """Getting the last occurence of an item in a list."""
+    for i in reversed(range(len(li))):
+        if li[i] == x:
+            return i
+    raise ValueError("{} is not in list".format(x))

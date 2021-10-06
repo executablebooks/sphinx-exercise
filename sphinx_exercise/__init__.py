@@ -18,6 +18,9 @@ from docutils.nodes import Node
 from docutils import nodes as docutil_nodes
 from sphinx.util import logging
 from sphinx.util.fileutil import copy_asset
+from sphinx.builders.latex import LaTeXBuilder
+from sphinx.transforms.post_transforms import SphinxPostTransform
+
 from .directive import ExerciseDirective, SolutionDirective
 from .nodes import (
     exercise_node,
@@ -31,14 +34,15 @@ from .nodes import (
     depart_solution_node,
     is_solution_node,
     is_exercise_node,
-    is_unenumerable_node,
+    is_exercise_unenumerable_node,
     is_extension_node,
     NODE_TYPES,
 )
-from sphinx.transforms.post_transforms import SphinxPostTransform
-from .utils import get_node_number, get_refuri, has_math_child
+from .utils import get_node_number, get_refuri, has_math_child, find_parent
 
 logger = logging.getLogger(__name__)
+
+# Variables
 SOLUTION_PLACEHOLDER = "Solution to "
 MATH_PLACEHOLDER = ":math:"
 
@@ -118,6 +122,9 @@ def doctree_read(app: Sphinx, document: Node) -> None:
 
 
 def update_title(title):
+    """
+    Does necessary formatting to the title node, and wraps it with an inline node.
+    """
     inline = docutil_nodes.inline()
 
     if len(title) == 1 and isinstance(title[0], docutil_nodes.Text):
@@ -142,15 +149,21 @@ def update_title(title):
 
 
 def process_math_placeholder(node, update_title, source_node):
+    """Convert the placeholder math text to a math node."""
     if MATH_PLACEHOLDER in node.astext():
         title = update_title(source_node[0])
         return node.replace(node[0], title)
 
 
 def process_reference(self, node, default_title=""):
+    """
+    Processing reference nodes in the document to facilitate the design and the
+    functionality requirements.
+    """
     label = get_refuri(node)
     if label in self.env.exercise_list:
         source_node = self.env.exercise_list[label].get("node")
+        # if reference source is a solution node
         if is_solution_node(source_node):
             target_label = source_node.attributes.get("target_label", "")
             if node.astext().strip() == "Solution to":
@@ -159,6 +172,7 @@ def process_reference(self, node, default_title=""):
             target_label = source_node.attributes.get("label", "")
         target_attr = self.env.exercise_list[target_label]
         target_node = target_attr.get("node", Node)
+        # if reference target is exercise node
         if is_exercise_node(target_node):
             if default_title:
                 number = get_node_number(self.app, target_node, "exercise")
@@ -166,8 +180,8 @@ def process_reference(self, node, default_title=""):
                 return
             else:
                 node = process_math_placeholder(node, update_title, source_node)
-
-        if is_unenumerable_node(target_node):
+        # if reference target is an exercise unenumerable node
+        if is_exercise_unenumerable_node(target_node):
             if default_title:
                 if target_attr.get("title"):
                     if has_math_child(target_node[0]):
@@ -186,7 +200,7 @@ def process_reference(self, node, default_title=""):
 
 
 class ReferenceTransform(SphinxPostTransform):
-    default_priority = 998
+    default_priority = 998  # should be processed before processing solution nodes
 
     def run(self):
 
@@ -195,7 +209,7 @@ class ReferenceTransform(SphinxPostTransform):
 
 
 class SolutionTransorm(SphinxPostTransform):
-    default_priority = 999
+    default_priority = 999  # should be after processing reference nodes
 
     def run(self):
 
@@ -205,7 +219,11 @@ class SolutionTransorm(SphinxPostTransform):
                 target_attr = self.env.exercise_list[target_labelid]
             except Exception:
                 # target_labelid not found
-                docpath = self.env.doc2path(self.app.builder.current_docname)
+                if isinstance(self.app.builder, LaTeXBuilder):
+                    docname = find_parent(self.app.builder.env, node, "section")
+                else:
+                    docname = self.app.builder.current_docname
+                docpath = self.env.doc2path(docname)
                 path = docpath[: docpath.rfind(".")]
                 msg = f"undefined label: {target_labelid}"
                 logger.warning(msg, location=path, color="red")
@@ -250,6 +268,7 @@ class NumberReferenceTransform(SphinxPostTransform):
                 source_node = source_attr.get("node", Node)
                 node_title = node.get("title", "")
 
+                # processing for nodes which have
                 if "{name}" in node_title and has_math_child(source_node[0]):
                     newtitle = docutil_nodes.inline()
                     for item in node_title.split():
@@ -278,11 +297,11 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("hide_solutions", False, "env")
 
     app.add_css_file("exercise.css")
-    app.connect("config-inited", init_numfig)  # 1
-    app.connect("env-purge-doc", purge_exercises)  # 5 per file
-    app.connect("doctree-read", doctree_read)  # 8
-    app.connect("env-merge-info", merge_exercises)  # 9
-    app.connect("build-finished", copy_asset_files)  # 16
+    app.connect("config-inited", init_numfig)  # event order - 1
+    app.connect("env-purge-doc", purge_exercises)  # event order - 5 per file
+    app.connect("doctree-read", doctree_read)  # event order - 8
+    app.connect("env-merge-info", merge_exercises)  # event order - 9
+    app.connect("build-finished", copy_asset_files)  # event order - 16
 
     app.add_enumerable_node(
         exercise_node,
