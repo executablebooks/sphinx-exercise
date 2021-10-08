@@ -1,5 +1,20 @@
 # Changelog
 
+## [v0.2.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.2.1) (2021-10-08)
+
+### New ✨
+
+Added latex support for sphinx-exercise
+
+### Improved 👌
+
+Refactored code to make it modular and robust, fixing some of the bugs mentioned below.
+
+### Fixes 🐛
+
+- Exercise node title now visible for sphinx > 3.2
+- Solution directive fix issue#32
+
 ## [v0.1.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.1.1) (2020-10-10)
 
 [Full Changelog](https://github.com/executablebooks/sphinx-exercise/compare/v0.1.0...v0.1.1)

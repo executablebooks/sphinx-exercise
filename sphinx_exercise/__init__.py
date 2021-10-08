@@ -161,7 +161,7 @@ def process_reference(self, node, default_title=""):
     functionality requirements.
     """
     label = get_refuri(node)
-    if label in self.env.exercise_list:
+    if hasattr(self.env, "exercise_list") and label in self.env.exercise_list:
         source_node = self.env.exercise_list[label].get("node")
         # if reference source is a solution node
         if is_solution_node(source_node):
