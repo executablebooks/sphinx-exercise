@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.1.2](https://github.com/executablebooks/sphinx-exercise/tree/v0.1.2) (2021-10-08)
+## [v0.2.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.2.1) (2021-10-08)
 
 ### New ✨
 
