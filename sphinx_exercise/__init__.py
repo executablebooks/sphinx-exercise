@@ -48,26 +48,29 @@ MATH_PLACEHOLDER = ":math:"
 
 
 def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
-    if not hasattr(env, "exercise_list"):
+    if not hasattr(env, "sphinx_exercise_registry"):
         return
 
-    # Override env.exercise_list
-    env.exercise_list = {
-        exercise: env.exercise_list[exercise]
-        for exercise in env.exercise_list.keys()
-        if env.exercise_list[exercise]["docname"] != docname
+    # Override env.sphinx_exercise_registry
+    env.sphinx_exercise_registry = {
+        exercise: env.sphinx_exercise_registry[exercise]
+        for exercise in env.sphinx_exercise_registry.keys()
+        if env.sphinx_exercise_registry[exercise]["docname"] != docname
     }
 
 
 def merge_exercises(
     app: Sphinx, env: BuildEnvironment, docnames: Set[str], other: BuildEnvironment
 ) -> None:
-    if not hasattr(env, "exercise_list"):
-        env.exercise_list = {}
+    if not hasattr(env, "sphinx_exercise_registry"):
+        env.sphinx_exercise_registry = {}
 
     # Merge env stored data
-    if hasattr(other, "exercise_list"):
-        env.exercise_list = {**env.exercise_list, **other.exercise_list}
+    if hasattr(other, "sphinx_exercise_registry"):
+        env.sphinx_exercise_registry = {
+            **env.sphinx_exercise_registry,
+            **other.sphinx_exercise_registry,
+        }
 
 
 def init_numfig(app: Sphinx, config: Config) -> None:
@@ -161,8 +164,11 @@ def process_reference(self, node, default_title=""):
     functionality requirements.
     """
     label = get_refuri(node)
-    if hasattr(self.env, "exercise_list") and label in self.env.exercise_list:
-        source_node = self.env.exercise_list[label].get("node")
+    if (
+        hasattr(self.env, "sphinx_exercise_registry")
+        and label in self.env.sphinx_exercise_registry
+    ):
+        source_node = self.env.sphinx_exercise_registry[label].get("node")
         # if reference source is a solution node
         if is_solution_node(source_node):
             target_label = source_node.attributes.get("target_label", "")
@@ -170,7 +176,7 @@ def process_reference(self, node, default_title=""):
                 default_title = node.astext()
         else:
             target_label = source_node.attributes.get("label", "")
-        target_attr = self.env.exercise_list[target_label]
+        target_attr = self.env.sphinx_exercise_registry[target_label]
         target_node = target_attr.get("node", Node)
         # if reference target is exercise node
         if is_exercise_node(target_node):
@@ -216,7 +222,7 @@ class SolutionTransorm(SphinxPostTransform):
         for node in self.document.traverse(solution_node):
             target_labelid = node.get("target_label", "")
             try:
-                target_attr = self.env.exercise_list[target_labelid]
+                target_attr = self.env.sphinx_exercise_registry[target_labelid]
             except Exception:
                 # target_labelid not found
                 if isinstance(self.app.builder, LaTeXBuilder):
@@ -251,7 +257,7 @@ class SolutionTransorm(SphinxPostTransform):
             newnode.append(reference)
             node[0].replace_self(newnode)
             # update node
-            self.env.exercise_list[node.get("label", "")]["node"] = node
+            self.env.sphinx_exercise_registry[node.get("label", "")]["node"] = node
 
 
 class NumberReferenceTransform(SphinxPostTransform):
@@ -263,8 +269,8 @@ class NumberReferenceTransform(SphinxPostTransform):
             labelid = get_refuri(node)
 
             # If extension directive referenced
-            if labelid in self.env.exercise_list:
-                source_attr = self.env.exercise_list[labelid]
+            if labelid in self.env.sphinx_exercise_registry:
+                source_attr = self.env.sphinx_exercise_registry[labelid]
                 source_node = source_attr.get("node", Node)
                 node_title = node.get("title", "")
 
