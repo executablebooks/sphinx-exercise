@@ -19,7 +19,24 @@ from sphinx.util import logging
 logger = logging.getLogger(__name__)
 
 
-class ExerciseDirective(SphinxDirective):
+class SphinxExerciseBaseDirective(SphinxDirective):
+    def duplicate_labels(self, label):
+        """ Check for duplicate labels """
+
+        if not label == "" and label in self.env.sphinx_exercise_registry.keys():
+            docpath = self.env.doc2path(self.env.docname)
+            path = docpath[: docpath.rfind(".")]
+            other_path = self.env.doc2path(
+                self.env.sphinx_exercise_registry[label]["docname"]
+            )
+            msg = f"duplicate label: {label}; other instance in {other_path}"
+            logger.warning(msg, location=path, color="red")
+            return True
+
+        return False
+
+
+class ExerciseDirective(SphinxExerciseBaseDirective):
     """ An exercise directive """
 
     name = "exercise"
@@ -35,17 +52,10 @@ class ExerciseDirective(SphinxDirective):
     }
 
     def run(self) -> List[Node]:
-        env = self.env
-        typ = self.name
-        serial_no = env.new_serialno()
+        serial_no = self.env.new_serialno()
 
-        if not hasattr(env, "sphinx_exercise_registry"):
-            env.sphinx_exercise_registry = {}
-
-        # Collect Classes  TODO: simplify this?
-        classes, class_name = [typ], self.options.get("class", "")
-        if class_name:
-            classes.extend(class_name)
+        if not hasattr(self.env, "sphinx_exercise_registry"):
+            self.env.sphinx_exercise_registry = {}
 
         # Set Title Text
         title_text = "Exercise"
@@ -54,7 +64,7 @@ class ExerciseDirective(SphinxDirective):
 
         # State Parsing
         section = nodes.section(ids=["exercise-content"])
-        textnodes, messages = self.state.inline_text(title_text, self.lineno)
+        textnodes, _ = self.state.inline_text(title_text, self.lineno)
         self.state.nested_parse(self.content, self.content_offset, section)
 
         # Select Node Type and Intialise
@@ -72,33 +82,33 @@ class ExerciseDirective(SphinxDirective):
             self.options["noindex"] = False
         else:
             self.options["noindex"] = True
-            label = f"{env.docname}-exercise-{serial_no}"
+            label = f"{self.env.docname}-exercise-{serial_no}"
 
         # Check for Duplicate Labels
-        if not label == "" and label in env.sphinx_exercise_registry.keys():
-            docpath = env.doc2path(env.docname)
-            path = docpath[: docpath.rfind(".")]
-            other_path = env.doc2path(env.sphinx_exercise_registry[label]["docname"])
-            msg = f"duplicate label: {label}; other instance in {other_path}"
-            logger.warning(msg, location=path, color="red")
-            return []
+        if self.duplicate_labels(label):
+            return []  # TODO: Should we just issue a warning rather than skip content?
 
         self.options["name"] = label  # TODO: Remove this?
 
+        # Collect Classes
+        classes = [f"{self.name}"]
+        if self.options.get("class"):
+            classes += self.options.get("class")
+
         # Construct Node
-        node["classes"].extend(classes)
+        node["classes"] += classes
         node["ids"].append(label)
         node["label"] = label
-        node["docname"] = env.docname
+        node["docname"] = self.env.docname
         node["title"] = title_text
-        node["type"] = "exercise"  # TODO: Remove this?
+        node["type"] = self.name
         node["hidden"] = True if "hidden" in self.options else False
         node.document = self.state.document
 
         self.add_name(node)
-        env.sphinx_exercise_registry[label] = {
-            "type": "exercise",  # noqa: E501 TODO: Can this be removed and sphinx_exercise_registry is specialised?
-            "docname": env.docname,
+        self.env.sphinx_exercise_registry[label] = {
+            "type": "exercise",
+            "docname": self.env.docname,
             "node": node,
             "title": title_text,
             "hidden": node.get("hidden", bool),
@@ -110,7 +120,7 @@ class ExerciseDirective(SphinxDirective):
         return [node]
 
 
-class SolutionDirective(SphinxDirective):
+class SolutionDirective(SphinxExerciseBaseDirective):
     """ A solution directive """
 
     name = "solution"
@@ -125,34 +135,26 @@ class SolutionDirective(SphinxDirective):
     }
 
     def run(self) -> List[Node]:
-        env = self.env
-        typ = self.name
-        serial_no = env.new_serialno()
+        serial_no = self.env.new_serialno()
 
-        if not hasattr(env, "sphinx_exercise_registry"):
-            env.sphinx_exercise_registry = {}
+        if not hasattr(self.env, "sphinx_exercise_registry"):
+            self.env.sphinx_exercise_registry = {}
 
-        # Option Parsing
-        if env.app.config.hide_solutions:
+        # Parse hide-solutions option
+        if self.env.app.config.hide_solutions:
             return []
-
-        # Collect Classes  TODO: simplify this?
-        classes, class_name = [typ], self.options.get("class", "")
-        if class_name:
-            classes.extend(class_name)
 
         # Set Title Text
         title_text = "Solution to "
         target_label = self.arguments[0]
-
-        # Initialise Node
-        node = solution_node()
 
         # State Parsing
         section = nodes.section(ids=["solution-content"])
         textnodes, messages = self.state.inline_text(title_text, self.lineno)
         self.state.nested_parse(self.content, self.content_offset, section)
 
+        # Initialise Node
+        node = solution_node()
         node += nodes.title(title_text, "", *textnodes)
         node += section
 
@@ -162,26 +164,26 @@ class SolutionDirective(SphinxDirective):
             self.options["noindex"] = False
         else:
             self.options["noindex"] = True
-            label = f"{env.docname}-solution-{serial_no}"
+            label = f"{self.env.docname}-solution-{serial_no}"
 
         # Check for duplicate labels
-        if not label == "" and label in env.sphinx_exercise_registry.keys():
-            docpath = env.doc2path(env.docname)
-            path = docpath[: docpath.rfind(".")]
-            other_path = env.doc2path(env.sphinx_exercise_registry[label]["docname"])
-            msg = f"duplicate label: {label}; other instance in {other_path}"
-            logger.warning(msg, location=path, color="red")
-            return []
+        if self.duplicate_labels(label):
+            return []  # TODO: Should we just issue a warning rather than skip content?
 
         self.options["name"] = label
+
+        # Collect Classes
+        classes = [f"{self.name}"]
+        if self.options.get("class"):
+            classes += self.options.get("class")
 
         # Set node attributes
         node["classes"].extend(classes)
         node["ids"].append(label)
         node["label"] = label
-        node["docname"] = env.docname
+        node["docname"] = self.env.docname
         node["title"] = title_text
-        node["type"] = typ
+        node["type"] = self.name
         node["hidden"] = True if "hidden" in self.options else False
         node.document = self.state.document
 
@@ -190,9 +192,9 @@ class SolutionDirective(SphinxDirective):
         node["target_label"] = target_label
 
         self.add_name(node)
-        env.sphinx_exercise_registry[label] = {
-            "type": "solution",  # TODO: remove?
-            "docname": env.docname,
+        self.env.sphinx_exercise_registry[label] = {
+            "type": "solution",
+            "docname": self.env.docname,
             "node": node,
             "title": title_text,
             "hidden": node.get("hidden", bool),
