@@ -107,7 +107,7 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
 
         self.add_name(node)
         self.env.sphinx_exercise_registry[label] = {
-            "type": "exercise",
+            "type": self.name,
             "docname": self.env.docname,
             "node": node,
             "title": title_text,
@@ -193,7 +193,7 @@ class SolutionDirective(SphinxExerciseBaseDirective):
 
         self.add_name(node)
         self.env.sphinx_exercise_registry[label] = {
-            "type": "solution",
+            "type": self.name,
             "docname": self.env.docname,
             "node": node,
             "title": title_text,
