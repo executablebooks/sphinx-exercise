@@ -18,6 +18,9 @@ logger = logging.getLogger(__name__)
 LaTeX = LaTeXMarkup()
 
 
+# Nodes
+
+
 class exercise_node(docutil_nodes.Admonition, docutil_nodes.Element):
     pass
 
@@ -28,6 +31,32 @@ class solution_node(docutil_nodes.Admonition, docutil_nodes.Element):
 
 class exercise_unenumerable_node(docutil_nodes.Admonition, docutil_nodes.Element):
     pass
+
+
+# Test Node Functions
+
+
+def is_solution_node(node):
+    return isinstance(node, solution_node)
+
+
+def is_exercise_node(node):
+    return isinstance(node, exercise_node)
+
+
+def is_exercise_unenumerable_node(node):
+    return isinstance(node, exercise_unenumerable_node)
+
+
+def is_extension_node(node):
+    return (
+        is_exercise_node(node)
+        or is_exercise_unenumerable_node(node)
+        or is_solution_node(node)
+    )
+
+
+# Visit and Depart Functions
 
 
 def _visit_nodes_latex(self, node, find_parent):
@@ -114,26 +143,6 @@ def depart_solution_node(self, node: Node) -> None:
         idx = list_rindex(self.body, f"{typ.title()} {number} ")
         self.body.pop(idx)
         self.body.append("</div>")
-
-
-def is_exercise_node(node):
-    return isinstance(node, exercise_node)
-
-
-def is_exercise_unenumerable_node(node):
-    return isinstance(node, exercise_unenumerable_node)
-
-
-def is_solution_node(node):
-    return isinstance(node, solution_node)
-
-
-def is_extension_node(node):
-    return (
-        is_exercise_node(node)
-        or is_exercise_unenumerable_node(node)
-        or is_solution_node(node)
-    )
 
 
 def rreplace(s, old, new, occurrence):
