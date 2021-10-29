@@ -52,7 +52,7 @@ def update_title(title):
     return inline
 
 
-def process_math_placeholder(node, update_title, source_node):
+def process_math_placeholder(node, source_node):
     """Convert the placeholder math text to a math node."""
 
     if MATH_PLACEHOLDER in node.astext():
@@ -92,7 +92,9 @@ def process_reference(self, node, default_title=""):
                 node.insert(len(node[0]), docutil_nodes.Text(" Exercise " + number))
                 return
             else:
-                node = process_math_placeholder(node, update_title, source_node)
+                node = process_math_placeholder(
+                    node, source_node
+                )  # CHECK: this will never run
 
         # Exercise Unenumerable Node
         if is_exercise_unenumerable_node(target_node):
@@ -110,17 +112,18 @@ def process_reference(self, node, default_title=""):
                             text = text[1:-1]
                         node[0].insert(len(node[0]), docutil_nodes.Text(text, text))
             else:
-                node = process_math_placeholder(node, update_title, source_node)
+                node = process_math_placeholder(
+                    node, source_node
+                )  # CHECK: this will never run
 
 
 # Transforms
 
 
 class ReferenceTransform(SphinxPostTransform):
-    default_priority = 998  # should be processed before processing solution nodes
+    default_priority = 998
 
     def run(self):
-
         for node in self.document.traverse(docutil_nodes.reference):
             process_reference(self, node)
 
@@ -129,7 +132,6 @@ class SolutionTransform(SphinxPostTransform):
     default_priority = 999  # should be after processing reference nodes
 
     def run(self):
-
         for node in self.document.traverse(solution_node):
             target_labelid = node.get("target_label", "")
             try:

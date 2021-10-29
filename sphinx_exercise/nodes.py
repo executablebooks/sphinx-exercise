@@ -56,6 +56,12 @@ def is_extension_node(node):
     )
 
 
+NODE_TYPES = {
+    "exercise": {"node": exercise_node, "type": "exercise"},
+    "solution": {"node": solution_node, "type": "solution"},
+}
+
+
 # Visit and Depart Functions
 
 
@@ -78,7 +84,21 @@ def _depart_nodes_latex(self, node, title, pop_index=False):
 
 
 def _remove_placeholder_title_exercise(typ, node):
-    """ Removing the exercise placeholder we put in title earlier."""
+    """
+    Removing the exercise title placeholder we put in title earlier.
+
+    PURPOSE: This removes duplicate titles
+
+    HTML:
+     -<p class="admonition-title"><span>Exercise </span></p>
+     +<p class="admonition-title"><span>Exercise </span>Exercise</p>
+
+    LateX:
+     -\begin{sphinxadmonition}{note}{Exercise }
+     +\begin{sphinxadmonition}{note}{Exercise Exercise}
+
+    TODO: Can we prevent this before this stage?
+    """
     for title in node.traverse(docutil_nodes.title):
         if typ.title() in title.astext():
             title[0] = docutil_nodes.Text("")
@@ -143,9 +163,3 @@ def depart_solution_node(self, node: Node) -> None:
         idx = list_rindex(self.body, f"{typ.title()} {number} ")
         self.body.pop(idx)
         self.body.append("</div>")
-
-
-NODE_TYPES = {
-    "exercise": {"node": exercise_node, "type": "exercise"},
-    "solution": {"node": solution_node, "type": "solution"},
-}

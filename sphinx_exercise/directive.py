@@ -187,7 +187,7 @@ class SolutionDirective(SphinxExerciseBaseDirective):
         node["hidden"] = True if "hidden" in self.options else False
         node.document = self.state.document
 
-        # TODO Check for target label in env.sphinx_exercise_registry registry
+        # TODO: Check for target label in env.sphinx_exercise_registry registry
 
         node["target_label"] = target_label
 
