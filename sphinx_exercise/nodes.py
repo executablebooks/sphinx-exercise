@@ -12,12 +12,10 @@ from sphinx.util import logging
 from docutils import nodes as docutil_nodes
 from sphinx.writers.latex import LaTeXTranslator
 from .utils import get_node_number, find_parent, list_rindex
+from .latex import LaTeXMarkup
 
 logger = logging.getLogger(__name__)
-
-CR = "\n"
-latex_admonition_start = CR + "\\begin{sphinxadmonition}{note}"
-latex_admonition_end = "\\end{sphinxadmonition}" + CR
+LaTeX = LaTeXMarkup()
 
 
 class exercise_node(docutil_nodes.Admonition, docutil_nodes.Element):
@@ -38,16 +36,16 @@ def _visit_nodes_latex(self, node, find_parent):
     self.body.append(
         "\\phantomsection \\label{" + f"{docname}:{node.attributes['label']}" + "}"
     )
-    self.body.append(latex_admonition_start)
+    self.body.append(LaTeX.visit_admonition())
 
 
 def _depart_nodes_latex(self, node, title, pop_index=False):
     """ Function to handle depart_node for latex. """
-    idx = list_rindex(self.body, latex_admonition_start) + 2
+    idx = list_rindex(self.body, LaTeX.visit_admonition()) + 2
     if pop_index:
         self.body.pop(idx)
     self.body.insert(idx, title)
-    self.body.append(latex_admonition_end)
+    self.body.append(LaTeX.depart_admonition())
 
 
 def _remove_placeholder_title_exercise(typ, node):
