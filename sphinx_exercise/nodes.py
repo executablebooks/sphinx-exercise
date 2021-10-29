@@ -145,12 +145,6 @@ def depart_solution_node(self, node: Node) -> None:
         self.body.append("</div>")
 
 
-def rreplace(s, old, new, occurrence):
-    # taken from https://stackoverflow.com/a/2556252
-    li = s.rsplit(old, occurrence)
-    return new.join(li)
-
-
 NODE_TYPES = {
     "exercise": {"node": exercise_node, "type": "exercise"},
     "solution": {"node": solution_node, "type": "solution"},
