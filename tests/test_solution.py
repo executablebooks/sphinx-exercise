@@ -32,6 +32,39 @@ def test_solution(app, idir, file_regression):
 
 @pytest.mark.sphinx("html", testroot="mybook")
 @pytest.mark.parametrize(
+    "docname",
+    [
+        "_linked_duplicate_label",
+        "_linked_enum",
+        "_linked_enum_class",
+        "_linked_missing_arg",
+        "_linked_ref_enum",
+        "_linked_ref_unenum_mathtitle",
+        "_linked_ref_unenum_mathtitle2",
+        "_linked_ref_unenum_notitle",
+        "_linked_ref_unenum_title",
+        "_linked_ref_wronglabel",
+        "_linked_unenum_mathtitle",
+        "_linked_unenum_mathtitle2",
+        "_linked_unenum_notitle",
+        "_linked_unenum_title",
+        "_linked_wrong_targetlabel",
+    ],
+)
+def test_solution_doctree(app, docname, file_regression, get_sphinx_app_doctree):
+    app.build()
+    docname = "solution" + "/" + docname
+    get_sphinx_app_doctree(
+        app,
+        docname,
+        resolve=False,
+        regress=True,
+        flatten_outdir=True,  # noqa: E501 flatten files "solution/<file> -> <file>.xml" for convenience
+    )
+
+
+@pytest.mark.sphinx("html", testroot="mybook")
+@pytest.mark.parametrize(
     "idir",
     [
         "_linked_ref_enum.html",

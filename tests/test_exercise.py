@@ -30,6 +30,46 @@ def test_exercise(app, idir, file_regression):
 
 @pytest.mark.sphinx("html", testroot="mybook")
 @pytest.mark.parametrize(
+    "docname",
+    [
+        "_enum_duplicate_label",
+        "_enum_mathtitle_label",
+        "_enum_notitle_label",
+        "_enum_numref_mathtitle",
+        "_enum_numref_notitle",
+        "_enum_numref_placeholders",
+        "_enum_numref_title",
+        "_enum_ref_mathtitle",
+        "_enum_ref_notitle",
+        "_enum_ref_title",
+        "_enum_title_class_label",
+        "_enum_title_nolabel",
+        "_unenum_mathtitle_label",
+        "_unenum_notitle_label",
+        "_unenum_numref_mathtitle",
+        "_unenum_numref_notitle",
+        "_unenum_numref_title",
+        "_unenum_ref_mathtitle",
+        "_unenum_ref_notitle",
+        "_unenum_ref_title",
+        "_unenum_title_class_label",
+        "_unenum_title_nolabel",
+    ],
+)
+def test_exercise_doctree(app, docname, file_regression, get_sphinx_app_doctree):
+    app.build()
+    docname = "exercise" + "/" + docname
+    get_sphinx_app_doctree(
+        app,
+        docname,
+        resolve=False,
+        regress=True,
+        flatten_outdir=True,  # noqa: E501 flatten files "solution/<file> -> <file>.xml" for convenience
+    )
+
+
+@pytest.mark.sphinx("html", testroot="mybook")
+@pytest.mark.parametrize(
     "idir",
     [
         "_enum_ref_mathtitle.html",

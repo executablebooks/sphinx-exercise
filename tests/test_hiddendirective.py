@@ -37,6 +37,24 @@ def test_hidden_exercise(app, idir, file_regression):
 
 @pytest.mark.sphinx("html", testroot="hiddendirectives")
 @pytest.mark.parametrize(
+    "docname",
+    [
+        "_enum_hidden",
+        "_unenum_hidden",
+    ],
+)
+def test_hidden_exercise_doctree(app, docname, file_regression, get_sphinx_app_doctree):
+    app.build()
+    get_sphinx_app_doctree(
+        app,
+        docname,
+        resolve=False,
+        regress=True,
+    )
+
+
+@pytest.mark.sphinx("html", testroot="hiddendirectives")
+@pytest.mark.parametrize(
     "idir",
     [
         "_linked_enum_hidden.html",
@@ -53,3 +71,21 @@ def test_hidden_solution(app, idir, file_regression):
     soup = BeautifulSoup(path_to_directive.read_text(encoding="utf8"), "html.parser")
     solution = soup.select("div.solution")
     assert len(solution) == 0
+
+
+@pytest.mark.sphinx("html", testroot="hiddendirectives")
+@pytest.mark.parametrize(
+    "docname",
+    [
+        "_linked_enum_hidden",
+        "_linked_unenum_hidden",
+    ],
+)
+def test_hidden_solution_doctree(app, docname, file_regression, get_sphinx_app_doctree):
+    app.build()
+    get_sphinx_app_doctree(
+        app,
+        docname,
+        resolve=False,
+        regress=True,
+    )

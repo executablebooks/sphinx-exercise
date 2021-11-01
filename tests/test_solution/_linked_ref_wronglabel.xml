@@ -1,0 +1,10 @@
+<document source="_linked_ref_wronglabel.rst">
+    <section ids="linked-ref-wronglabel" names="_linked_ref_wronglabel">
+        <title>
+            _linked_ref_wronglabel
+        <paragraph>
+            referencing: 
+            <pending_xref refdoc="solution/_linked_ref_wronglabel" refdomain="std" refexplicit="False" reftarget="foobar" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    foobar
+            .

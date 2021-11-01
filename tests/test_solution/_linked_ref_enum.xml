@@ -1,0 +1,16 @@
+<document source="_linked_ref_enum.rst">
+    <section ids="linked-ref-enum" names="_linked_ref_enum">
+        <title>
+            _linked_ref_enum
+        <paragraph>
+            referencing: 
+            <pending_xref refdoc="solution/_linked_ref_enum" refdomain="std" refexplicit="False" reftarget="sol-number" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    sol-number
+            .
+        <paragraph>
+            referencing: 
+            <pending_xref refdoc="solution/_linked_ref_enum" refdomain="std" refexplicit="True" reftarget="sol-number" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    simple solution with number
+            .
