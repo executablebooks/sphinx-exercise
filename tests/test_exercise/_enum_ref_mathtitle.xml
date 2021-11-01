@@ -1,0 +1,16 @@
+<document source="_enum_ref_mathtitle.rst">
+    <section ids="enum-ref-mathtitle" names="_enum_ref_mathtitle">
+        <title>
+            _enum_ref_mathtitle
+        <paragraph>
+            This is a reference 
+            <pending_xref refdoc="exercise/_enum_ref_mathtitle" refdomain="std" refexplicit="False" reftarget="test-exc-label-math" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    test-exc-label-math
+            .
+        <paragraph>
+            This is a second reference 
+            <pending_xref refdoc="exercise/_enum_ref_mathtitle" refdomain="std" refexplicit="True" reftarget="test-exc-label-math" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    some text
+            .

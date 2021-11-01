@@ -1,0 +1,34 @@
+<document source="_unenum_numref_notitle.rst">
+    <section ids="unenum-numref-notitle" names="_unenum_numref_notitle">
+        <title>
+            _unenum_numref_notitle
+        <paragraph>
+            This is a reference 
+            <pending_xref refdoc="exercise/_unenum_numref_notitle" refdomain="std" refexplicit="False" reftarget="unen-exc-notitle" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    unen-exc-notitle
+            .
+        <paragraph>
+            This is a second reference 
+            <pending_xref refdoc="exercise/_unenum_numref_notitle" refdomain="std" refexplicit="True" reftarget="unen-exc-notitle" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some text
+            .
+        <paragraph>
+            This is a third reference 
+            <pending_xref refdoc="exercise/_unenum_numref_notitle" refdomain="std" refexplicit="True" reftarget="unen-exc-notitle" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some text %s
+            .
+        <paragraph>
+            This is a fourth reference 
+            <pending_xref refdoc="exercise/_unenum_numref_notitle" refdomain="std" refexplicit="True" reftarget="unen-exc-notitle" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some text {number}
+            .
+        <paragraph>
+            This is a fifth reference 
+            <pending_xref refdoc="exercise/_unenum_numref_notitle" refdomain="std" refexplicit="True" reftarget="unen-exc-notitle" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some text {name}
+            .

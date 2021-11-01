@@ -1,6 +1,15 @@
 # Install pre-commit hooks via
 # pre-commit install
 
+exclude: >
+    (?x)^(
+      \.vscode/settings\.json|
+      docs/source/conf\.py|
+      tests/test_exercise/.*|
+      tests/test_solution/.*|
+      tests/test_hiddendirective/.*|
+    )$
+
 repos:
 
   - repo: git://github.com/pre-commit/pre-commit-hooks
