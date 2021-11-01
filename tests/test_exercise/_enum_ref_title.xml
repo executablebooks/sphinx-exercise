@@ -1,0 +1,16 @@
+<document source="_enum_ref_title.rst">
+    <section ids="enum-ref-title" names="_enum_ref_title">
+        <title>
+            _enum_ref_title
+        <paragraph>
+            This is a reference 
+            <pending_xref refdoc="exercise/_enum_ref_title" refdomain="std" refexplicit="False" reftarget="test-exc-label" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    test-exc-label
+            .
+        <paragraph>
+            This is a second reference 
+            <pending_xref refdoc="exercise/_enum_ref_title" refdomain="std" refexplicit="True" reftarget="test-exc-label" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    some text
+            .
