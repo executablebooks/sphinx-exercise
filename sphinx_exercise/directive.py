@@ -57,23 +57,28 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
         if not hasattr(self.env, "sphinx_exercise_registry"):
             self.env.sphinx_exercise_registry = {}
 
-        # Set Title Text
-        title_text = "Exercise"
+        # Parse title text
+        title_text_nodes = [nodes.Text("Exercise")]
         if self.arguments != []:
-            title_text = f"({self.arguments[0]})"
+            title_text = f"{self.arguments[0]}"
+            title_text_nodes, _ = self.state.inline_text(title_text, self.lineno)
+
+        # Construct Title Node
+        title = nodes.title()
+        for title_nodes in title_text_nodes:
+            title += title_nodes
 
         # State Parsing
         section = nodes.section(ids=["exercise-content"])
-        textnodes, _ = self.state.inline_text(title_text, self.lineno)
         self.state.nested_parse(self.content, self.content_offset, section)
 
-        # Select Node Type and Intialise
+        # Select Node Type and Initialise
         if "nonumber" in self.options:
             node = exercise_unenumerable_node()
         else:
             node = exercise_node()
 
-        node += nodes.title(title_text, "", *textnodes)
+        node += title
         node += section
 
         # Construct a label
@@ -100,7 +105,7 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
         node["ids"].append(label)
         node["label"] = label
         node["docname"] = self.env.docname
-        node["title"] = title_text
+        node["title"] = title
         node["type"] = self.name
         node["hidden"] = True if "hidden" in self.options else False
         node.document = self.state.document
@@ -110,7 +115,7 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
             "type": self.name,
             "docname": self.env.docname,
             "node": node,
-            "title": title_text,
+            "title": title,
             "hidden": node.get("hidden", bool),
         }
 
@@ -145,7 +150,7 @@ class SolutionDirective(SphinxExerciseBaseDirective):
             return []
 
         # Set Title Text
-        title_text = "Solution to "
+        title_text = "Solution to"
         target_label = self.arguments[0]
 
         # State Parsing
@@ -188,6 +193,8 @@ class SolutionDirective(SphinxExerciseBaseDirective):
         node.document = self.state.document
 
         # TODO: Check for target label in env.sphinx_exercise_registry registry
+        # as exercise should always precede a solution.
+        # Otherwise leave this to the SolutionPosTransform in post_transforms.
 
         node["target_label"] = target_label
 

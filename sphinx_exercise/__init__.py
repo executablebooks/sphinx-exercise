@@ -36,7 +36,7 @@ from .nodes import (
 from .post_transforms import (
     ReferenceTransform,
     SolutionTransform,
-    NumberReferenceTransform,
+    # NumberReferenceTransform,
 )
 
 logger = logging.getLogger(__name__)
@@ -185,7 +185,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
 
     app.add_post_transform(ReferenceTransform)
     app.add_post_transform(SolutionTransform)
-    app.add_post_transform(NumberReferenceTransform)
+    # app.add_post_transform(NumberReferenceTransform)
 
     return {
         "version": "builtin",
