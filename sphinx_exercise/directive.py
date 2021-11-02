@@ -90,8 +90,9 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
             label = f"{self.env.docname}-exercise-{serial_no}"
 
         # Check for Duplicate Labels
+        # TODO: Should we just issue a warning rather than skip content?
         if self.duplicate_labels(label):
-            return []  # TODO: Should we just issue a warning rather than skip content?
+            return []
 
         self.options["name"] = label  # TODO: Remove this?
 
@@ -105,7 +106,7 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
         node["ids"].append(label)
         node["label"] = label
         node["docname"] = self.env.docname
-        node["title"] = title
+        node["title"] = title.astext()
         node["type"] = self.name
         node["hidden"] = True if "hidden" in self.options else False
         node.document = self.state.document
@@ -115,7 +116,7 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
             "type": self.name,
             "docname": self.env.docname,
             "node": node,
-            "title": title,
+            "title": title,  # save title node to registry for use by transforms
             "hidden": node.get("hidden", bool),
         }
 
