@@ -2,13 +2,13 @@
 sphinx_exercise.nodes
 ~~~~~~~~~~~~~~~~~~~~~
 
-Enumerable and unenumerable nodes
+Sphinx Exercise Nodes
 
 :copyright: Copyright 2020 by the QuantEcon team, see AUTHORS
 :licences: see LICENSE for details
 """
-from docutils.nodes import Node
 from sphinx.util import logging
+from docutils.nodes import Node
 from docutils import nodes as docutil_nodes
 from sphinx.writers.latex import LaTeXTranslator
 from .utils import get_node_number, find_parent, list_rindex
@@ -25,41 +25,48 @@ class exercise_node(docutil_nodes.Admonition, docutil_nodes.Element):
     pass
 
 
+class exercise_enumerable_node(docutil_nodes.Admonition, docutil_nodes.Element):
+    pass
+
+
 class solution_node(docutil_nodes.Admonition, docutil_nodes.Element):
     pass
 
 
-class exercise_unenumerable_node(docutil_nodes.Admonition, docutil_nodes.Element):
+class exercise_title(docutil_nodes.title):
+    def default_title(self):
+        title_text = self.children[0].astext()
+        if title_text == "Exercise" or title_text == "Exercise %s":
+            return True
+        else:
+            return False
+
+
+class exercise_subtitle(docutil_nodes.subtitle):
     pass
 
 
 # Test Node Functions
 
 
-def is_solution_node(node):
-    return isinstance(node, solution_node)
-
-
 def is_exercise_node(node):
     return isinstance(node, exercise_node)
 
 
-def is_exercise_unenumerable_node(node):
-    return isinstance(node, exercise_unenumerable_node)
+def is_exercise_enumerable_node(node):
+    return isinstance(node, exercise_enumerable_node)
+
+
+def is_solution_node(node):
+    return isinstance(node, solution_node)
 
 
 def is_extension_node(node):
     return (
         is_exercise_node(node)
-        or is_exercise_unenumerable_node(node)
+        or is_exercise_enumerable_node(node)
         or is_solution_node(node)
     )
-
-
-NODE_TYPES = {
-    "exercise": {"node": exercise_node, "type": "exercise"},
-    "solution": {"node": solution_node, "type": "solution"},
-}
 
 
 # Visit and Depart Functions
@@ -83,68 +90,39 @@ def _depart_nodes_latex(self, node, title, pop_index=False):
     self.body.append(LaTeX.depart_admonition())
 
 
-def _remove_placeholder_title_exercise(typ, node):
-    """
-    Removing the exercise title placeholder we put in title earlier.
-
-    PURPOSE: This removes duplicate titles
-
-    HTML:
-     -<p class="admonition-title"><span>Exercise </span></p>
-     +<p class="admonition-title"><span>Exercise </span>Exercise</p>
-
-    LateX:
-     -\begin{sphinxadmonition}{note}{Exercise }
-     +\begin{sphinxadmonition}{note}{Exercise Exercise}
-
-    TODO: Can we prevent this before this stage?
-    """
-    for title in node.traverse(docutil_nodes.title):
-        if typ.title() in title.astext():
-            title[0] = docutil_nodes.Text("")
-
-
-def visit_enumerable_node(self, node: Node) -> None:
-    typ = node.attributes.get("type", "")
+def visit_exercise_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
-        _remove_placeholder_title_exercise(typ, node)
+        # _remove_placeholder_title_exercise(typ, node)
         _visit_nodes_latex(self, node, find_parent)
     else:
-        _remove_placeholder_title_exercise(typ, node)
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
+        self.body.append("\n")
 
 
-def depart_enumerable_node(self, node: Node) -> None:
+def depart_exercise_node(self, node: Node) -> None:
+    typ = node.attributes.get("type", "")
+    if isinstance(self, LaTeXTranslator):
+        _depart_nodes_latex(self, node, f"{typ.title()} ")
+    else:
+        self.body.append("</div>")
+
+
+def visit_exercise_enumerable_node(self, node: Node) -> None:
+    if isinstance(self, LaTeXTranslator):
+        _visit_nodes_latex(self, node, find_parent)
+    else:
+        self.body.append(self.starttag(node, "div", CLASS="admonition"))
+        self.body.append("\n")
+
+
+def depart_exercise_enumerable_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
         number = get_node_number(self, node, typ)
         _depart_nodes_latex(self, node, f"{typ.title()} {number} ")
     else:
-        number = get_node_number(self, node, typ)
-        idx = list_rindex(self.body, f"{typ.title()} {number} ")
-        self.body[idx] = f"{typ.title()} {number} "
         self.body.append("</div>")
-
-
-def visit_exercise_unenumerable_node(self, node: Node) -> None:
-    typ = node.attributes.get("type", "")
-    if isinstance(self, LaTeXTranslator):
-        _remove_placeholder_title_exercise(typ, node)
-        _visit_nodes_latex(self, node, find_parent)
-    else:
-        _remove_placeholder_title_exercise(typ, node)
-        self.body.append(self.starttag(node, "div", CLASS="admonition"))
-
-
-def depart_exercise_unenumerable_node(self, node: Node) -> None:
-    typ = node.attributes.get("type", "")
-    if isinstance(self, LaTeXTranslator):
-        _depart_nodes_latex(self, node, f"{typ.title()} ")
-    else:
-        idx = list_rindex(self.body, '<p class="admonition-title">') + 1
-        element = f"<span>{typ.title()} </span>"
-        self.body.insert(idx, element)
-        self.body.append("</div>")
+        self.body.append("\n")
 
 
 def visit_solution_node(self, node: Node) -> None:
@@ -163,3 +141,34 @@ def depart_solution_node(self, node: Node) -> None:
         idx = list_rindex(self.body, f"{typ.title()} {number} ")
         self.body.pop(idx)
         self.body.append("</div>")
+
+
+def visit_exercise_title(self, node: Node) -> None:
+    if isinstance(self, LaTeXTranslator):
+        raise NotImplementedError
+    else:
+        classes = "admonition-title"
+        self.body.append(f"<p class={classes}>")
+
+
+def depart_exercise_title(self, node: Node) -> None:
+    if isinstance(self, LaTeXTranslator):
+        raise NotImplementedError
+    else:
+        self.body.append("</p>")
+        self.body.append("\n")
+
+
+def visit_exercise_subtitle(self, node: Node) -> None:
+    if isinstance(self, LaTeXTranslator):
+        raise NotImplementedError
+    else:
+        classes = "admonition-exercise-subtitle"
+        self.body.append(self.starttag(node, "span", "", CLASS=classes))
+
+
+def depart_exercise_subtitle(self, node: Node) -> None:
+    if isinstance(self, LaTeXTranslator):
+        raise NotImplementedError
+    else:
+        self.body.append("</span>")

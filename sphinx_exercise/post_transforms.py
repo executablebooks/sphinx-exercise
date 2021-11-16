@@ -1,17 +1,19 @@
 from sphinx.transforms.post_transforms import SphinxPostTransform
 from sphinx.util import logging
-from sphinx.addnodes import number_reference
 from sphinx.builders.latex import LaTeXBuilder
 from docutils import nodes as docutil_nodes
 from docutils.nodes import Node
 
 from .utils import get_node_number, get_refuri, has_math_child, find_parent
 from .nodes import (
+    exercise_node,
+    exercise_enumerable_node,
     solution_node,
+    exercise_title,
+    exercise_subtitle,
     is_solution_node,
     is_exercise_node,
-    is_exercise_unenumerable_node,
-    # is_extension_node,
+    is_exercise_enumerable_node,
 )
 
 logger = logging.getLogger(__name__)
@@ -19,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 # Variables TODO: centralise these variables
 
-SOLUTION_PLACEHOLDER = "Solution to "
+SOLUTION_PLACEHOLDER = "Solution to"
 MATH_PLACEHOLDER = ":math:"
 
 
@@ -63,173 +65,89 @@ def process_math_placeholder(node, source_node):
         return node.replace(node[0], title)
 
 
-def process_reference(self, node, default_title=""):
+# Post Transforms
+
+
+class ReferenceTextPostTransform(SphinxPostTransform):
     """
-    Processing reference nodes in the document to set default titles
+    This transform processes all references to
+    exercise nodes to adjust titles.
     """
 
-    label = get_refuri(node)
-    if (
-        hasattr(self.env, "sphinx_exercise_registry")
-        and label in self.env.sphinx_exercise_registry
-    ):
-        # Process Sources
-        source_node = self.env.sphinx_exercise_registry[label].get("node")
+    default_priority = 20
 
-        # Solution Node
-        if is_solution_node(source_node):
-            target_label = source_node.attributes.get("target_label", "")
-            if node.astext().strip() == "Solution to":
-                default_title = node.astext()
-        else:
-            target_label = source_node.attributes.get("label", "")
+    def run(self, **kwargs):
 
-        # Process Targets
-        target_attr = self.env.sphinx_exercise_registry[target_label]
-        target_node = target_attr.get("node", Node)
+        if not hasattr(self.env, "sphinx_exercise_registry"):
+            return
 
-        # Exercise Node
-        if is_exercise_node(target_node):
-            if default_title:
-                number = get_node_number(self.app, target_node, "exercise")
-                node.insert(len(node[0]), docutil_nodes.Text(" Exercise " + number))
-                return
-            else:
-                node = process_math_placeholder(
-                    node, source_node
-                )  # CHECK: this will never run
-
-        # Exercise Unenumerable Node
-        if is_exercise_unenumerable_node(target_node):
-            if default_title:
-                if target_attr.get("title"):
-                    if has_math_child(target_node[0]):
-                        title = update_title(target_node[0])
-                        title.insert(
-                            0, docutil_nodes.Text(default_title, default_title)
+        for node in self.document.traverse(docutil_nodes.reference):
+            ref_target = get_refuri(node)
+            if ref_target in self.env.sphinx_exercise_registry:
+                # Parse Target Nodes and Construct Title
+                target = self.env.sphinx_exercise_registry[ref_target]
+                target_node = target.get("node")
+                target_node_number = get_node_number(
+                    self.app, target.get("node"), target.get("type")
+                )
+                if isinstance(target_node, exercise_enumerable_node):
+                    # Update for numfig Format
+                    target_title = target.get("title")
+                    if target_title.default_title():
+                        updated_title = (
+                            target_title.children[0].astext() + f" {target_node_number}"
                         )
-                        node.replace(node[0], title)
                     else:
-                        pass
-                        # text = target_attr.get("title", "").astext()
-            else:
-                node = process_math_placeholder(
-                    node, source_node
-                )  # CHECK: this will never run
+                        updated_title = target_title.astext()
+                    updated_title = docutil_nodes.Text(updated_title)
+                    subtitles = [docutil_nodes.Text(": ")]
+                    for child in target_title.children:
+                        if isinstance(child, exercise_subtitle):
+                            subtitles.append(child)
+                    # Update reference inline node with updated_title
+                    inline_node = node.children[0]
+                    inline_node.children = []
+                    inline_node += updated_title
+                    node.children[0] = inline_node
+                    # Update reference inline node with subtitles
+                    if len(subtitles) > 1:
+                        for subtitle in subtitles:
+                            node += subtitle
+                elif isinstance(target_node, exercise_node):
+                    pass
+                elif isinstance(target_node, solution_node):
+                    pass
 
 
-# Transforms
+class ResolveTitlesInExercises(SphinxPostTransform):
+    """
+    Resolve Titles for Enumerated Exercise Nodes
+    """
 
+    default_priority = 21
 
-class ReferenceTransform(SphinxPostTransform):
-    default_priority = 998
-
-    def process_reference(self, node, label, default_title=""):
-        """
-        Processing reference nodes in the document to:
-        1. set title text
-        """
-
-        # Process Sources
-        src = self.env.sphinx_exercise_registry[label]
-        source_node = src["node"]
-
-        # Source Solution Node
-        if is_solution_node(source_node):
-            target_label = source_node.attributes.get("target_label", "")
-            target_node = self.env.sphinx_exercise_registry[target_label]
-            default_title = node.astext() + target_node["title"].astext()
+    def update_enumerated_title(self, title, node_number):
+        """update enumerate title resolved by numfig"""
+        updated_title = exercise_title()
+        if title.default_title():
+            title_text = title.children[0].astext() + f" {node_number}"
+            updated_title += docutil_nodes.Text(title_text)
         else:
-            target_label = source_node.attributes.get("label", "")
-
-        if target_label == "":
-            import pdb
-
-            pdb.set_trace()
-
-        # Process Targets
-        target = self.env.sphinx_exercise_registry[target_label]
-        target_node = target["node"]
-
-        # Exercise Node
-        if is_exercise_node(target_node):
-            if default_title:
-                number = get_node_number(self.app, target_node, "exercise")
-                node.insert(len(node[0]), docutil_nodes.Text(" Exercise " + number))
-                return
-            else:
-                node = process_math_placeholder(node, source_node)
-
-        # Exercise Unenumerable Node
-        if is_exercise_unenumerable_node(target_node):
-            if default_title:
-                if target.get("title"):
-                    if has_math_child(target_node[0]):
-                        # Cast title node to inline node
-                        inline_title = docutil_nodes.inline()
-                        if is_solution_node(target_node):
-                            inline_title.children = [
-                                docutil_nodes.Text("Solution to" + " ")
-                            ] + target["title"].children
-                        else:
-                            inline_title.children = target["title"].children
-                        node.replace(node[0], inline_title)
-                    else:
-                        pass
-                        # text = target.get("title", "").astext()
-            else:
-                node = process_math_placeholder(node, source_node)
-
-    def process_number_reference(self, reference_node, refuri):
-        """
-        Post process number references which is a node provided
-        sphinx.addnodes.number_reference
-
-        reference_node: nodes.number_reference
-        """
-
-        # Fetch Target Object from Registry
-        target = self.env.sphinx_exercise_registry[refuri]
-        target_title = target.get("title")
-
-        reference_title = reference_node.get("title")
-
-        if "{name}" in reference_title and has_math_child(target_title):
-            updated_title = docutil_nodes.inline()
-            for token in reference_title.split(" "):
-                if token == "{name}":
-                    token = target_title.children
-                elif token == "{number}":
-                    target_number = get_node_number(
-                        self.app, target.get("node"), target.get("type")
-                    )
-                    # target_number = ".".join(map(str, target_number))  # TODO: review
-                    token = docutil_nodes.Text(target_number)
-                else:
-                    token = docutil_nodes.Text(token)
-                updated_title += token
-                updated_title += docutil_nodes.Text(" ")
-            # Remove trailing white space
-            _ = updated_title.pop()
-            # Replace reference title
-            reference_node.replace(reference_node[0], updated_title)
+            updated_title += title.children[0]
+        updated_title += title.children[1:]
+        return updated_title
 
     def run(self):
 
         if not hasattr(self.env, "sphinx_exercise_registry"):
             return
 
-        for node in self.document.traverse(docutil_nodes.reference):
-            refuri = get_refuri(node)
-            if refuri in self.env.sphinx_exercise_registry:
-                if isinstance(node, number_reference):
-                    self.process_number_reference(node, refuri)
-                else:
-                    self.process_reference(node, refuri)
-            else:
-                logger.warn(
-                    f"Reference label {refuri} cannot be found in the sphinx_exercise registry"  # noqa: E501
-                )
+        for node in self.document.traverse(exercise_enumerable_node):
+            title = node.children[0]
+            if isinstance(title, exercise_title):
+                node_number = get_node_number(self.app, node, node.get("type"))
+                updated_title = self.update_enumerated_title(title, node_number)
+                node.children[0] = updated_title
 
 
 class SolutionTransform(SphinxPostTransform):
@@ -237,6 +155,60 @@ class SolutionTransform(SphinxPostTransform):
 
     # Needs to run after ReferenceTransform
     default_priority = 999
+
+    def process_reference(self, node, default_title=""):
+        """
+        Processing reference nodes in the document to set default titles
+        """
+
+        label = get_refuri(node)
+        if (
+            hasattr(self.env, "sphinx_exercise_registry")
+            and label in self.env.sphinx_exercise_registry
+        ):
+            # Process Sources
+            source_node = self.env.sphinx_exercise_registry[label].get("node")
+
+            # Solution Node
+            if is_solution_node(source_node):
+                target_label = source_node.attributes.get("target_label", "")
+                if node.astext().strip() == "Solution to":
+                    default_title = node.astext()
+            else:
+                target_label = source_node.attributes.get("label", "")
+
+            # Process Targets
+            target_attr = self.env.sphinx_exercise_registry[target_label]
+            target_node = target_attr.get("node", Node)
+
+            # Exercise Enumerable Node
+            if is_exercise_enumerable_node(target_node):
+                if default_title:
+                    # number = get_node_number(self.app, target_node, "exercise")
+                    # node.insert(len(node[0]), docutil_nodes.Text(" Exercise " + number)) # noqa: E501
+                    return
+                else:
+                    node = process_math_placeholder(
+                        node, source_node
+                    )  # CHECK: this will never run
+
+            # ExerciseNode
+            if is_exercise_node(target_node):
+                if default_title:
+                    if target_attr.get("title"):
+                        if has_math_child(target_node[0]):
+                            title = update_title(target_node[0])
+                            title.insert(
+                                0, docutil_nodes.Text(default_title, default_title)
+                            )
+                            node.replace(node[0], title)
+                        else:
+                            pass
+                            # text = target_attr.get("title", "").astext()
+                else:
+                    node = process_math_placeholder(
+                        node, source_node
+                    )  # CHECK: this will never run
 
     def construct_reference(self):
         pass
@@ -290,7 +262,7 @@ class SolutionTransform(SphinxPostTransform):
 
             reference.children = [updated_title]
 
-            process_reference(self, reference, SOLUTION_PLACEHOLDER)
+            self.process_reference(reference, SOLUTION_PLACEHOLDER)
 
             # TODO: Is the reference in the title of the solution node?
             # updated_title.children.append(reference)
