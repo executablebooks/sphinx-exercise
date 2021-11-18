@@ -36,19 +36,22 @@ from .nodes import (
     exercise_subtitle,
     visit_exercise_subtitle,
     depart_exercise_subtitle,
+    solution_title,
+    visit_solution_title,
+    depart_solution_title,
+    solution_subtitle,
+    visit_solution_subtitle,
+    depart_solution_subtitle,
 )
 from .post_transforms import (
     ResolveTitlesInExercises,
+    ReferenceLabelTextPostTransform,
     ReferenceTextPostTransform,
-    # SolutionTransform,
+    ResolveTitlesInSolutions,
 )
 
 logger = logging.getLogger(__name__)
 
-# Variables  TODO: centralise these variables
-
-SOLUTION_PLACEHOLDER = "Solution to "
-MATH_PLACEHOLDER = ":math:"
 
 # Callback Functions
 
@@ -123,8 +126,6 @@ def copy_asset_files(app: Sphinx, exc: Union[bool, Exception]):
 def doctree_read(app: Sphinx, document: Node) -> None:
     """
     Read the doctree and apply updates to sphinx-exercise nodes
-    # TODO: What exactly is this updating? (domain labels?)
-    # TODO: Can this be built into the node when instantiated?
     """
 
     domain = cast(StandardDomain, app.env.get_domain("std"))
@@ -135,30 +136,7 @@ def doctree_read(app: Sphinx, document: Node) -> None:
             name = node.get("names", [])[0]
             label = document.nameids[name]
             docname = app.env.docname
-
-            # TODO:
             section_name = node.attributes.get("title")
-
-            # if is_solution_node(node):
-            #     section_name = SOLUTION_PLACEHOLDER
-            # else:
-            #     section_name =
-
-            # REMOVE: should no longer be needed as title are now retained
-            # as full title node objects in registry for use in post_transforms
-            # else:
-            #     # If other node, simply add :math: to title
-            #     # to allow for easy parsing in ref_node
-            #     for item in node[0]:
-            #         if isinstance(item, docutil_nodes.math):
-            #             section_name += f"{MATH_PLACEHOLDER}`{item.astext()}` "
-            #             continue
-            #         section_name += f"{item.astext()} "
-
-            # # Lastly, remove paranthesis from title
-            # _r, _l = section_name.rfind(")"), section_name.find("(") + 1
-            # section_name = section_name[_l:_r].strip()
-
             domain.anonlabels[name] = docname, label
             domain.labels[name] = docname, label, section_name
 
@@ -169,8 +147,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
 
     app.connect("config-inited", init_numfig)  # event order - 1
     app.connect("env-purge-doc", purge_exercises)  # event order - 5 per file
-    # TODO: remove this domain update
-    # app.connect("doctree-read", doctree_read)  # event order - 8
+    app.connect("doctree-read", doctree_read)  # event order - 8
     app.connect("env-merge-info", merge_exercises)  # event order - 9
     app.connect("build-finished", copy_asset_files)  # event order - 16
 
@@ -205,12 +182,19 @@ def setup(app: Sphinx) -> Dict[str, Any]:
         exercise_subtitle, html=(visit_exercise_subtitle, depart_exercise_subtitle)
     )
 
+    app.add_node(solution_title, html=(visit_solution_title, depart_solution_title))
+
+    app.add_node(
+        solution_subtitle, html=(visit_solution_subtitle, depart_solution_subtitle)
+    )
+
     app.add_directive("exercise", ExerciseDirective)
     app.add_directive("solution", SolutionDirective)
 
-    app.add_post_transform(ReferenceTextPostTransform)
+    app.add_post_transform(ReferenceLabelTextPostTransform)
     app.add_post_transform(ResolveTitlesInExercises)
-    # app.add_post_transform(SolutionTransform)
+    app.add_post_transform(ResolveTitlesInSolutions)
+    app.add_post_transform(ReferenceTextPostTransform)
 
     app.add_css_file("exercise.css")
 

@@ -26,11 +26,11 @@ class exercise_node(docutil_nodes.Admonition, docutil_nodes.Element):
 
 
 class exercise_enumerable_node(docutil_nodes.Admonition, docutil_nodes.Element):
-    pass
+    resolved_title = False
 
 
 class solution_node(docutil_nodes.Admonition, docutil_nodes.Element):
-    pass
+    resolved_title = False
 
 
 class exercise_title(docutil_nodes.title):
@@ -43,6 +43,19 @@ class exercise_title(docutil_nodes.title):
 
 
 class exercise_subtitle(docutil_nodes.subtitle):
+    pass
+
+
+class solution_title(docutil_nodes.title):
+    def default_title(self):
+        title_text = self.children[0].astext()
+        if title_text == "Solution to":
+            return True
+        else:
+            return False
+
+
+class solution_subtitle(docutil_nodes.subtitle):
     pass
 
 
@@ -137,9 +150,6 @@ def depart_solution_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
         _depart_nodes_latex(self, node, f"{typ.title()} to ", True)
     else:
-        number = get_node_number(self, node, typ)
-        idx = list_rindex(self.body, f"{typ.title()} {number} ")
-        self.body.pop(idx)
         self.body.append("</div>")
 
 
@@ -168,6 +178,37 @@ def visit_exercise_subtitle(self, node: Node) -> None:
 
 
 def depart_exercise_subtitle(self, node: Node) -> None:
+    if isinstance(self, LaTeXTranslator):
+        raise NotImplementedError
+    else:
+        self.body.append("</span>")
+
+
+def visit_solution_title(self, node: Node) -> None:
+    if isinstance(self, LaTeXTranslator):
+        raise NotImplementedError
+    else:
+        classes = "admonition-title"
+        self.body.append(f"<p class={classes}>")
+
+
+def depart_solution_title(self, node: Node) -> None:
+    if isinstance(self, LaTeXTranslator):
+        raise NotImplementedError
+    else:
+        self.body.append("</p>")
+        self.body.append("\n")
+
+
+def visit_solution_subtitle(self, node: Node) -> None:
+    if isinstance(self, LaTeXTranslator):
+        raise NotImplementedError
+    else:
+        classes = "admonition-solution-subtitle"
+        self.body.append(self.starttag(node, "span", "", CLASS=classes))
+
+
+def depart_solution_subtitle(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
         raise NotImplementedError
     else:

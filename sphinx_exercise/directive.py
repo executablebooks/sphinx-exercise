@@ -18,6 +18,7 @@ from .nodes import (
     solution_node,
     exercise_title,
     exercise_subtitle,
+    solution_title,
 )
 from docutils import nodes
 from sphinx.util import logging
@@ -101,7 +102,7 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
         # Construct Title
         # title = nodes.title()
         title = exercise_title()
-        title += nodes.Text("Exercise")
+        title += nodes.Text(self.defaults["title_text"])
 
         # Select Node Type and Initialise
         if "nonumber" in self.options:
@@ -161,8 +162,6 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
             "type": self.name,
             "docname": self.env.docname,
             "node": node,
-            "title": title,  # save title node to registry for use by transforms
-            "hidden": node.get("hidden", bool),
         }
 
         # TODO: Could tag this as Hidden to prevent the cell showing
@@ -212,29 +211,27 @@ class SolutionDirective(SphinxExerciseBaseDirective):
 
     def run(self) -> List[Node]:
 
+        self.defaults = {"title_text": "Solution to"}
         target_label = self.arguments[0]
         self.serial_number = self.env.new_serialno()
 
+        # Initialise Registry if Required
         if not hasattr(self.env, "sphinx_exercise_registry"):
             self.env.sphinx_exercise_registry = {}
 
-        # Parse hide-solutions option
+        # Parse :hide-solutions: option
         if self.env.app.config.hide_solutions:
             return []
 
-        # Set Title Text
-        title_text = "Solution to {name}"
-        textnodes, messages = self.state.inline_text(title_text, self.lineno)
-        title = nodes.title(title_text, "", *textnodes)
+        # Construct Title
+        title = solution_title()
+        title += nodes.Text(self.defaults["title_text"])
+        # textnodes, messages = self.state.inline_text(title_text, self.lineno)
+        # title = nodes.title(title_text, "", *textnodes)
 
         # State Parsing
         section = nodes.section(ids=["solution-content"])
         self.state.nested_parse(self.content, self.content_offset, section)
-
-        # Initialise Node
-        node = solution_node()
-        node += title
-        node += section
 
         # Fetch Label or Generate One
         label = self.options.get("label", "")
@@ -257,7 +254,10 @@ class SolutionDirective(SphinxExerciseBaseDirective):
         if self.options.get("class"):
             classes += self.options.get("class")
 
-        # Set node attributes
+        # Construct Node
+        node = solution_node()
+        node += title
+        node += section
         node["target_label"] = target_label
         node["classes"].extend(classes)
         node["ids"].append(label)
@@ -278,8 +278,6 @@ class SolutionDirective(SphinxExerciseBaseDirective):
             "type": self.name,
             "docname": self.env.docname,
             "node": node,
-            "title": title,  # save title node to registry for use by transforms
-            "hidden": node.get("hidden", bool),
         }
 
         if node.get("hidden", bool):
