@@ -2,9 +2,9 @@
     <section ids="linked-wrong-targetlabel" names="_linked_wrong_targetlabel">
         <title>
             _linked_wrong_targetlabel
-        <solution_node classes="solution" docname="solution/_linked_wrong_targetlabel" hidden="False" ids="solution/_linked_wrong_targetlabel-solution-0" label="solution/_linked_wrong_targetlabel-solution-0" names="solution/_linked_wrong_targetlabel-solution-0" target_label="wrong-ex-label" title="Solution to " type="solution">
-            <title>
-                Solution to 
+        <solution_node classes="solution" docname="solution/_linked_wrong_targetlabel" hidden="False" ids="solution/_linked_wrong_targetlabel-solution-0" label="solution/_linked_wrong_targetlabel-solution-0" names="solution/_linked_wrong_targetlabel-solution-0" serial_number="0" target_label="wrong-ex-label" title="Solution to" type="solution">
+            <solution_title>
+                Solution to
             <section ids="solution-content">
                 <paragraph>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
