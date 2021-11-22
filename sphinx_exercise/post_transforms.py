@@ -100,7 +100,7 @@ class ReferenceLabelTextPostTransform(SphinxPostTransform):
 
         for node in self.document.traverse(sphinx_nodes.pending_xref):
             target_label = node.get("reftarget")
-            try:
+            if target_label in self.env.sphinx_exercise_registry:
                 target = self.env.sphinx_exercise_registry[target_label]
                 target_node = target.get("node")
                 if (
@@ -122,16 +122,6 @@ class ReferenceLabelTextPostTransform(SphinxPostTransform):
                         "node"
                     ] = target_node
                 node = self.update_label_text(node, target_node)
-            except Exception:
-                if isinstance(self.app.builder, LaTeXBuilder):
-                    docname = find_parent(self.app.builder.env, node, "section")
-                else:
-                    docname = self.app.builder.current_docname
-                docpath = self.env.doc2path(docname)
-                path = docpath[: docpath.rfind(".")]
-                msg = f"undefined label: {target_label}"
-                logger.warning(msg, location=path, color="red")
-                return
 
 
 class ResolveTitlesInExercises(SphinxPostTransform):
@@ -222,12 +212,13 @@ class ReferenceTextPostTransform(SphinxPostTransform):
 
     def update_label_text(self, node, target_node):
 
-        # exclide already labelled nodes from title processing
+        # exclude already labelled nodes from title processing
         if "|label|" in node.astext():
             inline = node.children[0]
             inline.children[0] = docutil_nodes.Text(
                 inline.children[0].astext().replace("|label| ", "")
             )
+            node.children[0] = inline
             return node
 
         if node.children == []:
@@ -259,7 +250,7 @@ class ReferenceTextPostTransform(SphinxPostTransform):
 
         for node in self.document.traverse(docutil_nodes.reference):
             target_label = get_refuri(node)
-            try:
+            if target_label in self.env.sphinx_exercise_registry:
                 target = self.env.sphinx_exercise_registry[target_label]
                 target_node = target.get("node")
                 if (
@@ -281,13 +272,3 @@ class ReferenceTextPostTransform(SphinxPostTransform):
                         "node"
                     ] = target_node
                 node = self.update_label_text(node, target_node)
-            except Exception:
-                if isinstance(self.app.builder, LaTeXBuilder):
-                    docname = find_parent(self.app.builder.env, node, "section")
-                else:
-                    docname = self.app.builder.current_docname
-                docpath = self.env.doc2path(docname)
-                path = docpath[: docpath.rfind(".")]
-                msg = f"undefined label: {target_label}"
-                logger.warning(msg, location=path, color="red")
-                return
