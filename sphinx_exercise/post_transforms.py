@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 def resolve_enumerated_exercise_node_title(app, node):
     title = node.children[0]
+    parent = title.parent
     if isinstance(title, exercise_title):
         node_number = get_node_number(app, node, "exercise")
         updated_title = exercise_title()
@@ -31,6 +32,7 @@ def resolve_enumerated_exercise_node_title(app, node):
         else:
             updated_title += title.children[0]
         updated_title += title.children[1:]
+        updated_title.parent = parent
         node.children[0] = updated_title
     node["title"] = title_text  # TODO: Include subtitle text?
     node.resolved_title = True
@@ -56,6 +58,7 @@ def resolve_solution_node_title(app, node):
     """ Resolve Solution Nodes """
     exercise_target = app.env.sphinx_exercise_registry[node.get("target_label")]["node"]
     title = node.children[0]
+    parent = title.parent
     if isinstance(title, solution_title):
         new_title = solution_title()
         new_title += build_reference_node(app, exercise_target)
@@ -74,6 +77,7 @@ def resolve_solution_node_title(app, node):
                 new_title += docutil_nodes.Text(")")
             else:
                 new_title += title_element
+        new_title.parent = parent
         node.children[0] = new_title
     node.resolved_title = True
     return node
