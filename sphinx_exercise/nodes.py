@@ -99,7 +99,6 @@ def _depart_nodes_latex(self, node, title, pop_index=False):
     idx = list_rindex(self.body, LaTeX.visit_admonition()) + 2
     if pop_index:
         self.body.pop(idx)
-    self.body.insert(idx, title)
     self.body.append(LaTeX.depart_admonition())
 
 
@@ -155,7 +154,7 @@ def depart_solution_node(self, node: Node) -> None:
 
 def visit_exercise_title(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
-        raise NotImplementedError
+        self.body.append("{")
     else:
         classes = "admonition-title"
         self.body.append(f"<p class={classes}>")
@@ -163,7 +162,7 @@ def visit_exercise_title(self, node: Node) -> None:
 
 def depart_exercise_title(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
-        raise NotImplementedError
+        self.body.append("}")
     else:
         self.body.append("</p>")
         self.body.append("\n")
@@ -171,16 +170,14 @@ def depart_exercise_title(self, node: Node) -> None:
 
 def visit_exercise_subtitle(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
-        raise NotImplementedError
+        self.body.append(" ")
     else:
         classes = "admonition-exercise-subtitle"
         self.body.append(self.starttag(node, "span", "", CLASS=classes))
 
 
 def depart_exercise_subtitle(self, node: Node) -> None:
-    if isinstance(self, LaTeXTranslator):
-        raise NotImplementedError
-    else:
+    if not isinstance(self, LaTeXTranslator):
         self.body.append("</span>")
 
 

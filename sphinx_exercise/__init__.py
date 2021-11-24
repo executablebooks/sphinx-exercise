@@ -176,10 +176,16 @@ def setup(app: Sphinx) -> Dict[str, Any]:
         latex=(visit_solution_node, depart_solution_node),
     )
 
-    app.add_node(exercise_title, html=(visit_exercise_title, depart_exercise_title))
+    app.add_node(
+        exercise_title,
+        html=(visit_exercise_title, depart_exercise_title),
+        latex=(visit_exercise_title, depart_exercise_title),
+    )
 
     app.add_node(
-        exercise_subtitle, html=(visit_exercise_subtitle, depart_exercise_subtitle)
+        exercise_subtitle,
+        html=(visit_exercise_subtitle, depart_exercise_subtitle),
+        latex=(visit_exercise_subtitle, depart_exercise_subtitle),
     )
 
     app.add_node(solution_title, html=(visit_solution_title, depart_solution_title))
