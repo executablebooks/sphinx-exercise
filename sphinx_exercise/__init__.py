@@ -44,10 +44,9 @@ from .nodes import (
     depart_solution_subtitle,
 )
 from .post_transforms import (
-    ResolveTitlesInExercises,
-    ReferenceLabelTextPostTransform,
-    ReferenceTextPostTransform,
+    ResolveTitlesInEnumerableExercises,
     ResolveTitlesInSolutions,
+    UpdateReferencesToEnumerated,
 )
 
 logger = logging.getLogger(__name__)
@@ -101,7 +100,7 @@ def init_numfig(app: Sphinx, config: Config) -> None:
     """Initialize numfig"""
 
     config["numfig"] = True
-    numfig_format = {"exercise": "Exercise %s", "solution": "Solution %s"}
+    numfig_format = {"exercise": "Exercise %s"}
     # Merge with current sphinx settings
     numfig_format.update(config.numfig_format)
     config.numfig_format = numfig_format
@@ -167,10 +166,8 @@ def setup(app: Sphinx) -> Dict[str, Any]:
         latex=(visit_exercise_enumerable_node, depart_exercise_enumerable_node),
     )
 
-    app.add_enumerable_node(
+    app.add_node(
         solution_node,
-        "solution",
-        None,
         singlehtml=(visit_solution_node, depart_solution_node),
         html=(visit_solution_node, depart_solution_node),
         latex=(visit_solution_node, depart_solution_node),
@@ -197,10 +194,9 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_directive("exercise", ExerciseDirective)
     app.add_directive("solution", SolutionDirective)
 
-    app.add_post_transform(ReferenceLabelTextPostTransform)
-    app.add_post_transform(ResolveTitlesInExercises)
+    app.add_post_transform(UpdateReferencesToEnumerated)
+    app.add_post_transform(ResolveTitlesInEnumerableExercises)
     app.add_post_transform(ResolveTitlesInSolutions)
-    app.add_post_transform(ReferenceTextPostTransform)
 
     app.add_css_file("exercise.css")
 
