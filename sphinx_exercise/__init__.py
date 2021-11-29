@@ -44,9 +44,10 @@ from .nodes import (
     depart_solution_subtitle,
 )
 from .post_transforms import (
-    ResolveTitlesInEnumerableExercises,
+    ResolveTitlesInExercises,
     ResolveTitlesInSolutions,
     UpdateReferencesToEnumerated,
+    ResolveLinkTextToSolutions,
 )
 
 logger = logging.getLogger(__name__)
@@ -195,8 +196,10 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_directive("solution", SolutionDirective)
 
     app.add_post_transform(UpdateReferencesToEnumerated)
-    app.add_post_transform(ResolveTitlesInEnumerableExercises)
+    app.add_post_transform(ResolveTitlesInExercises)
+    # app.add_post_transform(ResolveTitlesInEnumerableExercises)
     app.add_post_transform(ResolveTitlesInSolutions)
+    app.add_post_transform(ResolveLinkTextToSolutions)
 
     app.add_css_file("exercise.css")
 

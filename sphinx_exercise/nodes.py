@@ -63,7 +63,7 @@ class solution_subtitle(docutil_nodes.subtitle):
 
 
 def is_exercise_node(node):
-    return isinstance(node, exercise_node)
+    return isinstance(node, exercise_node) or isinstance(node, exercise_enumerable_node)
 
 
 def is_exercise_enumerable_node(node):
