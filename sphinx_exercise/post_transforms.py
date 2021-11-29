@@ -79,8 +79,12 @@ class ResolveTitlesInExercises(SphinxPostTransform):
         if isinstance(title, exercise_title):
             updated_title = docutil_nodes.title()
             if isinstance(node, exercise_enumerable_node):
-                # Numfig will use "Exercise %s" so we just need the subtitle
-                updated_title += docutil_nodes.Text("")
+                # Numfig (HTML) will use "Exercise %s" so we just need the subtitle
+                if self.app.builder.format == "latex":
+                    # Resolve Title
+                    node_number = get_node_number(self.app, node, "exercise")
+                    title_text = self.app.config.numfig_format["exercise"] % node_number
+                    updated_title += docutil_nodes.Text(title_text)
                 updated_title["title"] = self.app.config.numfig_format["exercise"]
             else:
                 # Use default text "Exercise"
