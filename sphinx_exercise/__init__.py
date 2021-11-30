@@ -30,17 +30,17 @@ from .nodes import (
     depart_solution_node,
     is_extension_node,
     exercise_title,
-    visit_exercise_title,
-    depart_exercise_title,
+    # visit_exercise_title,
+    # depart_exercise_title,
     exercise_subtitle,
-    visit_exercise_subtitle,
-    depart_exercise_subtitle,
+    # visit_exercise_subtitle,
+    # depart_exercise_subtitle,
     solution_title,
-    visit_solution_title,
-    depart_solution_title,
+    # visit_solution_title,
+    # depart_solution_title,
     solution_subtitle,
-    visit_solution_subtitle,
-    depart_solution_subtitle,
+    # visit_solution_subtitle,
+    # depart_solution_subtitle,
     exercise_latex_number_reference,
     visit_exercise_latex_number_reference,
     depart_exercise_latex_number_reference,
@@ -114,9 +114,6 @@ def copy_asset_files(app: Sphinx, exc: Union[bool, Exception]):
             copy_asset(path, str(Path(app.outdir).joinpath("_static").absolute()))
 
 
-# TODO: REMOVE
-
-
 def doctree_read(app: Sphinx, document: Node) -> None:
     """
     Read the doctree and apply updates to sphinx-exercise nodes
@@ -168,23 +165,12 @@ def setup(app: Sphinx) -> Dict[str, Any]:
         latex=(visit_solution_node, depart_solution_node),
     )
 
-    app.add_node(
-        exercise_title,
-        html=(visit_exercise_title, depart_exercise_title),
-        latex=(visit_exercise_title, depart_exercise_title),
-    )
-
-    app.add_node(
-        exercise_subtitle,
-        html=(visit_exercise_subtitle, depart_exercise_subtitle),
-        latex=(visit_exercise_subtitle, depart_exercise_subtitle),
-    )
-
-    app.add_node(solution_title, html=(visit_solution_title, depart_solution_title))
-
-    app.add_node(
-        solution_subtitle, html=(visit_solution_subtitle, depart_solution_subtitle)
-    )
+    # Internal Title Nodes that don't need visit_ and depart_ methods
+    # as they are resolved in post_transforms to docutil and sphinx nodes
+    app.add_node(exercise_title)
+    app.add_node(exercise_subtitle)
+    app.add_node(solution_title)
+    app.add_node(solution_subtitle)
 
     app.add_node(
         exercise_latex_number_reference,
@@ -199,7 +185,6 @@ def setup(app: Sphinx) -> Dict[str, Any]:
 
     app.add_post_transform(UpdateReferencesToEnumerated)
     app.add_post_transform(ResolveTitlesInExercises)
-    # app.add_post_transform(ResolveTitlesInEnumerableExercises)
     app.add_post_transform(ResolveTitlesInSolutions)
     app.add_post_transform(ResolveLinkTextToSolutions)
 

@@ -12,7 +12,7 @@ from docutils.nodes import Node
 from docutils import nodes as docutil_nodes
 from sphinx import addnodes as sphinx_nodes
 from sphinx.writers.latex import LaTeXTranslator
-from .utils import get_node_number, find_parent, list_rindex
+from .utils import get_node_number, list_rindex
 from .latex import LaTeXMarkup
 
 logger = logging.getLogger(__name__)
@@ -89,14 +89,8 @@ def is_extension_node(node):
 
 # Visit and Depart Functions
 
-
-def _visit_nodes_latex(self, node):
-    """ Function to handle visit_node for latex. """
-    docname = find_parent(self.builder.env, node, "section")
-    self.body.append(
-        "\\phantomsection \\label{" + f"{docname}:{node.attributes['label']}" + "}"
-    )
-    self.body.append(LaTeX.visit_admonition())
+# TODO: Review _depart_nodes_latex to see if these pop methods
+# are really needed.
 
 
 def _depart_nodes_latex(self, node, title, pop_index=False):
@@ -111,7 +105,7 @@ def visit_exercise_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
         label = (
             "\\phantomsection \\label{" + f"exercise:{node.attributes['label']}" + "}"
-        )
+        )  # TODO: Check this resolves.
         self.body.append(label)
         self.body.append(LaTeX.visit_admonition())
     else:
@@ -122,6 +116,7 @@ def visit_exercise_node(self, node: Node) -> None:
 def depart_exercise_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
+
         _depart_nodes_latex(self, node, f"{typ.title()} ")
     else:
         self.body.append("</div>")
@@ -181,66 +176,6 @@ def depart_solution_node(self, node: Node) -> None:
     else:
         self.body.append("</div>")
         self.body.append("\n")
-
-
-def visit_exercise_title(self, node: Node) -> None:
-    if isinstance(self, LaTeXTranslator):
-        self.body.append("{")
-    else:
-        classes = "admonition-title"
-        self.body.append(f"<p class={classes}>")
-
-
-def depart_exercise_title(self, node: Node) -> None:
-    if isinstance(self, LaTeXTranslator):
-        self.body.append("}")
-    else:
-        self.body.append("</p>")
-        self.body.append("\n")
-
-
-def visit_exercise_subtitle(self, node: Node) -> None:
-    if isinstance(self, LaTeXTranslator):
-        self.body.append(" ")
-    else:
-        classes = "admonition-exercise-subtitle"
-        self.body.append(self.starttag(node, "span", "", CLASS=classes))
-
-
-def depart_exercise_subtitle(self, node: Node) -> None:
-    if not isinstance(self, LaTeXTranslator):
-        self.body.append("</span>")
-
-
-def visit_solution_title(self, node: Node) -> None:
-    if isinstance(self, LaTeXTranslator):
-        raise NotImplementedError
-    else:
-        classes = "admonition-title"
-        self.body.append(f"<p class={classes}>")
-
-
-def depart_solution_title(self, node: Node) -> None:
-    if isinstance(self, LaTeXTranslator):
-        raise NotImplementedError
-    else:
-        self.body.append("</p>")
-        self.body.append("\n")
-
-
-def visit_solution_subtitle(self, node: Node) -> None:
-    if isinstance(self, LaTeXTranslator):
-        raise NotImplementedError
-    else:
-        classes = "admonition-solution-subtitle"
-        self.body.append(self.starttag(node, "span", "", CLASS=classes))
-
-
-def depart_solution_subtitle(self, node: Node) -> None:
-    if isinstance(self, LaTeXTranslator):
-        raise NotImplementedError
-    else:
-        self.body.append("</span>")
 
 
 def visit_exercise_latex_number_reference(self, node):

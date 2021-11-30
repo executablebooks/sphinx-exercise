@@ -7,6 +7,7 @@ A custom Sphinx Directive
 :copyright: Copyright 2020 by the QuantEcon team, see AUTHORS
 :licences: see LICENSE for details
 """
+
 from typing import List
 from docutils.nodes import Node
 
@@ -69,13 +70,6 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
                 Turns off exercise auto numbering.
     hidden  :   boolean (flag),
                 Removes the directive from the final output.
-
-    Notes
-    -----
-    self.defaults['title_text'] is always added to the node even if numfig is used
-    for compatibility with numfig generating numbered titles. Therefore there is a
-    post_transform: RemoveDefaultTitleEnumeratedExerciseNodes to remove them to avoid
-    duplicate titles prior to writing HTML / LaTeX
     """
 
     name = "exercise"
@@ -100,7 +94,6 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
             self.env.sphinx_exercise_registry = {}
 
         # Construct Title
-        # title = nodes.title()
         title = exercise_title()
         title += nodes.Text(self.defaults["title_text"])
 
@@ -196,6 +189,10 @@ class SolutionDirective(SphinxExerciseBaseDirective):
             Value of the exercise’s class attribute which can be used to add custom CSS
     hidden  :   boolean (flag),
                 Removes the directive from the final output.
+
+    Notes:
+    ------
+    Checking for target reference is done in post_transforms for Solution Titles
     """
 
     name = "solution"
@@ -226,8 +223,6 @@ class SolutionDirective(SphinxExerciseBaseDirective):
         # Construct Title
         title = solution_title()
         title += nodes.Text(self.defaults["title_text"])
-        # textnodes, messages = self.state.inline_text(title_text, self.lineno)
-        # title = nodes.title(title_text, "", *textnodes)
 
         # State Parsing
         section = nodes.section(ids=["solution-content"])
@@ -268,10 +263,6 @@ class SolutionDirective(SphinxExerciseBaseDirective):
         node["hidden"] = True if "hidden" in self.options else False
         node["serial_number"] = self.serial_number
         node.document = self.state.document
-
-        # TODO: Check for target label in env.sphinx_exercise_registry registry
-        # as exercise should always precede a solution.
-        # Otherwise leave this to the SolutionPosTransform in post_transforms.
 
         self.add_name(node)
         self.env.sphinx_exercise_registry[label] = {
