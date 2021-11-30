@@ -128,6 +128,10 @@ def depart_exercise_node(self, node: Node) -> None:
 
 
 def visit_exercise_enumerable_node(self, node: Node) -> None:
+    """
+    LaTeX Reference Structure is exercise:{label} and resolved by
+    exercise_latex_number_reference
+    """
     if isinstance(self, LaTeXTranslator):
         label = (
             "\\phantomsection \\label{" + f"exercise:{node.attributes['label']}" + "}\n"
@@ -150,18 +154,33 @@ def depart_exercise_enumerable_node(self, node: Node) -> None:
 
 
 def visit_solution_node(self, node: Node) -> None:
+    """
+    Reference Structure is {docname}:{label} and resolved by Sphinx
+    """
     if isinstance(self, LaTeXTranslator):
-        _visit_nodes_latex(self, node)
+        target_label = node.attributes["label"]
+        target_node = self.builder.env.sphinx_exercise_registry[target_label]
+        docname = target_node.get("docname")
+        label = (
+            "\\phantomsection \\label{"
+            + f"{docname}:{node.attributes['label']}"
+            + "}\n"
+        )
+        self.body.append(label)
+        self.body.append(LaTeX.visit_admonition())
     else:
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
+        self.body.append("\n")
 
 
 def depart_solution_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
-        _depart_nodes_latex(self, node, f"{typ.title()} to ", True)
+        number = get_node_number(self, node, typ)
+        _depart_nodes_latex(self, node, f"{typ.title()} {number} ")
     else:
         self.body.append("</div>")
+        self.body.append("\n")
 
 
 def visit_exercise_title(self, node: Node) -> None:

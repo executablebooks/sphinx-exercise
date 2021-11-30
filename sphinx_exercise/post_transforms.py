@@ -209,6 +209,9 @@ class ResolveLinkTextToSolutions(SphinxPostTransform):
                         for child in node.children:
                             new_node += child
                         node.replace_self(new_node)
+                    if isinstance(target_node, solution_node):
+                        pass
+                        # import pdb; pdb.set_trace()
                 if isinstance(target_node, solution_node):
                     title_text = target_node.children[0].astext()
                     inline = node.children[0]
