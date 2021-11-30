@@ -20,11 +20,11 @@ for producing exercise and solution directives, for html and pdf outputs.
 
 **Features**:
 
-The **exercise** directive is
+The **exercise** directive is:
 
 1. automatically numbered
 2. supports options such as `class`, `label`, `nonumber`, and `hidden`
-3. can easily be referenced through `ref` and `numref` roles
+3. can be referenced through `ref` and `numref` roles
 
 The **solution** directive
 
@@ -37,7 +37,7 @@ The **solution** directive
 To get started with `sphinx-exercise`, first install it through `pip`:
 
 ```bash
-pip install -e.
+pip install sphinx-exercise
 ```
 
 ### Jupyter-Book Project
@@ -50,7 +50,7 @@ sphinx:
     - sphinx_exercise
 ```
 
-you may then use `jb build <project>` and the extension will be used by your `JupyterBook` project.
+you may then use `jb build <project>` and the extension will be used by your `Jupyter Book` project.
 
 ### Sphinx Project
 
