@@ -10,6 +10,7 @@ Sphinx Exercise Nodes
 from sphinx.util import logging
 from docutils.nodes import Node
 from docutils import nodes as docutil_nodes
+from sphinx import addnodes as sphinx_nodes
 from sphinx.writers.latex import LaTeXTranslator
 from .utils import get_node_number, find_parent, list_rindex
 from .latex import LaTeXMarkup
@@ -59,6 +60,10 @@ class solution_subtitle(docutil_nodes.subtitle):
     pass
 
 
+class exercise_latex_number_reference(sphinx_nodes.number_reference):
+    pass
+
+
 # Test Node Functions
 
 
@@ -85,7 +90,7 @@ def is_extension_node(node):
 # Visit and Depart Functions
 
 
-def _visit_nodes_latex(self, node, find_parent):
+def _visit_nodes_latex(self, node):
     """ Function to handle visit_node for latex. """
     docname = find_parent(self.builder.env, node, "section")
     self.body.append(
@@ -104,8 +109,11 @@ def _depart_nodes_latex(self, node, title, pop_index=False):
 
 def visit_exercise_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
-        # _remove_placeholder_title_exercise(typ, node)
-        _visit_nodes_latex(self, node, find_parent)
+        label = (
+            "\\phantomsection \\label{" + f"exercise:{node.attributes['label']}" + "}"
+        )
+        self.body.append(label)
+        self.body.append(LaTeX.visit_admonition())
     else:
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
         self.body.append("\n")
@@ -121,7 +129,11 @@ def depart_exercise_node(self, node: Node) -> None:
 
 def visit_exercise_enumerable_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
-        _visit_nodes_latex(self, node, find_parent)
+        label = (
+            "\\phantomsection \\label{" + f"exercise:{node.attributes['label']}" + "}\n"
+        )
+        self.body.append(label)
+        self.body.append(LaTeX.visit_admonition())
     else:
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
         self.body.append("\n")
@@ -139,7 +151,7 @@ def depart_exercise_enumerable_node(self, node: Node) -> None:
 
 def visit_solution_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
-        _visit_nodes_latex(self, node, find_parent)
+        _visit_nodes_latex(self, node)
     else:
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
 
@@ -210,3 +222,15 @@ def depart_solution_subtitle(self, node: Node) -> None:
         raise NotImplementedError
     else:
         self.body.append("</span>")
+
+
+def visit_exercise_latex_number_reference(self, node):
+    id = node.get("refid")
+    text = node.astext()
+    hyperref = r"\hyperref[exercise:%s]{%s}" % (id, text)
+    self.body.append(hyperref)
+    raise docutil_nodes.SkipNode
+
+
+def depart_exercise_latex_number_reference(self, node):
+    pass

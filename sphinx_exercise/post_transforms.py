@@ -7,11 +7,12 @@ from docutils import nodes as docutil_nodes
 from .utils import get_node_number, find_parent
 from .nodes import (
     exercise_enumerable_node,
-    is_exercise_node,
     solution_node,
     exercise_title,
     exercise_subtitle,
     solution_title,
+    is_exercise_node,
+    exercise_latex_number_reference,
 )
 
 logger = logging.getLogger(__name__)
@@ -115,7 +116,11 @@ class ResolveTitlesInExercises(SphinxPostTransform):
 
 
 def resolve_solution_title(app, node, exercise_node):
-    """ Resolve Solution Nodes """
+    """
+    Resolve Solution Nodes
+    Note: Using a resolver function in case we need to resolve titles
+    in references to solution nodes.
+    """
     title = node.children[0]
     exercise_title = exercise_node.children[0]
     if isinstance(title, solution_title):
@@ -155,7 +160,7 @@ class ResolveTitlesInSolutions(SphinxPostTransform):
     the main title only from target_nodes
     """
 
-    default_priority = 20
+    default_priority = 21
 
     def run(self):
 
@@ -187,7 +192,7 @@ class ResolveLinkTextToSolutions(SphinxPostTransform):
     the main title only from target_nodes
     """
 
-    default_priority = 21
+    default_priority = 22
 
     def run(self):
         # Update Solution References
@@ -196,6 +201,14 @@ class ResolveLinkTextToSolutions(SphinxPostTransform):
             if refid in self.env.sphinx_exercise_registry:
                 target = self.env.sphinx_exercise_registry[refid]
                 target_node = target.get("node")
+                if self.app.builder.format == "latex":
+                    if isinstance(target_node, exercise_enumerable_node):
+                        new_node = exercise_latex_number_reference()
+                        new_node.parent = node.parent
+                        new_node.attributes = node.attributes
+                        for child in node.children:
+                            new_node += child
+                        node.replace_self(new_node)
                 if isinstance(target_node, solution_node):
                     title_text = target_node.children[0].astext()
                     inline = node.children[0]
@@ -205,10 +218,7 @@ class ResolveLinkTextToSolutions(SphinxPostTransform):
 
                     # TODO: Is it possible for the target_node not to be resolved?
                     # if not target_node.resolved_title:
-                    #     import pdb; pdb.set_trace()
                     #     exercise_label = target_node.get("target_label")
                     #     exercise_target = self.env.sphinx_exercise_registry[exercise_label] # noqa: E501
                     #     exercise_node = exercise_target.get("node")
                     #     target_node = resolve_solution_title(self.app, target_node, exercise_node) # noqa: E501
-
-                    # WORKING HERE

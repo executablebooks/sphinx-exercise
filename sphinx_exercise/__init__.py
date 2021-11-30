@@ -28,7 +28,6 @@ from .nodes import (
     depart_exercise_enumerable_node,
     visit_solution_node,
     depart_solution_node,
-    # is_solution_node,
     is_extension_node,
     exercise_title,
     visit_exercise_title,
@@ -42,6 +41,9 @@ from .nodes import (
     solution_subtitle,
     visit_solution_subtitle,
     depart_solution_subtitle,
+    exercise_latex_number_reference,
+    visit_exercise_latex_number_reference,
+    depart_exercise_latex_number_reference,
 )
 from .post_transforms import (
     ResolveTitlesInExercises,
@@ -71,14 +73,6 @@ def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
     if remove_labels:
         for label in remove_labels:
             del env.sphinx_exercise_registry[label]
-
-    # TODO: CLEAN UP
-    # Copy registry entries that aren't equal to docname
-    # registry = {}
-    # for label in env.sphinx_exercise_registry.keys():
-    #     if env.sphinx_exercise_registry[label]["docname"] != docname:
-    #         registry[label] = env.sphinx_exercise_registry[label]
-    # env.sphinx_exercise_registry = registry
 
 
 def merge_exercises(
@@ -190,6 +184,14 @@ def setup(app: Sphinx) -> Dict[str, Any]:
 
     app.add_node(
         solution_subtitle, html=(visit_solution_subtitle, depart_solution_subtitle)
+    )
+
+    app.add_node(
+        exercise_latex_number_reference,
+        latex=(
+            visit_exercise_latex_number_reference,
+            depart_exercise_latex_number_reference,
+        ),
     )
 
     app.add_directive("exercise", ExerciseDirective)
