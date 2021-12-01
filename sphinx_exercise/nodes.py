@@ -12,7 +12,6 @@ from docutils.nodes import Node
 from docutils import nodes as docutil_nodes
 from sphinx import addnodes as sphinx_nodes
 from sphinx.writers.latex import LaTeXTranslator
-from .utils import get_node_number, list_rindex
 from .latex import LaTeXMarkup
 
 logger = logging.getLogger(__name__)
@@ -89,17 +88,6 @@ def is_extension_node(node):
 
 # Visit and Depart Functions
 
-# TODO: Review _depart_nodes_latex to see if these pop methods
-# are really needed.
-
-
-def _depart_nodes_latex(self, node, title, pop_index=False):
-    """ Function to handle depart_node for latex. """
-    idx = list_rindex(self.body, LaTeX.visit_admonition()) + 2
-    if pop_index:
-        self.body.pop(idx)
-    self.body.append(LaTeX.depart_admonition())
-
 
 def visit_exercise_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
@@ -114,10 +102,8 @@ def visit_exercise_node(self, node: Node) -> None:
 
 
 def depart_exercise_node(self, node: Node) -> None:
-    typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
-
-        _depart_nodes_latex(self, node, f"{typ.title()} ")
+        self.body.append(LaTeX.depart_admonition())
     else:
         self.body.append("</div>")
 
@@ -139,10 +125,8 @@ def visit_exercise_enumerable_node(self, node: Node) -> None:
 
 
 def depart_exercise_enumerable_node(self, node: Node) -> None:
-    typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
-        number = get_node_number(self, node, typ)
-        _depart_nodes_latex(self, node, f"{typ.title()} {number} ")
+        self.body.append(LaTeX.depart_admonition())
     else:
         self.body.append("</div>")
         self.body.append("\n")
@@ -169,10 +153,8 @@ def visit_solution_node(self, node: Node) -> None:
 
 
 def depart_solution_node(self, node: Node) -> None:
-    typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
-        number = get_node_number(self, node, typ)
-        _depart_nodes_latex(self, node, f"{typ.title()} {number} ")
+        self.body.append(LaTeX.depart_admonition())
     else:
         self.body.append("</div>")
         self.body.append("\n")
