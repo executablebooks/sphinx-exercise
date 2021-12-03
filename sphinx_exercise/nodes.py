@@ -132,7 +132,7 @@ def visit_exercise_unenumerable_node(self, node: Node) -> None:
 def depart_exercise_unenumerable_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
-        _depart_nodes_latex(self, node, f"{_typ.title())} ")
+        _depart_nodes_latex(self, node, f"{_(typ.title())} ")
     else:
         idx = list_rindex(self.body, '<p class="admonition-title">') + 1
         element = f"<span>{_(typ.title())} </span>"
