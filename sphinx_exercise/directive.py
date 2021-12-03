@@ -37,8 +37,61 @@ class SphinxExerciseBaseDirective(SphinxDirective):
     def duplicate_labels(self, label):
         """ Check for duplicate labels """
 
-        if not label == "" and label in self.env.sphinx_exercise_registry.keys():
-            docpath = self.env.doc2path(self.env.docname)
+    name = ""
+
+    def run(self) -> List[Node]:
+        env = self.env
+        typ = self.name
+        if typ == "solution" and env.app.config.hide_solutions:
+            return []
+
+        serial_no = env.new_serialno()
+
+        if not hasattr(env, "exercise_list"):
+            env.exercise_list = {}
+
+        classes, class_name = [typ], self.options.get("class", "")
+        if class_name:
+            classes.extend(class_name)
+
+        # Have a dummy title text if no title specified, as 'std' domain needs
+        # a title to process it as enumerable node.
+        if typ == "exercise":
+            title_text = f"{_(self.name.title())} "
+
+            if self.arguments != []:
+                title_text = f"({_(self.arguments[0])})"
+        else:
+            title_text = f"{_(self.name.title())} to "
+            target_label = self.arguments[0]
+
+        # selecting the type of node
+        if typ == "exercise":
+            if "nonumber" in self.options:
+                node = exercise_unenumerable_node()
+            else:
+                node = exercise_node()
+        else:
+            node = solution_node()
+
+        # state parsing
+        section = nodes.section(ids=[f"{typ}-content"])
+        textnodes, messages = self.state.inline_text(title_text, self.lineno)
+        self.state.nested_parse(self.content, self.content_offset, section)
+
+        node += nodes.title(title_text, "", *textnodes)
+        node += section
+
+        label = self.options.get("label", "")
+        if label:
+            self.options["noindex"] = False
+        else:
+            self.options["noindex"] = True
+            label = f"{env.docname}-{typ}-{serial_no}"
+
+        # Duplicate label warning
+        if not label == "" and label in env.exercise_list.keys():
+            docpath = env.doc2path(env.docname)
             path = docpath[: docpath.rfind(".")]
             other_path = self.env.doc2path(
                 self.env.sphinx_exercise_registry[label]["docname"]
