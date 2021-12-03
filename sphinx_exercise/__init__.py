@@ -10,6 +10,7 @@
 from pathlib import Path
 from typing import Any, Dict, Set, Union, cast
 from sphinx.config import Config
+from sphinx.locale import get_translation
 from sphinx.application import Sphinx
 from sphinx.environment import BuildEnvironment
 from sphinx.domains.std import StandardDomain
@@ -41,9 +42,12 @@ from .nodes import (
 from .utils import get_node_number, get_refuri, has_math_child, find_parent
 
 logger = logging.getLogger(__name__)
+MESSAGE_CATALOG_NAME = "exercise"
+_ = get_translation(MESSAGE_CATALOG_NAME)
+
 
 # Variables
-SOLUTION_PLACEHOLDER = "Solution to "
+SOLUTION_PLACEHOLDER = _("Solution to ")
 MATH_PLACEHOLDER = ":math:"
 
 
@@ -176,7 +180,7 @@ def process_reference(self, node, default_title=""):
         if is_exercise_node(target_node):
             if default_title:
                 number = get_node_number(self.app, target_node, "exercise")
-                node.insert(len(node[0]), docutil_nodes.Text(" Exercise " + number))
+                node.insert(len(node[0]), docutil_nodes.Text(_(" Exercise ") + number))
                 return
             else:
                 node = process_math_placeholder(node, update_title, source_node)

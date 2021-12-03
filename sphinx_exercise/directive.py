@@ -42,12 +42,12 @@ class CustomDirective(SphinxDirective):
         # Have a dummy title text if no title specified, as 'std' domain needs
         # a title to process it as enumerable node.
         if typ == "exercise":
-            title_text = f"{self.name.title()} "
+            title_text = f"{_(self.name.title())} "
 
             if self.arguments != []:
-                title_text = f"({self.arguments[0]})"
+                title_text = f"({_(self.arguments[0])})"
         else:
-            title_text = f"{self.name.title()} to "
+            title_text = f"{_(self.name.title())} to "
             target_label = self.arguments[0]
 
         # selecting the type of node

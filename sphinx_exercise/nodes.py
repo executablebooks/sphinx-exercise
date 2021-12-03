@@ -7,6 +7,7 @@ Enumerable and unenumerable nodes
 :copyright: Copyright 2020 by the QuantEcon team, see AUTHORS
 :licences: see LICENSE for details
 """
+from sphinx.locale import get_translation
 from docutils.nodes import Node
 from sphinx.util import logging
 from docutils import nodes as docutil_nodes
@@ -14,6 +15,9 @@ from sphinx.writers.latex import LaTeXTranslator
 from .utils import get_node_number, find_parent, list_rindex
 
 logger = logging.getLogger(__name__)
+MESSAGE_CATALOG_NAME = "exercise"
+_ = get_translation(MESSAGE_CATALOG_NAME)
+
 
 CR = "\n"
 latex_admonition_start = CR + "\\begin{sphinxadmonition}{note}"
@@ -71,11 +75,11 @@ def depart_enumerable_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
         number = get_node_number(self, node, typ)
-        _depart_nodes_latex(self, node, f"{typ.title()} {number} ")
+        _depart_nodes_latex(self, node, f"{_(typ.title())} {number} ")
     else:
         number = get_node_number(self, node, typ)
         idx = list_rindex(self.body, f"{typ.title()} {number} ")
-        self.body[idx] = f"{typ.title()} {number} "
+        self.body[idx] = f"{_(typ.title())} {number} "
         self.body.append("</div>")
 
 
@@ -92,10 +96,10 @@ def visit_exercise_unenumerable_node(self, node: Node) -> None:
 def depart_exercise_unenumerable_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
-        _depart_nodes_latex(self, node, f"{typ.title()} ")
+        _depart_nodes_latex(self, node, f"{_typ.title())} ")
     else:
         idx = list_rindex(self.body, '<p class="admonition-title">') + 1
-        element = f"<span>{typ.title()} </span>"
+        element = f"<span>{_(typ.title())} </span>"
         self.body.insert(idx, element)
         self.body.append("</div>")
 
@@ -110,10 +114,10 @@ def visit_solution_node(self, node: Node) -> None:
 def depart_solution_node(self, node: Node) -> None:
     typ = node.attributes.get("type", "")
     if isinstance(self, LaTeXTranslator):
-        _depart_nodes_latex(self, node, f"{typ.title()} to ", True)
+        _depart_nodes_latex(self, node, f"{_(typ.title())} to ", True)
     else:
         number = get_node_number(self, node, typ)
-        idx = list_rindex(self.body, f"{typ.title()} {number} ")
+        idx = list_rindex(self.body, f"{_(typ.title())} {number} ")
         self.body.pop(idx)
         self.body.append("</div>")
 
