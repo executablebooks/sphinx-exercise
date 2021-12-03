@@ -11,12 +11,15 @@ from typing import List
 from docutils.nodes import Node
 
 from sphinx.util.docutils import SphinxDirective
+from sphinx.locale import get_translation
 from docutils.parsers.rst import directives
 from .nodes import exercise_node, exercise_unenumerable_node, solution_node
 from docutils import nodes
 from sphinx.util import logging
 
 logger = logging.getLogger(__name__)
+MESSAGE_CATALOG_NAME = "exercise"
+_ = get_translation(MESSAGE_CATALOG_NAME)
 
 
 class CustomDirective(SphinxDirective):
