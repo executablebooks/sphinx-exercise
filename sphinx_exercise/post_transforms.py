@@ -35,7 +35,7 @@ def build_reference_node(app, target_node):
 
 class UpdateReferencesToEnumerated(SphinxPostTransform):
     """
-    Check :ref: made to enumerated nodes and update to :numref:
+    Check :ref: made to enumerated target nodes and update to :numref:
     """
 
     default_priority = 5
@@ -71,6 +71,9 @@ class UpdateReferencesToEnumerated(SphinxPostTransform):
 class ResolveTitlesInExercises(SphinxPostTransform):
     """
     Resolve Titles for Exercise Nodes and Enumerated Exercise Nodes
+    for:
+        1. Numbering
+        2. Formatting Title and Subtitles into docutils.title node
     """
 
     default_priority = 20
@@ -117,10 +120,17 @@ class ResolveTitlesInExercises(SphinxPostTransform):
 
 def resolve_solution_title(app, node, exercise_node):
     """
-    Resolve Solution Nodes
-    Note: Using a resolver function in case we need to resolve titles
+    Resolve Titles for Solution Nodes for:
+
+        1. Numbering of Target Exercise Nodes
+        2. Formatting Title and Subtitles into docutils.title node
+        3. Ensure mathjax is triggered for pages that include path
+           in titles inherited from Exercise Node
+
+    Note: Setup as a resolver function in case we need to resolve titles
     in references to solution nodes.
     """
+
     title = node.children[0]
     exercise_title = exercise_node.children[0]
     if isinstance(title, solution_title):
@@ -155,10 +165,6 @@ def resolve_solution_title(app, node, exercise_node):
 
 
 class ResolveTitlesInSolutions(SphinxPostTransform):
-    """
-    Resolve Titles for Solutions Nodes and merge in
-    the main title only from target_nodes
-    """
 
     default_priority = 21
 
@@ -209,19 +215,19 @@ class ResolveLinkTextToSolutions(SphinxPostTransform):
                         for child in node.children:
                             new_node += child
                         node.replace_self(new_node)
-                    if isinstance(target_node, solution_node):
-                        pass
-                        # import pdb; pdb.set_trace()
                 if isinstance(target_node, solution_node):
+                    # TODO: Check if this condition is required?
+                    if not target_node.resolved_title:
+                        exercise_label = target_node.get("target_label")
+                        exercise_target = self.env.sphinx_exercise_registry[
+                            exercise_label
+                        ]  # noqa: E501
+                        exercise_node = exercise_target.get("node")
+                        target_node = resolve_solution_title(
+                            self.app, target_node, exercise_node
+                        )  # noqa: E501
                     title_text = target_node.children[0].astext()
                     inline = node.children[0]
                     inline.children = []
                     inline += docutil_nodes.Text(title_text)
                     node.children[0] = inline
-
-                    # TODO: Is it possible for the target_node not to be resolved?
-                    # if not target_node.resolved_title:
-                    #     exercise_label = target_node.get("target_label")
-                    #     exercise_target = self.env.sphinx_exercise_registry[exercise_label] # noqa: E501
-                    #     exercise_node = exercise_target.get("node")
-                    #     target_node = resolve_solution_title(self.app, target_node, exercise_node) # noqa: E501

@@ -4,9 +4,10 @@ sphinx_exercise.nodes
 
 Sphinx Exercise Nodes
 
-:copyright: Copyright 2020 by the QuantEcon team, see AUTHORS
+:copyright: Copyright 2020-2021 by the Executable Books team, see AUTHORS
 :licences: see LICENSE for details
 """
+
 from sphinx.util import logging
 from docutils.nodes import Node
 from docutils import nodes as docutil_nodes
@@ -111,7 +112,7 @@ def depart_exercise_node(self, node: Node) -> None:
 def visit_exercise_enumerable_node(self, node: Node) -> None:
     """
     LaTeX Reference Structure is exercise:{label} and resolved by
-    exercise_latex_number_reference
+    exercise_latex_number_reference nodes (see below)
     """
     if isinstance(self, LaTeXTranslator):
         label = (

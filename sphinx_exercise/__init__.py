@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-    sphinx_exercise
-    ~~~~~~~~~~~~~~~
-    This package is a namespace package that contains all extensions
-    distributed in the ``sphinx-contrib`` distribution.
-    :copyright: Copyright 2007-2009 by the Sphinx team, see AUTHORS.
-    :license: BSD, see LICENSE for details.
+sphinx_exercise
+~~~~~~~~~~~~~~~
+This package is an extension for sphinx to support exercise and solutions.
+:copyright: Copyright 2020-2021 by the Executable Books team, see AUTHORS.
+:license: MIT, see LICENSE for details.
 """
+
 from pathlib import Path
 from typing import Any, Dict, Set, Union, cast
 from sphinx.config import Config
@@ -20,27 +20,19 @@ from sphinx.util.fileutil import copy_asset
 from .directive import ExerciseDirective, SolutionDirective
 from .nodes import (
     exercise_node,
-    exercise_enumerable_node,
-    solution_node,
     visit_exercise_node,
     depart_exercise_node,
+    exercise_enumerable_node,
     visit_exercise_enumerable_node,
     depart_exercise_enumerable_node,
+    solution_node,
     visit_solution_node,
     depart_solution_node,
     is_extension_node,
     exercise_title,
-    # visit_exercise_title,
-    # depart_exercise_title,
     exercise_subtitle,
-    # visit_exercise_subtitle,
-    # depart_exercise_subtitle,
     solution_title,
-    # visit_solution_title,
-    # depart_solution_title,
     solution_subtitle,
-    # visit_solution_subtitle,
-    # depart_solution_subtitle,
     exercise_latex_number_reference,
     visit_exercise_latex_number_reference,
     depart_exercise_latex_number_reference,

@@ -18,11 +18,6 @@ def find_parent(env, node, parent_tag):
         ):
             return node.attributes["docname"]
 
-    if node.tagname == parent_tag:
-        return node.attributes["docname"]
-
-    return None
-
 
 def get_node_number(self, node, typ) -> str:
     """Get the number for the directive node for HTML."""
