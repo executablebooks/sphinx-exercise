@@ -78,7 +78,7 @@ def depart_enumerable_node(self, node: Node) -> None:
         _depart_nodes_latex(self, node, f"{_(typ.title())} {number} ")
     else:
         number = get_node_number(self, node, typ)
-        idx = list_rindex(self.body, f"{typ.title()} {number} ")
+        idx = list_rindex(self.body, f"{(typ.title())} {number} ")
         self.body[idx] = f"{_(typ.title())} {number} "
         self.body.append("</div>")
 
