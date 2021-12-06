@@ -19,6 +19,10 @@ logger = logging.getLogger(__name__)
 
 
 def build_reference_node(app, target_node):
+    """
+    Builds a docutil.nodes.reference object
+    to a given target_node.
+    """
     refuri = app.builder.get_relative_uri(
         app.env.docname, target_node.get("docname", "")
     )
@@ -35,8 +39,9 @@ def build_reference_node(app, target_node):
 
 class UpdateReferencesToEnumerated(SphinxPostTransform):
     """
-    Check :ref: made to enumerated target nodes and update to :numref:
-    """
+        Updates all :ref: to :numref: if used when referencing
+        an enumerated exercise node.
+    ]"""
 
     default_priority = 5
 
