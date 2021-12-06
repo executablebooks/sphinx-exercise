@@ -147,22 +147,23 @@ def resolve_solution_title(app, node, exercise_node):
             updated_title_text += f" {node_number}"
         # New Title Node
         updated_title = docutil_nodes.title()
-        updated_title += build_reference_node(app, exercise_node)
-        updated_title += docutil_nodes.Text(updated_title_text)
+        wrap_reference = build_reference_node(app, exercise_node)
+        wrap_reference += docutil_nodes.Text(updated_title_text)
         node["title"] = updated_title_text
         # Parse Custom Titles from Exercise
         if len(exercise_title.children) > 1:
             subtitle = exercise_title.children[1]
             if isinstance(subtitle, exercise_subtitle):
-                updated_title += docutil_nodes.Text(" (")
+                wrap_reference += docutil_nodes.Text(" (")
                 for child in subtitle.children:
                     if isinstance(child, docutil_nodes.math):
                         # Ensure mathjax is loaded for pages that only contain
                         # references to nodes that contain math
                         domain = app.env.get_domain("math")
                         domain.data["has_equations"][app.env.docname] = True
-                    updated_title += child
-                updated_title += docutil_nodes.Text(")")
+                    wrap_reference += child
+                wrap_reference += docutil_nodes.Text(")")
+        updated_title += wrap_reference
         updated_title.parent = title.parent
         node.children[0] = updated_title
     node.resolved_title = True
