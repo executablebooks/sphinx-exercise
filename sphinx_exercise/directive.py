@@ -7,114 +7,70 @@ A custom Sphinx Directive
 :copyright: Copyright 2020 by the QuantEcon team, see AUTHORS
 :licences: see LICENSE for details
 """
+
 from typing import List
 from docutils.nodes import Node
 
 from sphinx.util.docutils import SphinxDirective
 from docutils.parsers.rst import directives
-from .nodes import exercise_node, exercise_unenumerable_node, solution_node
+from .nodes import (
+    exercise_node,
+    exercise_enumerable_node,
+    solution_node,
+    exercise_title,
+    exercise_subtitle,
+    solution_title,
+)
 from docutils import nodes
 from sphinx.util import logging
 
 logger = logging.getLogger(__name__)
 
 
-class CustomDirective(SphinxDirective):
-    """ A custom Sphinx directive """
+class SphinxExerciseBaseDirective(SphinxDirective):
+    def duplicate_labels(self, label):
+        """ Check for duplicate labels """
 
-    name = ""
-
-    def run(self) -> List[Node]:
-        env = self.env
-        typ = self.name
-        if typ == "solution" and env.app.config.hide_solutions:
-            return []
-
-        serial_no = env.new_serialno()
-
-        if not hasattr(env, "exercise_list"):
-            env.exercise_list = {}
-
-        classes, class_name = [typ], self.options.get("class", "")
-        if class_name:
-            classes.extend(class_name)
-
-        # Have a dummy title text if no title specified, as 'std' domain needs
-        # a title to process it as enumerable node.
-        if typ == "exercise":
-            title_text = f"{self.name.title()} "
-
-            if self.arguments != []:
-                title_text = f"({self.arguments[0]})"
-        else:
-            title_text = f"{self.name.title()} to "
-            target_label = self.arguments[0]
-
-        # selecting the type of node
-        if typ == "exercise":
-            if "nonumber" in self.options:
-                node = exercise_unenumerable_node()
-            else:
-                node = exercise_node()
-        else:
-            node = solution_node()
-
-        # state parsing
-        section = nodes.section(ids=[f"{typ}-content"])
-        textnodes, messages = self.state.inline_text(title_text, self.lineno)
-        self.state.nested_parse(self.content, self.content_offset, section)
-
-        node += nodes.title(title_text, "", *textnodes)
-        node += section
-
-        label = self.options.get("label", "")
-        if label:
-            self.options["noindex"] = False
-        else:
-            self.options["noindex"] = True
-            label = f"{env.docname}-{typ}-{serial_no}"
-
-        # Duplicate label warning
-        if not label == "" and label in env.exercise_list.keys():
-            docpath = env.doc2path(env.docname)
+        if not label == "" and label in self.env.sphinx_exercise_registry.keys():
+            docpath = self.env.doc2path(self.env.docname)
             path = docpath[: docpath.rfind(".")]
-            other_path = env.doc2path(env.exercise_list[label]["docname"])
+            other_path = self.env.doc2path(
+                self.env.sphinx_exercise_registry[label]["docname"]
+            )
             msg = f"duplicate label: {label}; other instance in {other_path}"
             logger.warning(msg, location=path, color="red")
-            return []
+            return True
 
-        self.options["name"] = label
-
-        # Set node attributes
-        node["classes"].extend(classes)
-        node["ids"].append(label)
-        node["label"] = label
-        node["docname"] = env.docname
-        node["title"] = title_text
-        node["type"] = typ
-        node["hidden"] = True if "hidden" in self.options else False
-        node.document = self.state.document
-
-        if typ == "solution":
-            node["target_label"] = target_label
-
-        self.add_name(node)
-        env.exercise_list[label] = {
-            "type": typ,
-            "docname": env.docname,
-            "node": node,
-            "title": title_text,
-            "hidden": node.get("hidden", bool),
-        }
-
-        if node.get("hidden", bool):
-            return []
-
-        return [node]
+        return False
 
 
-class ExerciseDirective(CustomDirective):
-    """ A custom exercise directive """
+class ExerciseDirective(SphinxExerciseBaseDirective):
+    """
+    An exercise directive
+
+    .. exercise:: <subtitle> (optional)
+       :label:
+       :class:
+       :nonumber:
+       :hidden:
+
+    Arguments
+    ---------
+    subtitle : str (optional)
+            Specify a custom subtitle to add to the exercise output
+
+    Parameters:
+    -----------
+    label : str,
+            A unique identifier for your exercise that you can use to reference
+            it with {ref} and {numref}
+    class : str,
+            Value of the exercise’s class attribute which can be used to add custom CSS
+    nonumber :  boolean (flag),
+                Turns off exercise auto numbering.
+    hidden  :   boolean (flag),
+                Removes the directive from the final output.
+    """
 
     name = "exercise"
     has_content = True
@@ -128,9 +84,116 @@ class ExerciseDirective(CustomDirective):
         "hidden": directives.flag,
     }
 
+    def run(self) -> List[Node]:
 
-class SolutionDirective(CustomDirective):
-    """ A custom solution directive """
+        self.defaults = {"title_text": "Exercise"}
+        self.serial_number = self.env.new_serialno()
+
+        # Initialise Registry (if needed)
+        if not hasattr(self.env, "sphinx_exercise_registry"):
+            self.env.sphinx_exercise_registry = {}
+
+        # Construct Title
+        title = exercise_title()
+        title += nodes.Text(self.defaults["title_text"])
+
+        # Select Node Type and Initialise
+        if "nonumber" in self.options:
+            node = exercise_node()
+        else:
+            node = exercise_enumerable_node()
+
+        # Parse custom subtitle option
+        if self.arguments != []:
+            subtitle = exercise_subtitle()
+            subtitle_text = f"{self.arguments[0]}"
+            subtitle_nodes, _ = self.state.inline_text(subtitle_text, self.lineno)
+            for subtitle_node in subtitle_nodes:
+                subtitle += subtitle_node
+            title += subtitle
+
+        # State Parsing
+        section = nodes.section(ids=["exercise-content"])
+        self.state.nested_parse(self.content, self.content_offset, section)
+
+        # Construct a label
+        label = self.options.get("label", "")
+        if label:
+            # TODO: Check how :noindex: is used here
+            self.options["noindex"] = False
+        else:
+            self.options["noindex"] = True
+            label = f"{self.env.docname}-exercise-{self.serial_number}"
+
+        # Check for Duplicate Labels
+        # TODO: Should we just issue a warning rather than skip content?
+        if self.duplicate_labels(label):
+            return []
+
+        # Collect Classes
+        classes = [f"{self.name}"]
+        if self.options.get("class"):
+            classes.extend(self.options.get("class"))
+
+        self.options["name"] = label
+
+        # Construct Node
+        node += title
+        node += section
+        node["classes"].extend(classes)
+        node["ids"].append(label)
+        node["label"] = label
+        node["docname"] = self.env.docname
+        node["title"] = self.defaults["title_text"]
+        node["type"] = self.name
+        node["hidden"] = True if "hidden" in self.options else False
+        node["serial_number"] = self.serial_number
+        node.document = self.state.document
+
+        self.add_name(node)
+        self.env.sphinx_exercise_registry[label] = {
+            "type": self.name,
+            "docname": self.env.docname,
+            "node": node,
+        }
+
+        # TODO: Could tag this as Hidden to prevent the cell showing
+        # rather than removing content
+        # https://github.com/executablebooks/sphinx-jupyterbook-latex/blob/8401a27417d8c2dadf0365635bd79d89fdb86550/sphinx_jupyterbook_latex/transforms.py#L108
+        if node.get("hidden", bool):
+            return []
+
+        return [node]
+
+
+class SolutionDirective(SphinxExerciseBaseDirective):
+    """
+    A solution directive
+
+    .. solution:: <exercise-reference>
+       :label:
+       :class:
+       :hidden:
+
+    Arguments
+    ---------
+    exercise-reference : str
+                        Specify a linked exercise by label
+
+    Parameters:
+    -----------
+    label : str,
+            A unique identifier for your exercise that you can use to reference
+            it with {ref} and {numref}
+    class : str,
+            Value of the exercise’s class attribute which can be used to add custom CSS
+    hidden  :   boolean (flag),
+                Removes the directive from the final output.
+
+    Notes:
+    ------
+    Checking for target reference is done in post_transforms for Solution Titles
+    """
 
     name = "solution"
     has_content = True
@@ -142,3 +205,73 @@ class SolutionDirective(CustomDirective):
         "class": directives.class_option,
         "hidden": directives.flag,
     }
+
+    def run(self) -> List[Node]:
+
+        self.defaults = {"title_text": "Solution to"}
+        target_label = self.arguments[0]
+        self.serial_number = self.env.new_serialno()
+
+        # Initialise Registry if Required
+        if not hasattr(self.env, "sphinx_exercise_registry"):
+            self.env.sphinx_exercise_registry = {}
+
+        # Parse :hide-solutions: option
+        if self.env.app.config.hide_solutions:
+            return []
+
+        # Construct Title
+        title = solution_title()
+        title += nodes.Text(self.defaults["title_text"])
+
+        # State Parsing
+        section = nodes.section(ids=["solution-content"])
+        self.state.nested_parse(self.content, self.content_offset, section)
+
+        # Fetch Label or Generate One
+        label = self.options.get("label", "")
+        if label:
+            # TODO: Check how :noindex: is used here
+            self.options["noindex"] = False
+        else:
+            self.options["noindex"] = True
+            label = f"{self.env.docname}-solution-{self.serial_number}"
+
+        # Check for duplicate labels
+        # TODO: Should we just issue a warning rather than skip content?
+        if self.duplicate_labels(label):
+            return []
+
+        self.options["name"] = label
+
+        # Collect Classes
+        classes = [f"{self.name}"]
+        if self.options.get("class"):
+            classes += self.options.get("class")
+
+        # Construct Node
+        node = solution_node()
+        node += title
+        node += section
+        node["target_label"] = target_label
+        node["classes"].extend(classes)
+        node["ids"].append(label)
+        node["label"] = label
+        node["docname"] = self.env.docname
+        node["title"] = title.astext()
+        node["type"] = self.name
+        node["hidden"] = True if "hidden" in self.options else False
+        node["serial_number"] = self.serial_number
+        node.document = self.state.document
+
+        self.add_name(node)
+        self.env.sphinx_exercise_registry[label] = {
+            "type": self.name,
+            "docname": self.env.docname,
+            "node": node,
+        }
+
+        if node.get("hidden", bool):
+            return []
+
+        return [node]

@@ -58,20 +58,26 @@ _Source:_ [QuantEcon](https://python-programming.quantecon.org/functions.html#Ex
 
 ### Referencing Exercises
 
-You can refer to an exercise using the `{ref}` role like ```{ref}`my-exercise` ```, which will display the title of the exercise directive. In the event that directive does not have a title, the title will default to "Exercise" like so: {ref}`my-exercise`.
+You can refer to an exercise using the `{ref}` role like ```{ref}`my-exercise` ```, which will display the title of the exercise directive. In the event that directive does not have a title, the title will be the default "Exercise" or "Exercise {number}" like so: {ref}`my-exercise`.
 
-Enumerable directives can also be referenced through the `numref` role like ```{numref}`my-exercise` ```, which will display the number of the exercise directive. Referencing the above directive will display {numref}`my-exercise`. Furthermore, `numref` can take in three additional placeholders: _%s_ and _{number}_ which get replaced by the exercise number and _name_ by the exercise title.[^note]
+Enumerable directives can also be referenced through the `numref` role like ```{numref}`my-exercise` ```, which will display the number of the exercise directive. Referencing the above directive will display {numref}`my-exercise`. In this case it displays the same result as the `{ref}` role as `exerise` notes are (by default) enumerated.
 
+Furthermore, `numref` can take in three additional placeholders for more customized titles:
 
+1. _%s_
+2.  _{number}_ which get replaced by the exercise number, and
+3. _{name}_ by the exercise title.[^note]
 
-<!-- You can refer to an exercise using the `{ref}` role like: ```{ref}`my-exercise` ```, which will replace the reference with the exercise number like so: {ref}`my-exercise`. When an explicit text is provided, this caption will serve as the title of the reference. -->
+An example ```{numref}`My custom {number} title and {name}` ``` would resolve to {numref}`My custom {number} title and {name} <my-exercise>`
 
 [^note]: If the exercise directive does not have a title, an `invalid numfig format` warning will be displayed during build if the user tries to use the _{name}_ placeholder.
 
 
 ## Solution Directive
 
-A solution directive can be included using the `solution` pattern. It takes in the label of the directive it wants to link to as a required argument. Unlike the `exercise` directive, the solution directive is unenumerable. The following options are also supported:
+A solution directive can be included using the `solution` pattern. It takes in the label of the directive it wants to link to as a required argument. Unlike the `exercise` directive, the solution directive not enumerable as it inherits directly from the linked exercise.
+
+The following options are also supported:
 
 * `label` : text
 
@@ -83,9 +89,6 @@ A solution directive can be included using the `solution` pattern. It takes in t
 
     Removes the directive from the final output.
 
-```{note}
-The title of the solution directive links directly to the referred directive.
-```
 
 **Example**
 

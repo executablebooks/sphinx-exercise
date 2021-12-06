@@ -2,9 +2,11 @@
     <section ids="linked-unenum-title" names="_linked_unenum_title">
         <title>
             _linked_unenum_title
-        <exercise_unenumerable_node classes="exercise" docname="solution/_linked_unenum_title" hidden="False" ids="ex-nonumber-title" label="ex-nonumber-title" names="ex-nonumber-title" title="(This is a title)" type="exercise">
-            <title>
-                (This is a title)
+        <exercise_node classes="exercise" docname="solution/_linked_unenum_title" hidden="False" ids="ex-nonumber-title" label="ex-nonumber-title" names="ex-nonumber-title" serial_number="0" title="Exercise" type="exercise">
+            <exercise_title>
+                Exercise
+                <exercise_subtitle>
+                    This is a title
             <section ids="exercise-content">
                 <paragraph>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -12,9 +14,9 @@
                     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
                 <paragraph>
                     Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        <solution_node classes="solution" docname="solution/_linked_unenum_title" hidden="False" ids="sol-nonumber-title" label="sol-nonumber-title" names="sol-nonumber-title" target_label="ex-nonumber-title" title="Solution to " type="solution">
-            <title>
-                Solution to 
+        <solution_node classes="solution" docname="solution/_linked_unenum_title" hidden="False" ids="sol-nonumber-title" label="sol-nonumber-title" names="sol-nonumber-title" serial_number="1" target_label="ex-nonumber-title" title="Solution to" type="solution">
+            <solution_title>
+                Solution to
             <section ids="solution-content">
                 <paragraph>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
