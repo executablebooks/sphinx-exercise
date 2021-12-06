@@ -1,4 +1,19 @@
-# Testing
+# Developers
+
+Development of this package follows the following conventions and styles.
+
+Design notes and considerations can be found in [](developer-design.md)
+
+## Install
+
+To install the package in `develop` mode:
+
+```shell
+cd sphinx-exercise
+pip install -e .
+```
+
+## Testing
 
 For code tests, `sphinx-exercise` uses [pytest](https://docs.pytest.org/).
 

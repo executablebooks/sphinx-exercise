@@ -5,7 +5,8 @@
 
 install
 syntax
-testing
+developer
+developer-design
 ```
 
 
