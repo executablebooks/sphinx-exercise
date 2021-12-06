@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.3.0](https://github.com/executablebooks/sphinx-exercise/tree/v0.3.0) (2021-12-07)
+
+### Improved 👌
+
+This is a **major release** as the package was extensively refactored to improve maintainability.
+There are very few user facing changes. The styles have been updated when
+including a custom title to exercise admonitions.
+
+Further details of the technical changes [can be found here](https://github.com/executablebooks/sphinx-exercise/pull/37#issue-1038116091)
+
+
 ## [v0.2.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.2.1) (2021-10-08)
 
 ### New ✨
