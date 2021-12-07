@@ -17,6 +17,8 @@ from .nodes import (
     exercise_node,
     exercise_enumerable_node,
     solution_node,
+    solution_start_node,
+    solution_end_node,
     exercise_title,
     exercise_subtitle,
     solution_title,
@@ -205,6 +207,7 @@ class SolutionDirective(SphinxExerciseBaseDirective):
         "class": directives.class_option,
         "hidden": directives.flag,
     }
+    solution_node = solution_node
 
     def run(self) -> List[Node]:
 
@@ -250,7 +253,7 @@ class SolutionDirective(SphinxExerciseBaseDirective):
             classes += self.options.get("class")
 
         # Construct Node
-        node = solution_node()
+        node = self.solution_node()
         node += title
         node += section
         node["target_label"] = target_label
@@ -275,3 +278,39 @@ class SolutionDirective(SphinxExerciseBaseDirective):
             return []
 
         return [node]
+
+
+# Gated Directives
+
+
+class SolutionStartDirective(SolutionDirective):
+    """
+    A gated directive for solution
+
+    .. solution-start:: <exercise-reference>
+       :label:
+       :class:
+       :hidden:
+    """
+
+    name = "solution-start"
+    solution_node = solution_start_node
+
+
+class SolutionEndDirective(SolutionDirective):
+    """
+    A gated directive for solution
+
+    .. solution-end:: <exercise-reference>
+       :label:
+       :class:
+       :hidden:
+
+    TODO: Simplify this directive so it doesn't take
+    options like the SolutionStartDirective as they aren't
+    required. and shouldn't have them. Should be a marker
+    style directive that supports content
+    """
+
+    name = "solution-end"
+    solution_node = solution_end_node

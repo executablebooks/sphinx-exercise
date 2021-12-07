@@ -10,6 +10,7 @@ exclude: >
       tests/test_solution/.*|
       tests/test_solution_references/.*|
       tests/test_hiddendirective/.*|
+      tests/test_gateddirective/.*|
     )$
 
 repos:

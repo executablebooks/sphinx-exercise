@@ -34,6 +34,14 @@ class solution_node(docutil_nodes.Admonition, docutil_nodes.Element):
     resolved_title = False
 
 
+class solution_start_node(docutil_nodes.Admonition, docutil_nodes.Element):
+    resolved_title = False
+
+
+class solution_end_node(docutil_nodes.Admonition, docutil_nodes.Element):
+    resolved_title = False
+
+
 class exercise_title(docutil_nodes.title):
     def default_title(self):
         title_text = self.children[0].astext()
