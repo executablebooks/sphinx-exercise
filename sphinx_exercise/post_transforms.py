@@ -139,9 +139,8 @@ def resolve_solution_title(app, node, exercise_node):
     title = node.children[0]
     exercise_title = exercise_node.children[0]
     if isinstance(title, solution_title):
-        updated_title_text = (
-            node.get("title") + " " + exercise_title.children[0].astext()
-        )
+        entry_title_text = node.get("title")
+        updated_title_text = " " + exercise_title.children[0].astext()
         if isinstance(exercise_node, exercise_enumerable_node):
             node_number = get_node_number(app, exercise_node, "exercise")
             updated_title_text += f" {node_number}"
@@ -149,7 +148,7 @@ def resolve_solution_title(app, node, exercise_node):
         updated_title = docutil_nodes.title()
         wrap_reference = build_reference_node(app, exercise_node)
         wrap_reference += docutil_nodes.Text(updated_title_text)
-        node["title"] = updated_title_text
+        node["title"] = entry_title_text + updated_title_text
         # Parse Custom Titles from Exercise
         if len(exercise_title.children) > 1:
             subtitle = exercise_title.children[1]
@@ -163,6 +162,7 @@ def resolve_solution_title(app, node, exercise_node):
                         domain.data["has_equations"][app.env.docname] = True
                     wrap_reference += child
                 wrap_reference += docutil_nodes.Text(")")
+        updated_title += docutil_nodes.Text(entry_title_text)
         updated_title += wrap_reference
         updated_title.parent = title.parent
         node.children[0] = updated_title
