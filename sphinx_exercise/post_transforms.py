@@ -176,6 +176,9 @@ class ResolveTitlesInSolutions(SphinxPostTransform):
 
     def run(self):
 
+        if not hasattr(self.env, "sphinx_exercise_registry"):
+            return
+
         # Update Solution Directives
         for node in self.document.traverse(solution_node):
             label = node.get("label")
@@ -207,6 +210,10 @@ class ResolveLinkTextToSolutions(SphinxPostTransform):
     default_priority = 22
 
     def run(self):
+
+        if not hasattr(self.env, "sphinx_exercise_registry"):
+            return
+
         # Update Solution References
         for node in self.document.traverse(docutil_nodes.reference):
             refid = node.get("refid")
