@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.3.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.3.1) (2022-2-01)
+
+### Fixes 🐛
+
+- 🐛 FIX: Check for sphinx_exercise_registry in all registered post_tranform
+- 🐛 FIX: Update style for solution titles
+
 ## [v0.3.0](https://github.com/executablebooks/sphinx-exercise/tree/v0.3.0) (2021-12-07)
 
 ### Improved 👌
