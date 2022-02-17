@@ -1,5 +1,14 @@
 # Syntax Guide
 
+```{warning}
+This extension currently works best when paired with the following themes:
+
+1. [sphinx_book_theme](https://github.com/executablebooks/sphinx-book-theme)
+2. [quantecon_book_theme](https://github.com/quantecon/quantecon-book-theme)
+
+When using other themes (such as `alabaster`) the icons for the `exercise` and `solution` admonitions are missing on the top left.
+We would like to make this more theme agnostic and status can be found in [this issue](https://github.com/executablebooks/sphinx-exercise/issues/51)
+```
 
 ```{note}
 This documentation utilized the [Markedly Structured Text (MyST)](https://myst-parser.readthedocs.io/en/latest/index.html) syntax.
