@@ -48,7 +48,7 @@ class MergeGatedSolutions(SphinxTransform):
             new_node.parent = node.parent
             for child in node.children:
                 new_node += child
-            # Collect nodes attached to the Parent Node unit :solution-end:
+            # Collect nodes attached to the Parent Node until :solution-end:
             for child in parent.children[parent_start + 1 : parent_end]:
                 new_node += child
             # Replace :solution-start: with new solution node
