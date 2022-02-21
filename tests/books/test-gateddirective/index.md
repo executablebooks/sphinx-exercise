@@ -17,4 +17,5 @@ kernelspec:
 
 exercise
 solution
+errors
 ```

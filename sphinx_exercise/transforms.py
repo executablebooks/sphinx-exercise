@@ -1,5 +1,6 @@
 from sphinx.transforms import SphinxTransform
 from sphinx.util import logging
+from sphinx.errors import ExtensionError
 
 from .nodes import (
     solution_node,
@@ -12,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 class MergeGatedSolutions(SphinxTransform):
     """
-    Transform Gated Directives into unified
-    Directives
+    Transform Gated Directives into single unified
+    Directives in the Sphinx Abstract Syntax Tree
     """
 
     default_priority = 10
@@ -29,12 +30,14 @@ class MergeGatedSolutions(SphinxTransform):
                         parent_end = idx1 + idx2
                         break
                 break
-        if not parent_start or not parent_end:
-            # TODO: raise sphinx.error with details
-            raise Exception
+        if not parent_end:
+            docname = self.app.env.docname
+            msg = f"[sphinx-exercise:{docname}] Can't find a matching end node: solution-end"
+            raise ExtensionError(msg)
         return parent_start, parent_end
 
     def apply(self):
+        # Process all matching solution-start and solution-end nodes
         for node in self.document.traverse(solution_start_node):
             label = node.get("label")
             parent_start, parent_end = self.find_nodes(label, node)
