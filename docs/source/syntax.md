@@ -10,6 +10,18 @@ When using other themes (such as `alabaster`) the icons for the `exercise` and `
 We would like to make this more theme agnostic and status can be found in [this issue](https://github.com/executablebooks/sphinx-exercise/issues/51)
 ```
 
+`````{note}
+To use this extension in a Jupyter Book project, add `sphinx_exercise` as an extension in the `_config.yml` file.
+
+```
+  ...
+  extra_extensions:
+    ...
+    - sphinx_exercise
+  ...
+
+`````
+
 ```{note}
 This documentation utilized the [Markedly Structured Text (MyST)](https://myst-parser.readthedocs.io/en/latest/index.html) syntax.
 ```
