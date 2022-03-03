@@ -17,6 +17,8 @@ To use this extension in a Jupyter Book project, add `sphinx_exercise` as an ext
 sphinx:
     extra_extensions:
         - sphinx_exercise
+```
+
 `````
 
 ```{note}
