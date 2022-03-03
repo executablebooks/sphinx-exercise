@@ -13,13 +13,10 @@ We would like to make this more theme agnostic and status can be found in [this 
 `````{note}
 To use this extension in a Jupyter Book project, add `sphinx_exercise` as an extension in the `_config.yml` file.
 
-```
-  ...
-  extra_extensions:
-    ...
-    - sphinx_exercise
-  ...
-
+```{code-block} python
+sphinx:
+    extra_extensions:
+        - sphinx_exercise
 `````
 
 ```{note}
