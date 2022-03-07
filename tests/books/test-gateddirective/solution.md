@@ -95,5 +95,5 @@ plt.show()
 
 With some follow up text to the solution
 
-```{solution-end} exercise-1
+```{solution-end}
 ```
