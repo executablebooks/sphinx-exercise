@@ -1,6 +1,7 @@
 from sphinx.transforms import SphinxTransform
 from sphinx.util import logging
-from sphinx.errors import ExtensionError
+
+# from sphinx.errors import ExtensionError
 
 from .nodes import (
     solution_node,
@@ -32,8 +33,8 @@ class MergeGatedSolutions(SphinxTransform):
                 break
         if not parent_end:
             docname = self.app.env.docname
-            msg = f"[sphinx-exercise:{docname}] Can't find a matching end node: solution-end"
-            raise ExtensionError(msg)
+            msg = f"[sphinx-exercise:{docname}] Can't find a matching end node: solution-end"  # noqa: E501
+            logger.warn(msg)
         return parent_start, parent_end
 
     def apply(self):
@@ -41,6 +42,8 @@ class MergeGatedSolutions(SphinxTransform):
         for node in self.document.traverse(solution_start_node):
             label = node.get("label")
             parent_start, parent_end = self.find_nodes(label, node)
+            if not parent_end:
+                continue
             parent = node.parent
             # Rebuild Node as a Solution Node
             new_node = solution_node()
