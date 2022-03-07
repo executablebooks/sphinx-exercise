@@ -308,5 +308,6 @@ class SolutionEndDirective(SphinxDirective):
     """
 
     name = "solution-end"
+
     def run(self):
         return [solution_end_node()]
