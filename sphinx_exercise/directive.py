@@ -291,26 +291,22 @@ class SolutionStartDirective(SolutionDirective):
        :label:
        :class:
        :hidden:
+
+    This class is a child of SolutionDirective so it supports
+    all the same options as the base solution node
     """
 
     name = "solution-start"
     solution_node = solution_start_node
 
 
-class SolutionEndDirective(SolutionDirective):
+class SolutionEndDirective(SphinxDirective):
     """
-    A gated directive for solution
+    A simple gated directive to mark end of solution
 
-    .. solution-end:: <exercise-reference>
-       :label:
-       :class:
-       :hidden:
-
-    TODO: Simplify this directive so it doesn't take
-    options like the SolutionStartDirective as they aren't
-    required. and shouldn't have them. Should be a marker
-    style directive that supports content
+    .. solution-end::
     """
 
     name = "solution-end"
-    solution_node = solution_end_node
+    def run(self):
+        return [solution_end_node()]
