@@ -2,6 +2,7 @@ import re
 
 from sphinx.transforms import SphinxTransform
 from sphinx.util import logging
+from sphinx.errors import ExtensionError
 
 # from sphinx.errors import ExtensionError
 
@@ -24,6 +25,7 @@ class CheckGatedSolutions(SphinxTransform):
 
     def check_structure(self, registry):
         """ Check Structure of the Gated Registry"""
+        error = False
         docname = self.env.docname
         if docname in registry:
             start = registry[docname]["start"]
@@ -33,16 +35,22 @@ class CheckGatedSolutions(SphinxTransform):
             if len(start) > len(end):
                 msg = f"[{docname}] is missing a solution-end directive:\n  {structure}"
                 logger.error(msg)
+                error = True
             if len(start) < len(end):
                 msg = (
                     f"[{docname}] is missing a solution-start directive:\n  {structure}"
                 )
                 logger.error(msg)
+                error = True
             if len(start) == len(end):
                 groups = re.findall("(SE)", sequence)
                 if len(groups) != len(start):
                     msg = f"[{docname}] there are nested solution-start and solution-end contained in your document:\n  {structure}"  # noqa: E501
                     logger.error(msg)
+                    error = True
+        if error:
+            msg = "[sphinx-exercise] An error has occured when parsing gated directives.\nPlease check warning messages above"  # noqa: E501
+            raise ExtensionError(message=msg)
 
     def apply(self):
         # Check structure of all -start and -end nodes
