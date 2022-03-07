@@ -299,6 +299,27 @@ class SolutionStartDirective(SolutionDirective):
     name = "solution-start"
     solution_node = solution_start_node
 
+    def run(self):
+        # Initialise Gated Registry (if required)
+        if not hasattr(self.env, "sphinx_exercise_gated_registry"):
+            self.env.sphinx_exercise_gated_registry = {}
+        gated_registry = self.env.sphinx_exercise_gated_registry
+        docname = self.env.docname
+        if docname not in gated_registry:
+            gated_registry[docname] = {
+                "start": [],
+                "end": [],
+                "sequence": [],
+                "msg": [],
+            }
+        gated_registry[self.env.docname]["start"].append(self.lineno)
+        gated_registry[self.env.docname]["sequence"].append("S")
+        gated_registry[self.env.docname]["msg"].append(
+            f"solution-start at line: {self.lineno}"
+        )
+        # Run Parent Methods
+        return super().run()
+
 
 class SolutionEndDirective(SphinxDirective):
     """
@@ -310,4 +331,21 @@ class SolutionEndDirective(SphinxDirective):
     name = "solution-end"
 
     def run(self):
+        # Initialise Gated Registry (if required)
+        if not hasattr(self.env, "sphinx_exercise_gated_registry"):
+            self.env.sphinx_exercise_gated_registry = {}
+        gated_registry = self.env.sphinx_exercise_gated_registry
+        docname = self.env.docname
+        if docname not in gated_registry:
+            gated_registry[docname] = {
+                "start": [],
+                "end": [],
+                "sequence": [],
+                "msg": [],
+            }
+        gated_registry[self.env.docname]["end"].append(self.lineno)
+        gated_registry[self.env.docname]["sequence"].append("E")
+        gated_registry[self.env.docname]["msg"].append(
+            f"solution-end at line: {self.lineno}"
+        )
         return [solution_end_node()]

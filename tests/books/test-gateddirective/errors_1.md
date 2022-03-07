@@ -9,11 +9,11 @@ kernelspec:
   name: python3
 ---
 
-# Errors
+# Errors 1
 
 Some malformed directives
 
-# Gated Directive
+## Missing `-end` directive
 
 A solution using the gated directive
 

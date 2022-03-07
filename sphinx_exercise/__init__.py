@@ -45,6 +45,7 @@ from .nodes import (
     depart_exercise_latex_number_reference,
 )
 from .transforms import (
+    CheckGatedSolutions,
     MergeGatedSolutions,
 )
 from .post_transforms import (
@@ -189,6 +190,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_directive("solution-start", SolutionStartDirective)
     app.add_directive("solution-end", SolutionEndDirective)
 
+    app.add_transform(CheckGatedSolutions)
     app.add_transform(MergeGatedSolutions)
 
     app.add_post_transform(UpdateReferencesToEnumerated)

@@ -1,3 +1,5 @@
+import re
+
 from sphinx.transforms import SphinxTransform
 from sphinx.util import logging
 
@@ -12,10 +14,50 @@ from .nodes import (
 logger = logging.getLogger(__name__)
 
 
+class CheckGatedSolutions(SphinxTransform):
+    """
+    This transform checks the structure of the gated solutions
+    to flag any errors in input
+    """
+
+    default_priority = 1
+
+    def check_structure(self, registry):
+        """ Check Structure of the Gated Registry"""
+        docname = self.env.docname
+        if docname in registry:
+            start = registry[docname]["start"]
+            end = registry[docname]["end"]
+            sequence = "".join(registry[docname]["sequence"])
+            structure = "\n  ".join(registry[docname]["msg"])
+            if len(start) > len(end):
+                msg = f"[{docname}] is missing a solution-end directive:\n  {structure}"
+                logger.error(msg)
+            if len(start) < len(end):
+                msg = (
+                    f"[{docname}] is missing a solution-start directive:\n  {structure}"
+                )
+                logger.error(msg)
+            if len(start) == len(end):
+                groups = re.findall("(SE)", sequence)
+                if len(groups) != len(start):
+                    msg = f"[{docname}] there are nested solution-start and solution-end contained in your document:\n  {structure}"  # noqa: E501
+                    logger.error(msg)
+
+    def apply(self):
+        # Check structure of all -start and -end nodes
+        if hasattr(self.env, "sphinx_exercise_gated_registry"):
+            self.check_structure(self.env.sphinx_exercise_gated_registry)
+
+
 class MergeGatedSolutions(SphinxTransform):
     """
     Transform Gated Directives into single unified
     Directives in the Sphinx Abstract Syntax Tree
+
+    Note: The CheckGatedSolutions Transform should ensure the
+    structure of the gated directives is correct before
+    this transform is run.
     """
 
     default_priority = 10
@@ -31,10 +73,6 @@ class MergeGatedSolutions(SphinxTransform):
                         parent_end = idx1 + idx2
                         break
                 break
-        if not parent_end:
-            docname = self.app.env.docname
-            msg = f"[sphinx-exercise:{docname}] Can't find a matching end node: solution-end"  # noqa: E501
-            logger.warn(msg)
         return parent_start, parent_end
 
     def apply(self):
