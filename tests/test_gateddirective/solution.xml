@@ -1,95 +1,51 @@
 <document source="solution.md">
-    <section classes="tex2jax_ignore mathjax_ignore" ids="solution" names="solution">
-        <title>
-            Solution
-        <paragraph>
-            A standard solution exercise with code-following
-        <solution_node classes="solution" docname="solution" hidden="False" ids="solution-1" label="solution-1" names="solution-1" serial_number="0" target_label="exercise-1" title="Solution to" type="solution">
-            <solution_title>
-                Solution to
-            <section ids="solution-content">
-                <paragraph>
-                    This is a solution to Exercise 1
-        <CellNode cell_type="code" classes="cell">
-            <CellInputNode classes="cell_input">
-                <literal_block language="ipython3" xml:space="preserve">
-                    import numpy as np
-                    import matplotlib.pyplot as plt
-                    
-                    # Fixing random state for reproducibility
-                    np.random.seed(19680801)
-                    
-                    dt = 0.01
-                    t = np.arange(0, 30, dt)
-                    nse1 = np.random.randn(len(t))                 # white noise 1
-                    nse2 = np.random.randn(len(t))                 # white noise 2
-                    
-                    # Two signals with a coherent part at 10Hz and a random part
-                    s1 = np.sin(2 * np.pi * 10 * t) + nse1
-                    s2 = np.sin(2 * np.pi * 10 * t) + nse2
-                    
-                    fig, axs = plt.subplots(2, 1)
-                    axs[0].plot(t, s1, t, s2)
-                    axs[0].set_xlim(0, 2)
-                    axs[0].set_xlabel('time')
-                    axs[0].set_ylabel('s1 and s2')
-                    axs[0].grid(True)
-                    
-                    cxy, f = axs[1].cohere(s1, s2, 256, 1. / dt)
-                    axs[1].set_ylabel('coherence')
-                    
-                    fig.tight_layout()
-                    plt.show()
-            <CellOutputNode classes="cell_output">
-                <CellOutputBundleNode output_count="1">
-        <solution_node classes="solution" docname="solution" hidden="False" ids="solution-solution-1" label="solution-solution-1" names="solution-solution-1" serial_number="1" target_label="exercise-1" title="Solution to" type="solution">
-            <solution_title>
-                Solution to
-            <section ids="solution-content">
-                <paragraph>
-                    With some follow up text to the solution
     <section classes="tex2jax_ignore mathjax_ignore" ids="gated-directive" names="gated\ directive">
         <title>
             Gated Directive
         <paragraph>
             A solution using the gated directive
-        <solution_node classes="solution" docname="solution" hidden="False" ids="solution-gated-1" label="solution-gated-1" names="solution-gated-1" serial_number="2" target_label="exercise-1" title="Solution to" type="solution">
+        <solution_node classes="solution" docname="solution" hidden="False" ids="solution-gated-1" label="solution-gated-1" names="solution-gated-1" serial_number="0" target_label="exercise-1" title="Solution to" type="solution">
             <solution_title>
                 Solution to
             <section ids="solution-content">
-            <paragraph>
-                This is a solution to Exercise 1
-            <CellNode cell_type="code" classes="cell">
-                <CellInputNode classes="cell_input">
-                    <literal_block language="ipython3" xml:space="preserve">
-                        import numpy as np
-                        import matplotlib.pyplot as plt
-                        
-                        # Fixing random state for reproducibility
-                        np.random.seed(19680801)
-                        
-                        dt = 0.01
-                        t = np.arange(0, 30, dt)
-                        nse1 = np.random.randn(len(t))                 # white noise 1
-                        nse2 = np.random.randn(len(t))                 # white noise 2
-                        
-                        # Two signals with a coherent part at 10Hz and a random part
-                        s1 = np.sin(2 * np.pi * 10 * t) + nse1
-                        s2 = np.sin(2 * np.pi * 10 * t) + nse2
-                        
-                        fig, axs = plt.subplots(2, 1)
-                        axs[0].plot(t, s1, t, s2)
-                        axs[0].set_xlim(0, 2)
-                        axs[0].set_xlabel('time')
-                        axs[0].set_ylabel('s1 and s2')
-                        axs[0].grid(True)
-                        
-                        cxy, f = axs[1].cohere(s1, s2, 256, 1. / dt)
-                        axs[1].set_ylabel('coherence')
-                        
-                        fig.tight_layout()
-                        plt.show()
-                <CellOutputNode classes="cell_output">
-                    <CellOutputBundleNode output_count="1">
-            <paragraph>
-                With some follow up text to the solution
+                <paragraph>
+                    This is a solution to Exercise 1
+                <CellNode cell_type="code" classes="cell">
+                    <CellInputNode classes="cell_input">
+                        <literal_block language="ipython3" xml:space="preserve">
+                            import numpy as np
+                            import matplotlib.pyplot as plt
+                            
+                            # Fixing random state for reproducibility
+                            np.random.seed(19680801)
+                            
+                            dt = 0.01
+                            t = np.arange(0, 30, dt)
+                            nse1 = np.random.randn(len(t))                 # white noise 1
+                            nse2 = np.random.randn(len(t))                 # white noise 2
+                            
+                            # Two signals with a coherent part at 10Hz and a random part
+                            s1 = np.sin(2 * np.pi * 10 * t) + nse1
+                            s2 = np.sin(2 * np.pi * 10 * t) + nse2
+                            
+                            fig, axs = plt.subplots(2, 1)
+                            axs[0].plot(t, s1, t, s2)
+                            axs[0].set_xlim(0, 2)
+                            axs[0].set_xlabel('time')
+                            axs[0].set_ylabel('s1 and s2')
+                            axs[0].grid(True)
+                            
+                            cxy, f = axs[1].cohere(s1, s2, 256, 1. / dt)
+                            axs[1].set_ylabel('coherence')
+                            
+                            fig.tight_layout()
+                            plt.show()
+                    <CellOutputNode classes="cell_output">
+                        <CellOutputBundleNode output_count="1">
+                <paragraph>
+                    With some follow up text to the solution
+        <paragraph>
+            This is a reference to 
+            <pending_xref refdoc="solution" refdomain="std" refexplicit="False" reftarget="solution-gated-1" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    solution-gated-1

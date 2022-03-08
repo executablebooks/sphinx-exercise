@@ -13,7 +13,7 @@ def test_gated_solution_build(app, docname, file_regression):
     solution_directives = soup.select("div.solution")
     for idx, sd in enumerate(solution_directives):
         basename = docname.split(".")[0] + f"-{idx}"
-        file_regression.check(str(soup), basename=basename, extension=".html")
+        file_regression.check(str(sd), basename=basename, extension=".html")
 
 
 @pytest.mark.sphinx("html", testroot="gateddirective")

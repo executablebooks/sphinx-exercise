@@ -1,4 +1,5 @@
 import re
+import docutils
 
 from sphinx.transforms import SphinxTransform
 from sphinx.util import logging
@@ -97,10 +98,17 @@ class MergeGatedSolutions(SphinxTransform):
             new_node["type"] = "solution"
             new_node.parent = node.parent
             for child in node.children:
-                new_node += child
+                if type(child) is docutils.nodes.section:
+                    pass
+                else:
+                    new_node += child
             # Collect nodes attached to the Parent Node until :solution-end:
+            content = docutils.nodes.section(
+                ids="solution-content"
+            )  # TODO: should id be classes?
             for child in parent.children[parent_start + 1 : parent_end]:
-                new_node += child
+                content += child
+            new_node += content
             # Replace :solution-start: with new solution node
             node.replace_self(new_node)
             # Clean up Parent Node including :solution-end:
