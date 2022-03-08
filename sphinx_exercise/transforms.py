@@ -93,8 +93,11 @@ class MergeGatedSolutions(SphinxTransform):
             # Rebuild Node as a Solution Node
             new_node = solution_node()
             new_node.attributes = node.attributes
-            # Overrides in Attributes
-            new_node["classes"] = ["solution"]
+            # Update Attributes
+            new_node["classes"] = [
+                attr.replace("solution-start", "solution")
+                for attr in node.attributes["classes"]
+            ]
             new_node["type"] = "solution"
             new_node.parent = node.parent
             for child in node.children:
