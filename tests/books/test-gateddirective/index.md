@@ -16,5 +16,7 @@ kernelspec:
 :maxdepth: 1
 
 exercise
-solution
+solution-exercise
+exercise-gated
+solution-exercise-gated
 ```

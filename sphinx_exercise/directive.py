@@ -16,6 +16,7 @@ from docutils.parsers.rst import directives
 from .nodes import (
     exercise_node,
     exercise_enumerable_node,
+    exercise_end_node,
     solution_node,
     solution_start_node,
     solution_end_node,
@@ -104,6 +105,9 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
             node = exercise_node()
         else:
             node = exercise_enumerable_node()
+
+        if self.name == "exercise-start":
+            node.gated = True
 
         # Parse custom subtitle option
         if self.arguments != []:
@@ -281,6 +285,74 @@ class SolutionDirective(SphinxExerciseBaseDirective):
 
 
 # Gated Directives
+
+
+class ExerciseStartDirective(ExerciseDirective):
+    """
+    A gated directive for exercises
+
+    .. exercise:: <subtitle> (optional)
+       :label:
+       :class:
+       :nonumber:
+       :hidden:
+
+    This class is a child of ExerciseDirective so it supports
+    all the same options as the base exercise node
+    """
+
+    name = "exercise-start"
+
+    def run(self):
+        # Initialise Gated Registry
+        if not hasattr(self.env, "sphinx_exercise_gated_registry"):
+            self.env.sphinx_exercise_gated_registry = {}
+        gated_registry = self.env.sphinx_exercise_gated_registry
+        docname = self.env.docname
+        if docname not in gated_registry:
+            gated_registry[docname] = {
+                "start": [],
+                "end": [],
+                "sequence": [],
+                "msg": [],
+            }
+        gated_registry[self.env.docname]["start"].append(self.lineno)
+        gated_registry[self.env.docname]["sequence"].append("S")
+        gated_registry[self.env.docname]["msg"].append(
+            f"{self.name} at line: {self.lineno}"
+        )
+        # Run Parent Methods
+        return super().run()
+
+
+class ExerciseEndDirective(SphinxDirective):
+    """
+    A simple gated directive to mark end of an exercise
+
+    .. exercise-end::
+    """
+
+    name = "exercise-end"
+
+    def run(self):
+        # Initialise Gated Registry
+        if not hasattr(self.env, "sphinx_exercise_gated_registry"):
+            self.env.sphinx_exercise_gated_registry = {}
+        gated_registry = self.env.sphinx_exercise_gated_registry
+        docname = self.env.docname
+        if docname not in gated_registry:
+            gated_registry[docname] = {
+                "start": [],
+                "end": [],
+                "sequence": [],
+                "msg": [],
+            }
+        gated_registry[self.env.docname]["end"].append(self.lineno)
+        gated_registry[self.env.docname]["sequence"].append("E")
+        gated_registry[self.env.docname]["msg"].append(
+            f"{self.name} at line: {self.lineno}"
+        )
+        return [exercise_end_node()]
 
 
 class SolutionStartDirective(SolutionDirective):

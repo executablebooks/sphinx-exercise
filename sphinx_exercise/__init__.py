@@ -19,6 +19,8 @@ from sphinx.util.fileutil import copy_asset
 
 from .directive import (
     ExerciseDirective,
+    ExerciseStartDirective,
+    ExerciseEndDirective,
     SolutionDirective,
     SolutionStartDirective,
     SolutionEndDirective,
@@ -30,11 +32,12 @@ from .nodes import (
     exercise_enumerable_node,
     visit_exercise_enumerable_node,
     depart_exercise_enumerable_node,
+    exercise_end_node,
     solution_node,
-    solution_start_node,
-    solution_end_node,
     visit_solution_node,
     depart_solution_node,
+    solution_start_node,
+    solution_end_node,
     is_extension_node,
     exercise_title,
     exercise_subtitle,
@@ -45,8 +48,9 @@ from .nodes import (
     depart_exercise_latex_number_reference,
 )
 from .transforms import (
-    CheckGatedSolutions,
+    CheckGatedDirectives,
     MergeGatedSolutions,
+    MergeGatedExercises,
 )
 from .post_transforms import (
     ResolveTitlesInExercises,
@@ -170,6 +174,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
 
     # Internal Title Nodes that don't need visit_ and depart_ methods
     # as they are resolved in post_transforms to docutil and sphinx nodes
+    app.add_node(exercise_end_node)
     app.add_node(solution_start_node)
     app.add_node(solution_end_node)
     app.add_node(exercise_title)
@@ -186,11 +191,14 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     )
 
     app.add_directive("exercise", ExerciseDirective)
+    app.add_directive("exercise-start", ExerciseStartDirective)
+    app.add_directive("exercise-end", ExerciseEndDirective)
     app.add_directive("solution", SolutionDirective)
     app.add_directive("solution-start", SolutionStartDirective)
     app.add_directive("solution-end", SolutionEndDirective)
 
-    app.add_transform(CheckGatedSolutions)
+    app.add_transform(CheckGatedDirectives)
+    app.add_transform(MergeGatedExercises)
     app.add_transform(MergeGatedSolutions)
 
     app.add_post_transform(UpdateReferencesToEnumerated)
