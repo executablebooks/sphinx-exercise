@@ -140,15 +140,60 @@ factorial(4)
 _Source:_ [QuantEcon](https://python-programming.quantecon.org/functions.html#Exercise-1)
 
 
-### Alternative Gated Solution Syntax (Code Execution Support)
+## Alternative Gated Syntax
 
-A limitation of MyST is that `code-cell` directives must be at the root level of the document for them to be executed. This maintains direct
-compatility with the `jupyter notebook` and enables tools like `jupytext` to convert between `myst` and `ipynb` files. As a result **executable**
-`code-cell` directives cannot be nested inside of a solution block.
+A restriction of MyST is that `code-cell` directives must be at the root level of the document for them to be executed. This maintains direct
+compatility with the `jupyter notebook` and enables tools like `jupytext` to convert between `myst` and `ipynb` files.
 
-The solution to this is to use the **gated solution syntax**.
+As a result **executable** `code-cell` directives cannot be nested inside of exercises or solution directives.
 
-#### Example
+The solution to this is to use the **gated syntax**.
+
+```{note}
+This syntax can also be a convenient way of surrounding blocks of text that may include other directives that you wish
+to include in an exercise or solution admonition.
+```
+
+### Basic Syntax
+
+````md
+```{exercise-start}
+:label: ex1
+```
+
+```{code-cell}
+# Some setup code that needs executing
+```
+
+and maybe you wish to add a figure
+
+```{figure} img/example.png
+```
+
+```{exercise-end}
+```
+````
+
+The `exercise-start` directive allows for he same options as core `exercise` directive.
+
+````md
+```{solution-start} ex1
+```
+
+```{code-cell}
+# Solution Code
+```
+
+```{solution-end}
+```
+````
+
+```{warning}
+If there are missing `-start` and `-end` directives, this will cause Sphinx to return an extension error,
+alongside some helpful feedback to diagnose the issue in document structure.
+```
+
+### Example
 
 ````md
 
