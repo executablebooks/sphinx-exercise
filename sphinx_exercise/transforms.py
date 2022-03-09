@@ -36,18 +36,19 @@ class CheckGatedDirectives(SphinxTransform):
             end = registry[docname]["end"]
             sequence = "".join(registry[docname]["sequence"])
             structure = "\n  ".join(registry[docname]["msg"])
+            nodetype = registry[docname]["type"]
             if len(start) > len(end):
-                msg = f"The document ({docname}) is missing a solution-end directive\n  {structure}"  # noqa: E501
+                msg = f"The document ({docname}) is missing a {nodetype}-end directive\n  {structure}"  # noqa: E501
                 logger.error(msg)
                 error = True
             if len(start) < len(end):
-                msg = f"The document ({docname}) is missing a solution-start directive\n  {structure}"  # noqa: E501
+                msg = f"The document ({docname}) is missing a {nodetype}-start directive\n  {structure}"  # noqa: E501
                 logger.error(msg)
                 error = True
             if len(start) == len(end):
                 groups = re.findall("(SE)", sequence)
                 if len(groups) != len(start):
-                    msg = f"The document ({docname}) contains nested solution-start and solution-end directives\n  {structure}"  # noqa: E501
+                    msg = f"The document ({docname}) contains nested {nodetype}-start and {nodetype}-end directives\n  {structure}"  # noqa: E501
                     logger.error(msg)
                     error = True
         if error:

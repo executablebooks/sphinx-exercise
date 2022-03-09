@@ -9,18 +9,18 @@ kernelspec:
   name: python3
 ---
 
-# Solution Errors 3
+# Errors 3
 
-## Incorrect Nesting of Gated Directives
+## Incorrect Nesting of Gated Exercise Directives
 
-```{solution-start} solution1
+```{exercise-start}
 ```
 
-```{solution-start} solution2
+```{exercise-start}
 ```
 
-```{solution-end}
+```{exercise-end}
 ```
 
-```{solution-end}
+```{exercise-end}
 ```

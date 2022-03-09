@@ -9,7 +9,7 @@ kernelspec:
   name: python3
 ---
 
-# Errors 1
+# Solution Errors 1
 
 Some malformed directives
 

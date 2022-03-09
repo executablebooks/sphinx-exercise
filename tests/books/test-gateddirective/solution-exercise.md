@@ -11,7 +11,7 @@ kernelspec:
 
 # Gated Solutions to exercise.md
 
-A solution using the gated directives
+A solution using the gated directive
 
 ```{solution-start} exercise-1
 :label: solution-gated-1

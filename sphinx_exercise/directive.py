@@ -315,6 +315,7 @@ class ExerciseStartDirective(ExerciseDirective):
                 "end": [],
                 "sequence": [],
                 "msg": [],
+                "type": "exercise",
             }
         gated_registry[self.env.docname]["start"].append(self.lineno)
         gated_registry[self.env.docname]["sequence"].append("S")
@@ -346,6 +347,7 @@ class ExerciseEndDirective(SphinxDirective):
                 "end": [],
                 "sequence": [],
                 "msg": [],
+                "type": "exercise",
             }
         gated_registry[self.env.docname]["end"].append(self.lineno)
         gated_registry[self.env.docname]["sequence"].append("E")
@@ -383,6 +385,7 @@ class SolutionStartDirective(SolutionDirective):
                 "end": [],
                 "sequence": [],
                 "msg": [],
+                "type": "solution",
             }
         gated_registry[self.env.docname]["start"].append(self.lineno)
         gated_registry[self.env.docname]["sequence"].append("S")
@@ -414,6 +417,7 @@ class SolutionEndDirective(SphinxDirective):
                 "end": [],
                 "sequence": [],
                 "msg": [],
+                "type": "solution",
             }
         gated_registry[self.env.docname]["end"].append(self.lineno)
         gated_registry[self.env.docname]["sequence"].append("E")

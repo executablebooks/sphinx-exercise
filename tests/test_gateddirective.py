@@ -75,8 +75,76 @@ def getwarning(warnings):
 
 
 @pytest.mark.sphinx("html", testroot="gateddirective")
+def test_gated_exercise_errors_1(app, warning):
+    app.config.exclude_patterns = [
+        "build",
+        "_build",
+        "solution_errors_[1,2,3]*",
+        "exercise_errors_[2,3]*",
+    ]
+    try:
+        app.build()
+    except ExtensionError:
+        warnings = getwarning(warning)
+        warn1 = "is missing a exercise-end directive"
+        warn2 = "exercise-start at line: 20"
+        for warn in [warn1, warn2]:
+            assert warn in warnings
+        assert True
+    else:
+        assert False
+
+
+@pytest.mark.sphinx("html", testroot="gateddirective")
+def test_gated_exercise_errors_2(app, warning):
+    app.config.exclude_patterns = [
+        "build",
+        "_build",
+        "solution_errors_[1,2,3]*",
+        "exercise_errors_[1,3]*",
+    ]
+    try:
+        app.build()
+    except ExtensionError:
+        warnings = getwarning(warning)
+        warn1 = "is missing a exercise-start directive"
+        warn2 = "exercise-end at line: 23"
+        for warn in [warn1, warn2]:
+            assert warn in warnings
+        assert True
+    else:
+        assert False
+
+
+@pytest.mark.sphinx("html", testroot="gateddirective")
+def test_gated_exercise_errors_3(app, warning):
+    app.config.exclude_patterns = [
+        "build",
+        "_build",
+        "solution_errors_[1,2,3]*",
+        "exercise_errors_[1,2]*",
+    ]
+    try:
+        app.build()
+    except ExtensionError:
+        warnings = getwarning(warning)
+        warn1 = "contains nested exercise-start and exercise-end directives"
+        warn2 = "exercise-start at line: 16\n  exercise-start at line: 19\n  exercise-end at line: 22\n  exercise-end at line: 25"  # noqa: #501
+        for warn in [warn1, warn2]:
+            assert warn in warnings
+        assert True
+    else:
+        assert False
+
+
+@pytest.mark.sphinx("html", testroot="gateddirective")
 def test_gated_solution_errors_1(app, warning):
-    app.config.exclude_patterns = ["build", "_build", "solution_errors_[2,3]*"]
+    app.config.exclude_patterns = [
+        "build",
+        "_build",
+        "exercise_errors_[1,2,3]*",
+        "solution_errors_[2,3]*",
+    ]
     try:
         app.build()
     except ExtensionError:
@@ -92,7 +160,12 @@ def test_gated_solution_errors_1(app, warning):
 
 @pytest.mark.sphinx("html", testroot="gateddirective")
 def test_gated_solution_errors_2(app, warning):
-    app.config.exclude_patterns = ["build", "_build", "solution_errors_[1,3]*"]
+    app.config.exclude_patterns = [
+        "build",
+        "_build",
+        "exercise_errors_[1,2,3]*",
+        "solution_errors_[1,3]*",
+    ]
     try:
         app.build()
     except ExtensionError:
@@ -108,7 +181,12 @@ def test_gated_solution_errors_2(app, warning):
 
 @pytest.mark.sphinx("html", testroot="gateddirective")
 def test_gated_solution_errors_3(app, warning):
-    app.config.exclude_patterns = ["build", "_build", "solution_errors_[1,2]*"]
+    app.config.exclude_patterns = [
+        "build",
+        "_build",
+        "exercise_errors_[1,2,3]*",
+        "solution_errors_[1,2]*",
+    ]
     try:
         app.build()
     except ExtensionError:
