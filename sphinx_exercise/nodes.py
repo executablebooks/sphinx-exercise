@@ -23,15 +23,28 @@ LaTeX = LaTeXMarkup()
 
 
 class exercise_node(docutil_nodes.Admonition, docutil_nodes.Element):
-    pass
+    gated = False
 
 
 class exercise_enumerable_node(docutil_nodes.Admonition, docutil_nodes.Element):
+    gated = False
     resolved_title = False
+
+
+class exercise_end_node(docutil_nodes.Admonition, docutil_nodes.Element):
+    pass
 
 
 class solution_node(docutil_nodes.Admonition, docutil_nodes.Element):
     resolved_title = False
+
+
+class solution_start_node(docutil_nodes.Admonition, docutil_nodes.Element):
+    resolved_title = False
+
+
+class solution_end_node(docutil_nodes.Admonition, docutil_nodes.Element):
+    resolved_title = False  # TODO: is this required?
 
 
 class exercise_title(docutil_nodes.title):

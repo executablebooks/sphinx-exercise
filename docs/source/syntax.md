@@ -151,6 +151,112 @@ factorial(4)
 _Source:_ [QuantEcon](https://python-programming.quantecon.org/functions.html#Exercise-1)
 
 
+## Alternative Gated Syntax
+
+A restriction of MyST is that `code-cell` directives must be at the root level of the document for them to be executed. This maintains direct
+compatility with the `jupyter notebook` and enables tools like `jupytext` to convert between `myst` and `ipynb` files.
+
+As a result **executable** `code-cell` directives cannot be nested inside of exercises or solution directives.
+
+The solution to this is to use the **gated syntax**.
+
+```{note}
+This syntax can also be a convenient way of surrounding blocks of text that may include other directives that you wish
+to include in an exercise or solution admonition.
+```
+
+### Basic Syntax
+
+````md
+```{exercise-start}
+:label: ex1
+```
+
+```{code-cell}
+# Some setup code that needs executing
+```
+
+and maybe you wish to add a figure
+
+```{figure} img/example.png
+```
+
+```{exercise-end}
+```
+````
+
+The `exercise-start` directive allows for he same options as core `exercise` directive.
+
+````md
+```{solution-start} ex1
+```
+
+```{code-cell}
+# Solution Code
+```
+
+```{solution-end}
+```
+````
+
+```{warning}
+If there are missing `-start` and `-end` directives, this will cause Sphinx to return an extension error,
+alongside some helpful feedback to diagnose the issue in document structure.
+```
+
+### Example
+
+````md
+
+```{solution-start} exercise-1
+:label: solution-gated-1
+```
+
+This is a solution to Exercise 1
+
+```{code-cell} python3
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Fixing random state for reproducibility
+np.random.seed(19680801)
+
+dt = 0.01
+t = np.arange(0, 30, dt)
+nse1 = np.random.randn(len(t))                 # white noise 1
+nse2 = np.random.randn(len(t))                 # white noise 2
+
+# Two signals with a coherent part at 10Hz and a random part
+s1 = np.sin(2 * np.pi * 10 * t) + nse1
+s2 = np.sin(2 * np.pi * 10 * t) + nse2
+
+fig, axs = plt.subplots(2, 1)
+axs[0].plot(t, s1, t, s2)
+axs[0].set_xlim(0, 2)
+axs[0].set_xlabel('time')
+axs[0].set_ylabel('s1 and s2')
+axs[0].grid(True)
+
+cxy, f = axs[1].cohere(s1, s2, 256, 1. / dt)
+axs[1].set_ylabel('coherence')
+
+fig.tight_layout()
+plt.show()
+```
+
+With some follow up text to the solution
+
+```{solution-end}
+```
+
+````
+
+will produce the following `solution` block in your `html` output.
+
+```{figure} img/gated-directive-example.png
+```
+
+
 ### Referencing Solutions
 
 You can refer to a solution using the `{ref}` role like: ```{ref}`my-solution` ``` the output of which depends on the attributes of the linked directive. If the linked directive is enumerable, the role will replace the solution reference with the linked directive type and its appropriate number like so: {ref}`my-solution`.
@@ -277,16 +383,16 @@ Any specific directive can be hidden by introducing the `:hidden:` option. For e
 
 ````md
 ```{exercise}
-    :hidden:
+:hidden:
 
-    This is a hidden exercise directive.
+This is a hidden exercise directive.
 ```
 ````
 
 ```{exercise}
-    :hidden:
+:hidden:
 
-    This is a hidden exercise directive.
+This is a hidden exercise directive.
 ```
 
 ### Remove All Solutions

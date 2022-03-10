@@ -1,0 +1,24 @@
+<document source="exercise-gated.md">
+    <section classes="tex2jax_ignore mathjax_ignore" ids="gated-exercises" names="gated\ exercises">
+        <title>
+            Gated Exercises
+        <paragraph>
+            Some Gated reference exercises
+        <exercise_enumerable_node classes="exercise" docname="exercise-gated" hidden="False" ids="gated-exercise-1" label="gated-exercise-1" names="gated-exercise-1" serial_number="0" title="Exercise" type="exercise">
+            <exercise_title>
+                Exercise
+            <section ids="exercise-content">
+                <paragraph>
+                    Replicate this figure using matplotlib
+                <figure>
+                    <image candidates="{'*': 'sphx_glr_cohere_001_2_0x.png'}" uri="sphx_glr_cohere_001_2_0x.png">
+        <paragraph>
+            and another version with a title embedded
+        <exercise_enumerable_node classes="exercise" docname="exercise-gated" hidden="False" ids="gated-exercise-2" label="gated-exercise-2" names="gated-exercise-2" serial_number="1" title="Exercise" type="exercise">
+            <exercise_title>
+                Exercise
+                <exercise_subtitle>
+                    Replicate Matplotlib Plot
+            <section ids="exercise-content">
+                <figure>
+                    <image candidates="{'*': 'sphx_glr_cohere_001_2_0x.png'}" uri="sphx_glr_cohere_001_2_0x.png">

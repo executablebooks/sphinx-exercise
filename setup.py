@@ -27,6 +27,7 @@ extras = {
         "beautifulsoup4",
         "myst-nb",
         "texsoup",
+        "matplotlib",
     ],
     "rtd": [
         "sphinx>=3.0",
