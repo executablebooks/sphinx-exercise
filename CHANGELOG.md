@@ -1,5 +1,41 @@
 # Changelog
 
+## [v0.4.0](https://github.com/executablebooks/sphinx-exercise/tree/v0.4.0) (2022-3-18)
+
+### New ✨
+
+Added gated directive syntax for `exercise` and `solution` directives, which provides
+an alternative syntax for building `exercise` and `solution` that may also include
+executable code.
+
+**Example:**
+
+You may now use `exercise-start` and `exercise-end` to define the exercise which may
+include any type of text, directives and roles between the start and end markers.
+
+````md
+```{exercise-start}
+:label: ex1
+```
+
+```{code-cell}
+# Some setup code that needs executing
+```
+
+and maybe you wish to add a figure
+
+```{figure} img/example.png
+```
+
+```{exercise-end}
+```
+````
+
+This can also be used with `solution-start` and `solution-end`.
+
+See [docs](https://ebp-sphinx-exercise.readthedocs.io/en/latest/syntax.html#alternative-gated-syntax) for further details
+
+
 ## [v0.3.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.3.1) (2022-2-01)
 
 ### Fixes 🐛
