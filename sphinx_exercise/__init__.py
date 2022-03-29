@@ -65,9 +65,14 @@ MESSAGE_CATALOG_NAME = "exercise"
 _ = get_translation(MESSAGE_CATALOG_NAME)
 
 
+<<<<<<< HEAD
 # Variables
 SOLUTION_PLACEHOLDER = _("Solution to ")
 MATH_PLACEHOLDER = ":math:"
+=======
+
+# Callback Functions
+>>>>>>> a6767f0 (Essai d'une nouvelle version)
 
 
 def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
@@ -139,6 +144,7 @@ def doctree_read(app: Sphinx, document: Node) -> None:
             name = node.get("names", [])[0]
             label = document.nameids[name]
             docname = app.env.docname
+<<<<<<< HEAD
 
             # If solution node
             if is_solution_node(node):
@@ -329,6 +335,11 @@ class NumberReferenceTransform(SphinxPostTransform):
                     if newtitle[len(newtitle) - 1].astext() == " ":
                         newtitle.pop()
                     node.replace(node[0], newtitle)
+=======
+            section_name = node.attributes.get("title")
+            domain.anonlabels[name] = docname, label
+            domain.labels[name] = docname, label, section_name
+>>>>>>> a6767f0 (Essai d'une nouvelle version)
 
 
 def setup(app: Sphinx) -> Dict[str, Any]:
