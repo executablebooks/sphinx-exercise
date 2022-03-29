@@ -1,6 +1,8 @@
 Solution
 ========
 
+A collection of solution directives
+
 .. solution:: exercise-1
     :label: solution-1
 
@@ -22,6 +24,25 @@ Solution
     This is a solution to exercise 4
 
 
+References
+----------
+
+Standard References
+~~~~~~~~~~~~~~~~~~~
+
 This is a link to :ref:`solution-1`
 
-This ia another link to a different :ref:`Exercise number<solution-3>`
+This is a link to :ref:`solution-2`
+
+This is a link to :ref:`solution-3`
+
+This is a link to :ref:`solution-4`
+
+This ia another link to a different :ref:`custom label text to solution-1 <solution-1>`
+
+Numbered References
+~~~~~~~~~~~~~~~~~~~
+
+Solution nodes are not enumerated nodes so these won't work
+
+This is a link to :numref:`solution-1`

@@ -2,13 +2,13 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "v0.2.1"
+VERSION = "v0.4.0"
 
 LONG_DESCRIPTION = """
-This package contains a [Sphinx](http://www.sphinx-doc.org/en/master/) extension
+This package contains a [Sphinx](http://www.sphinx-doc.org/) extension
 for producing exercise and solution directives.
 
-This project is maintained and supported by [najuzilu](https://github.com/najuzilu).
+This project is maintained and supported by the Executable Books Project.
 """
 
 SHORT_DESCRIPTION = "A Sphinx extension for producing exercises and solutions."
@@ -27,6 +27,7 @@ extras = {
         "beautifulsoup4",
         "myst-nb",
         "texsoup",
+        "matplotlib",
     ],
     "rtd": [
         "sphinx>=3.0",

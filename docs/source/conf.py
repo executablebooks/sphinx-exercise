@@ -1,8 +1,8 @@
 # -- Project information -----------------------------------------------------
 
 project = "sphinx-exercise"
-copyright = "2020, QuantEcon Developers"
-author = "QuantEcon Developers"
+copyright = "2020-2021, Exectuable Book Developers"
+author = "Executable Book Developers"
 master_doc = "index"
 
 

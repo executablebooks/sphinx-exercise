@@ -1,0 +1,28 @@
+<document source="_enum_numref_title.rst">
+    <section ids="enum-numref-title" names="_enum_numref_title">
+        <title>
+            _enum_numref_title
+        <paragraph>
+            This is a reference 
+            <pending_xref refdoc="exercise/_enum_numref_title" refdomain="std" refexplicit="False" reftarget="test-exc-label" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    test-exc-label
+            .
+        <paragraph>
+            This is a second reference 
+            <pending_xref refdoc="exercise/_enum_numref_title" refdomain="std" refexplicit="True" reftarget="test-exc-label" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some text %s
+            .
+        <paragraph>
+            This is a third reference 
+            <pending_xref refdoc="exercise/_enum_numref_title" refdomain="std" refexplicit="True" reftarget="test-exc-label" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some text {number}
+            .
+        <paragraph>
+            This is a fourth reference 
+            <pending_xref refdoc="exercise/_enum_numref_title" refdomain="std" refexplicit="True" reftarget="test-exc-label" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some text {name}
+            .
