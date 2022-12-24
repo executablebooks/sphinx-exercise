@@ -17,6 +17,7 @@ from sphinx.domains.std import StandardDomain
 from docutils.nodes import Node
 from sphinx.util import logging
 from sphinx.util.fileutil import copy_asset
+from sphinx.locale import get_translation
 
 from .directive import (
     ExerciseDirective,
@@ -64,6 +65,8 @@ logger = logging.getLogger(__name__)
 MESSAGE_CATALOG_NAME = "exercise"
 _ = get_translation(MESSAGE_CATALOG_NAME)
 
+MESSAGE_CATALOG_NAME = 'exercise'
+_ = get_translation(MESSAGE_CATALOG_NAME)
 
 <<<<<<< HEAD
 # Variables
@@ -410,6 +413,10 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_post_transform(ResolveLinkTextToSolutions)
 
     app.add_css_file("exercise.css")
+
+    package_dir = path.abspath(path.dirname(__file__))
+    locale_dir = os.path.join(package_dir, 'translations', 'locales')
+    app.add_message_catalog(MESSAGE_CATALOG_NAME, locale_dir)
 
     return {
         "version": "builtin",
