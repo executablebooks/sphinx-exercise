@@ -18,6 +18,7 @@ from .nodes import (
     exercise_latex_number_reference,
 )
 
+
 MESSAGE_CATALOG_NAME = 'exercise'
 _ = get_translation(MESSAGE_CATALOG_NAME)
 

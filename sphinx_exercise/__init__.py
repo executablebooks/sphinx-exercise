@@ -8,6 +8,7 @@ This package is an extension for sphinx to support exercise and solutions.
 """
 
 from pathlib import Path
+import os
 from typing import Any, Dict, Set, Union, cast
 from sphinx.config import Config
 from sphinx.locale import get_translation
@@ -60,6 +61,7 @@ from .post_transforms import (
     ResolveLinkTextToSolutions,
 )
 
+MESSAGE_CATALOG_NAME = 'exercise'
 logger = logging.getLogger(__name__)
 MESSAGE_CATALOG_NAME = "exercise"
 _ = get_translation(MESSAGE_CATALOG_NAME)
@@ -400,8 +402,8 @@ def setup(app: Sphinx) -> Dict[str, Any]:
 
     app.add_css_file("exercise.css")
 
-    package_dir = path.abspath(path.dirname(__file__))
-    locale_dir = os.path.join(package_dir, "translations", "locales")
+    package_dir = os.path.abspath(os.path.dirname(__file__))
+    locale_dir = os.path.join(package_dir, 'translations', 'locales')
     app.add_message_catalog(MESSAGE_CATALOG_NAME, locale_dir)
 
     return {
