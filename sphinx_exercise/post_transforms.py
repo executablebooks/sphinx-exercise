@@ -3,6 +3,7 @@ from sphinx.transforms.post_transforms import SphinxPostTransform
 from sphinx.util import logging
 from sphinx.builders.latex import LaTeXBuilder
 from docutils import nodes as docutil_nodes
+from sphinx.locale import get_translation
 
 from sphinx.locale import get_translation
 
@@ -16,6 +17,9 @@ from .nodes import (
     is_exercise_node,
     exercise_latex_number_reference,
 )
+
+MESSAGE_CATALOG_NAME = 'exercise'
+_ = get_translation(MESSAGE_CATALOG_NAME)
 
 logger = logging.getLogger(__name__)
 MESSAGE_CATALOG_NAME = "exercise"
@@ -96,11 +100,11 @@ class ResolveTitlesInExercises(SphinxPostTransform):
                     # Resolve Title
                     node_number = get_node_number(self.app, node, "exercise")
                     title_text = self.app.config.numfig_format["exercise"] % node_number
-                    updated_title += docutil_nodes.Text(title_text)
+                    updated_title += _(docutil_nodes.Text(title_text))
                 updated_title["title"] = self.app.config.numfig_format["exercise"]
             else:
                 # Use default text "Exercise"
-                updated_title += title.children[0]
+                updated_title += _(title.children[0])
             # Parse Custom Titles
             if len(title.children) > 1:
                 subtitle = title.children[1]
@@ -151,7 +155,7 @@ def resolve_solution_title(app, node, exercise_node):
         updated_title = docutil_nodes.title()
         wrap_reference = build_reference_node(app, exercise_node)
         wrap_reference += docutil_nodes.Text(updated_title_text)
-        node["title"] = entry_title_text + updated_title_text
+        node["title"] = _(entry_title_text) + updated_title_text
         # Parse Custom Titles from Exercise
         if len(exercise_title.children) > 1:
             subtitle = exercise_title.children[1]

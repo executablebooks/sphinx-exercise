@@ -17,7 +17,6 @@ from sphinx.domains.std import StandardDomain
 from docutils.nodes import Node
 from sphinx.util import logging
 from sphinx.util.fileutil import copy_asset
-from sphinx.locale import get_translation
 
 from .directive import (
     ExerciseDirective,
@@ -65,21 +64,15 @@ logger = logging.getLogger(__name__)
 MESSAGE_CATALOG_NAME = "exercise"
 _ = get_translation(MESSAGE_CATALOG_NAME)
 
-MESSAGE_CATALOG_NAME = 'exercise'
-_ = get_translation(MESSAGE_CATALOG_NAME)
-
-<<<<<<< HEAD
 # Variables
 SOLUTION_PLACEHOLDER = _("Solution to ")
 MATH_PLACEHOLDER = ":math:"
-=======
 
 # Callback Functions
->>>>>>> a6767f0 (Essai d'une nouvelle version)
 
 
 def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
-    """ Purge sphinx_exercise registry """
+    """Purge sphinx_exercise registry"""
 
     if not hasattr(env, "sphinx_exercise_registry"):
         return
@@ -98,7 +91,7 @@ def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
 def merge_exercises(
     app: Sphinx, env: BuildEnvironment, docnames: Set[str], other: BuildEnvironment
 ) -> None:
-    """ Merge sphinx_exercise_registry """
+    """Merge sphinx_exercise_registry"""
 
     if not hasattr(env, "sphinx_exercise_registry"):
         env.sphinx_exercise_registry = {}
@@ -122,7 +115,7 @@ def init_numfig(app: Sphinx, config: Config) -> None:
 
 
 def copy_asset_files(app: Sphinx, exc: Union[bool, Exception]):
-    """ Copies required assets for formating in HTML """
+    """Copies required assets for formating in HTML"""
 
     static_path = (
         Path(__file__).parent.joinpath("assets", "html", "exercise.css").absolute()
@@ -147,8 +140,6 @@ def doctree_read(app: Sphinx, document: Node) -> None:
             name = node.get("names", [])[0]
             label = document.nameids[name]
             docname = app.env.docname
-<<<<<<< HEAD
-
             # If solution node
             if is_solution_node(node):
                 sectname = SOLUTION_PLACEHOLDER
@@ -338,11 +329,6 @@ class NumberReferenceTransform(SphinxPostTransform):
                     if newtitle[len(newtitle) - 1].astext() == " ":
                         newtitle.pop()
                     node.replace(node[0], newtitle)
-=======
-            section_name = node.attributes.get("title")
-            domain.anonlabels[name] = docname, label
-            domain.labels[name] = docname, label, section_name
->>>>>>> a6767f0 (Essai d'une nouvelle version)
 
 
 def setup(app: Sphinx) -> Dict[str, Any]:
@@ -415,7 +401,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_css_file("exercise.css")
 
     package_dir = path.abspath(path.dirname(__file__))
-    locale_dir = os.path.join(package_dir, 'translations', 'locales')
+    locale_dir = os.path.join(package_dir, "translations", "locales")
     app.add_message_catalog(MESSAGE_CATALOG_NAME, locale_dir)
 
     return {
