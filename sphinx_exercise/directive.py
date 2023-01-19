@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 class SphinxExerciseBaseDirective(SphinxDirective):
     def duplicate_labels(self, label):
-        """ Check for duplicate labels """
+        """Check for duplicate labels"""
 
         if not label == "" and label in self.env.sphinx_exercise_registry.keys():
             docpath = self.env.doc2path(self.env.docname)
