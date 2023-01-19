@@ -1,5 +1,5 @@
 <document source="solution-exercise-gated.md">
-    <section classes="tex2jax_ignore mathjax_ignore" ids="gated-solutions-to-exercise-gated-md" names="gated\ solutions\ to\ exercise-gated.md">
+    <section ids="gated-solutions-to-exercise-gated-md" names="gated\ solutions\ to\ exercise-gated.md">
         <title>
             Gated Solutions to exercise-gated.md
         <paragraph>
@@ -10,8 +10,8 @@
             <section ids="solution-content">
                 <paragraph>
                     This is a solution to Gated Exercise 1
-                <CellNode cell_type="code" classes="cell">
-                    <CellInputNode classes="cell_input">
+                <container cell_index="1" cell_metadata="{}" classes="cell" exec_count="1" nb_element="cell_code">
+                    <container classes="cell_input" nb_element="cell_code_source">
                         <literal_block language="ipython3" xml:space="preserve">
                             import numpy as np
                             import matplotlib.pyplot as plt
@@ -40,8 +40,13 @@
                             
                             fig.tight_layout()
                             plt.show()
-                    <CellOutputNode classes="cell_output">
-                        <CellOutputBundleNode output_count="1">
+                    <container classes="cell_output" nb_element="cell_code_output">
+                        <container nb_element="mime_bundle">
+                            <container mime_type="text/plain">
+                                <literal_block classes="output text_plain" language="myst-ansi" xml:space="preserve">
+                                    <Figure size 432x288 with 2 Axes>
+                            <container mime_type="image/png">
+                                <image candidates="{'*': '_build/jupyter_execute/59d5daa1f6a4a408595ce4674d8b8d720ff4281f9aaec5eedeabe6520af704f2.png'}" uri="_build/jupyter_execute/59d5daa1f6a4a408595ce4674d8b8d720ff4281f9aaec5eedeabe6520af704f2.png">
                 <paragraph>
                     With some follow up text to the solution
         <paragraph>
@@ -57,8 +62,8 @@
             <section ids="solution-content">
                 <paragraph>
                     This is a solution to Gated Exercise 2
-                <CellNode cell_type="code" classes="cell">
-                    <CellInputNode classes="cell_input">
+                <container cell_index="3" cell_metadata="{}" classes="cell" exec_count="2" nb_element="cell_code">
+                    <container classes="cell_input" nb_element="cell_code_source">
                         <literal_block language="ipython3" xml:space="preserve">
                             import numpy as np
                             import matplotlib.pyplot as plt
@@ -87,8 +92,13 @@
                             
                             fig.tight_layout()
                             plt.show()
-                    <CellOutputNode classes="cell_output">
-                        <CellOutputBundleNode output_count="1">
+                    <container classes="cell_output" nb_element="cell_code_output">
+                        <container nb_element="mime_bundle">
+                            <container mime_type="text/plain">
+                                <literal_block classes="output text_plain" language="myst-ansi" xml:space="preserve">
+                                    <Figure size 432x288 with 2 Axes>
+                            <container mime_type="image/png">
+                                <image candidates="{'*': '_build/jupyter_execute/59d5daa1f6a4a408595ce4674d8b8d720ff4281f9aaec5eedeabe6520af704f2.png'}" uri="_build/jupyter_execute/59d5daa1f6a4a408595ce4674d8b8d720ff4281f9aaec5eedeabe6520af704f2.png">
                 <paragraph>
                     With some follow up text to the solution
         <section ids="references-to-solutions" names="references\ to\ solutions">
