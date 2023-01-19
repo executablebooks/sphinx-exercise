@@ -30,7 +30,7 @@ extras = {
         "matplotlib",
     ],
     "rtd": [
-        "sphinx>=3.0",
+        "sphinx~=5.0.2",
         "sphinx-book-theme",
         "myst-nb",
     ],
