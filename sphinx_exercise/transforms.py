@@ -28,7 +28,7 @@ class CheckGatedDirectives(SphinxTransform):
     default_priority = 1
 
     def check_structure(self, registry):
-        """ Check Structure of the Gated Registry"""
+        """Check Structure of the Gated Registry"""
         error = False
         docname = self.env.docname
         if docname in registry:
@@ -111,7 +111,7 @@ class MergeGatedSolutions(SphinxTransform):
                     new_node += child
             # Collect nodes attached to the Parent Node until :solution-end:
             content = docutils.nodes.section(
-                ids="solution-content"
+                ids=["solution-content"]
             )  # TODO: should id be classes?
             for child in parent.children[parent_start + 1 : parent_end]:
                 content += child
