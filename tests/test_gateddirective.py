@@ -1,10 +1,13 @@
 import os
 import pytest
 import shutil
+import sphinx
 from bs4 import BeautifulSoup
 from sphinx.errors import ExtensionError
 
 from sphinx.testing.util import strip_escseq
+
+SPHINX_VERSION = f".sphinx{sphinx.version_info[0]}"
 
 
 @pytest.mark.sphinx("html", testroot="gateddirective")
@@ -48,7 +51,9 @@ def test_gated_solution_build(app, docname, file_regression):
     solution_directives = soup.select("div.solution")
     for idx, sd in enumerate(solution_directives):
         basename = docname.split(".")[0] + f"-{idx}"
-        file_regression.check(str(sd), basename=basename, extension=".html")
+        file_regression.check(
+            str(sd), basename=basename, extension=f"{SPHINX_VERSION}.html"
+        )
 
 
 @pytest.mark.sphinx("html", testroot="gateddirective")
@@ -60,10 +65,7 @@ def test_gated_solution_doctree(app, docname, get_sphinx_app_doctree):
     # Test
     app.build()
     get_sphinx_app_doctree(
-        app,
-        docname,
-        resolve=False,
-        regress=True,
+        app, docname, resolve=False, regress=True, sphinx_version=SPHINX_VERSION
     )
 
 

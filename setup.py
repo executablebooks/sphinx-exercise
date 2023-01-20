@@ -26,14 +26,15 @@ extras = {
         "pytest-regressions",
         "beautifulsoup4",
         "myst-nb",
-        "sphinx>=5,<6",
+        "sphinx>=4,<6",
+        "docutils>=0.15,<0.19",
         "texsoup",
         "matplotlib",
     ],
     "rtd": [
-        "sphinx>=5,<6",
+        "sphinx>=4,<6",
         "sphinx-book-theme",
-        "myst-nb",
+        "myst-nb~=0.17.1",
     ],
 }
 
