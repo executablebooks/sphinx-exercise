@@ -37,4 +37,4 @@ def test_warnings(app, warnings, wmsg):
     build_path = app.srcdir.joinpath("_build")
     shutil.rmtree(build_path)
     app.build()
-    assert wmsg in warnings(app)
+    assert wmsg in warnings(app).replace("'", "")

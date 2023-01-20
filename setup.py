@@ -18,21 +18,23 @@ URL = f"{BASE_URL}/archive/{VERSION}.tar.gz"
 
 # Define all extras
 extras = {
-    "code_style": ["flake8<3.8.0,>=3.7.0", "black", "pre-commit==1.17.0"],
+    "code_style": ["flake8<3.8.0,>=3.7.0", "black", "pre-commit"],
     "testing": [
         "coverage",
         "pytest>=3.6,<4",
         "pytest-cov",
         "pytest-regressions",
         "beautifulsoup4",
-        "myst-nb",
+        "myst-nb~=0.17.1",
+        "sphinx>=4,<6",
+        "docutils>=0.15,<0.19",
         "texsoup",
         "matplotlib",
     ],
     "rtd": [
-        "sphinx>=3.0",
+        "sphinx>=4,<6",
         "sphinx-book-theme",
-        "myst-nb",
+        "myst-nb~=0.17.1",
     ],
 }
 
@@ -41,7 +43,7 @@ extras["all"] = set(ii for jj in extras.values() for ii in jj)
 setup(
     name="sphinx-exercise",
     version=VERSION,
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     author="QuantEcon",
     author_email="admin@quantecon.org",
     url=BASE_URL,
@@ -55,7 +57,7 @@ setup(
     long_description_content_type="text/markdown",
     license="BSD",
     packages=find_packages(),
-    install_requires=["docutils>=0.15", "sphinx", "sphinx-book-theme"],
+    install_requires=["sphinx>=4", "sphinx-book-theme"],
     extras_require=extras,
     include_package_data=True,
     classifiers=[
@@ -67,9 +69,8 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python",
         "Topic :: Documentation :: Sphinx",
         "Topic :: Documentation",

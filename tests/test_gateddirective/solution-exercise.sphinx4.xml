@@ -44,9 +44,9 @@
                         <container nb_element="mime_bundle">
                             <container mime_type="text/plain">
                                 <literal_block classes="output text_plain" language="myst-ansi" xml:space="preserve">
-                                    <Figure size 432x288 with 2 Axes>
+                                    <Figure size 640x480 with 2 Axes>
                             <container mime_type="image/png">
-                                <image candidates="{'*': '_build/jupyter_execute/59d5daa1f6a4a408595ce4674d8b8d720ff4281f9aaec5eedeabe6520af704f2.png'}" uri="_build/jupyter_execute/59d5daa1f6a4a408595ce4674d8b8d720ff4281f9aaec5eedeabe6520af704f2.png">
+                                <image candidates="{'*': '_build/jupyter_execute/fb8cd74f4c4564e8c76c8e3e5366246d555d3f09e311806843cf85f1e0bca298.png'}" uri="_build/jupyter_execute/fb8cd74f4c4564e8c76c8e3e5366246d555d3f09e311806843cf85f1e0bca298.png">
                 <paragraph>
                     With some follow up text to the solution
         <paragraph>
@@ -94,9 +94,9 @@
                         <container nb_element="mime_bundle">
                             <container mime_type="text/plain">
                                 <literal_block classes="output text_plain" language="myst-ansi" xml:space="preserve">
-                                    <Figure size 432x288 with 2 Axes>
+                                    <Figure size 640x480 with 2 Axes>
                             <container mime_type="image/png">
-                                <image candidates="{'*': '_build/jupyter_execute/59d5daa1f6a4a408595ce4674d8b8d720ff4281f9aaec5eedeabe6520af704f2.png'}" uri="_build/jupyter_execute/59d5daa1f6a4a408595ce4674d8b8d720ff4281f9aaec5eedeabe6520af704f2.png">
+                                <image candidates="{'*': '_build/jupyter_execute/fb8cd74f4c4564e8c76c8e3e5366246d555d3f09e311806843cf85f1e0bca298.png'}" uri="_build/jupyter_execute/fb8cd74f4c4564e8c76c8e3e5366246d555d3f09e311806843cf85f1e0bca298.png">
                 <paragraph>
                     With some follow up text to the solution
         <section ids="references" names="references">

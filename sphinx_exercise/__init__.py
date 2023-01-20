@@ -66,7 +66,7 @@ logger = logging.getLogger(__name__)
 
 
 def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
-    """ Purge sphinx_exercise registry """
+    """Purge sphinx_exercise registry"""
 
     if not hasattr(env, "sphinx_exercise_registry"):
         return
@@ -85,7 +85,7 @@ def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
 def merge_exercises(
     app: Sphinx, env: BuildEnvironment, docnames: Set[str], other: BuildEnvironment
 ) -> None:
-    """ Merge sphinx_exercise_registry """
+    """Merge sphinx_exercise_registry"""
 
     if not hasattr(env, "sphinx_exercise_registry"):
         env.sphinx_exercise_registry = {}
@@ -109,7 +109,7 @@ def init_numfig(app: Sphinx, config: Config) -> None:
 
 
 def copy_asset_files(app: Sphinx, exc: Union[bool, Exception]):
-    """ Copies required assets for formating in HTML """
+    """Copies required assets for formating in HTML"""
 
     static_path = (
         Path(__file__).parent.joinpath("assets", "html", "exercise.css").absolute()
