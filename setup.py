@@ -25,7 +25,7 @@ extras = {
         "pytest-cov",
         "pytest-regressions",
         "beautifulsoup4",
-        "myst-nb",
+        "myst-nb~=0.17.1",
         "sphinx>=4,<6",
         "docutils>=0.15,<0.19",
         "texsoup",
