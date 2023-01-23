@@ -1,5 +1,13 @@
 # Changelog
 
+
+## [v0.4.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.4.1) (2023-1-23)
+
+### Improved 👌
+
+Compatibility with docutils>=0.18 (from support with sphinx>=5). Along with updating
+CI and pre-commit files.
+
 ## [v0.4.0](https://github.com/executablebooks/sphinx-exercise/tree/v0.4.0) (2022-3-18)
 
 ### New ✨
