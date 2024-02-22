@@ -1,20 +1,31 @@
 import shutil
 import pytest
+import os
+import packaging.version
+import sphinx
 
 from pathlib import Path
-from sphinx.testing.path import path
 
 pytest_plugins = "sphinx.testing.fixtures"
 
 
-@pytest.fixture
-def rootdir(tmpdir):
-    src = path(__file__).parent.abspath() / "books"
-    dst = tmpdir.join("books")
-    shutil.copytree(src, dst)
-    books = path(dst)
-    yield books
-    shutil.rmtree(dst)
+if packaging.version.Version(sphinx.__version__) < packaging.version.Version("7.2.0"):
+    @pytest.fixture
+    def rootdir(tmpdir):
+        from sphinx.testing.path import path
+        src = path(__file__).parent.absolute() / "books"
+        dst = tmpdir.join("books")
+        shutil.copytree(src, dst)
+        yield path(dst)
+        shutil.rmtree(dst)
+else:
+    @pytest.fixture
+    def rootdir(tmp_path):
+        src = Path(__file__).parent.absolute() / "books"
+        dst = tmp_path / "books"
+        shutil.copytree(src, dst)
+        yield dst
+        shutil.rmtree(dst)
 
 
 @pytest.fixture
@@ -46,7 +57,8 @@ def get_sphinx_app_doctree(file_regression):
             extension = sphinx_version + extension
 
         # convert absolute filenames
-        for node in doctree.traverse(lambda n: "source" in n):
+        findall = getattr(doctree, "findall", doctree.traverse)
+        for node in findall(lambda n: "source" in n):
             node["source"] = Path(node["source"]).name
 
         if flatten_outdir:

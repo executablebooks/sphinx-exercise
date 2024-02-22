@@ -20,6 +20,7 @@ from docutils.nodes import Node
 from sphinx.util import logging
 from sphinx.util.fileutil import copy_asset
 
+from ._compat import findall
 from .directive import (
     ExerciseDirective,
     ExerciseStartDirective,
@@ -132,7 +133,7 @@ def doctree_read(app: Sphinx, document: Node) -> None:
     domain = cast(StandardDomain, app.env.get_domain("std"))
 
     # Traverse sphinx-exercise nodes
-    for node in document.traverse():
+    for node in findall(document):
         if is_extension_node(node):
             name = node.get("names", [])[0]
             label = document.nameids[name]

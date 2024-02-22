@@ -4,6 +4,7 @@ from sphinx.util import logging
 from sphinx.builders.latex import LaTeXBuilder
 from docutils import nodes as docutil_nodes
 
+from ._compat import findall
 from .utils import get_node_number, find_parent
 from .nodes import (
     exercise_enumerable_node,
@@ -50,7 +51,7 @@ class UpdateReferencesToEnumerated(SphinxPostTransform):
         if not hasattr(self.env, "sphinx_exercise_registry"):
             return
 
-        for node in self.document.traverse(sphinx_nodes.pending_xref):
+        for node in findall(self.document, sphinx_nodes.pending_xref):
             if node.get("reftype") != "numref":
                 target_label = node.get("reftarget")
                 if target_label in self.env.sphinx_exercise_registry:
@@ -116,7 +117,7 @@ class ResolveTitlesInExercises(SphinxPostTransform):
         if not hasattr(self.env, "sphinx_exercise_registry"):
             return
 
-        for node in self.document.traverse(is_exercise_node):
+        for node in findall(self.document, is_exercise_node):
             node = self.resolve_title(node)
 
 
@@ -180,7 +181,7 @@ class ResolveTitlesInSolutions(SphinxPostTransform):
             return
 
         # Update Solution Directives
-        for node in self.document.traverse(solution_node):
+        for node in findall(self.document, solution_node):
             label = node.get("label")
             target_label = node.get("target_label")
             try:
@@ -215,7 +216,7 @@ class ResolveLinkTextToSolutions(SphinxPostTransform):
             return
 
         # Update Solution References
-        for node in self.document.traverse(docutil_nodes.reference):
+        for node in findall(self.document, docutil_nodes.reference):
             refid = node.get("refid")
             if refid in self.env.sphinx_exercise_registry:
                 target = self.env.sphinx_exercise_registry[refid]

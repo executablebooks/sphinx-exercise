@@ -7,6 +7,7 @@ from sphinx.errors import ExtensionError
 
 # from sphinx.errors import ExtensionError
 
+from ._compat import findall
 from .nodes import (
     exercise_node,
     exercise_enumerable_node,
@@ -88,7 +89,7 @@ class MergeGatedSolutions(SphinxTransform):
 
     def apply(self):
         # Process all matching solution-start and solution-end nodes
-        for node in self.document.traverse(solution_start_node):
+        for node in findall(self.document, solution_start_node):
             label = node.get("label")
             parent_start, parent_end = self.find_nodes(label, node)
             if not parent_end:
@@ -173,11 +174,11 @@ class MergeGatedExercises(SphinxTransform):
     def apply(self):
         # Process all matching exercise and exercise-enumerable (gated=True)
         # and exercise-end nodes
-        for node in self.document.traverse(exercise_node):
+        for node in findall(self.document, exercise_node):
             if node.gated:
                 self.merge_nodes(node)
             node.gated = False
-        for node in self.document.traverse(exercise_enumerable_node):
+        for node in findall(self.document, exercise_enumerable_node):
             if node.gated:
                 self.merge_nodes(node)
             node.gated = False
