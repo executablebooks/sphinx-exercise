@@ -7,4 +7,3 @@ def findall(node: Element, *args, **kwargs) -> Iterator[Element]:
     # note a difference is that findall is an iterator
     impl = getattr(node, "findall", node.traverse)
     return iter(impl(*args, **kwargs))
-

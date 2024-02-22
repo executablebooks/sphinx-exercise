@@ -1,6 +1,5 @@
 import shutil
 import pytest
-import os
 import packaging.version
 import sphinx
 import re
@@ -11,15 +10,19 @@ pytest_plugins = "sphinx.testing.fixtures"
 
 
 if packaging.version.Version(sphinx.__version__) < packaging.version.Version("7.2.0"):
+
     @pytest.fixture
     def rootdir(tmpdir):
         from sphinx.testing.path import path
+
         src = path(__file__).parent.absolute() / "books"
         dst = tmpdir.join("books")
         shutil.copytree(src, dst)
         yield path(dst)
         shutil.rmtree(dst)
+
 else:
+
     @pytest.fixture
     def rootdir(tmp_path):
         src = Path(__file__).parent.absolute() / "books"
