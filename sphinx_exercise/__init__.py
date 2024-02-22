@@ -7,7 +7,7 @@ This package is an extension for sphinx to support exercise and solutions.
 :license: MIT, see LICENSE for details.
 """
 
-__version__ = "1.0.0"
+__version__ = "0.4.1"
 
 
 from pathlib import Path
