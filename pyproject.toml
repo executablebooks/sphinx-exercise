@@ -60,7 +60,7 @@ testing = [
     "myst-nb~=1.0.0",
     "pytest-cov",
     "pytest-regressions",
-    "pytest~=8",
+    "pytest~=8.0.0",
     "sphinx>=5,<8",
     "texsoup",
 ]
