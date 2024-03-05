@@ -160,7 +160,10 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
         self.env.sphinx_exercise_registry[label] = {
             "type": self.name,
             "docname": self.env.docname,
-            "node": node,
+            # Copy the node so that the post transforms do not modify this original state
+            # Prior to Sphinx 6.1.0, the doctree was not cached, and Sphinx loaded a new copy
+            # c.f. https://github.com/sphinx-doc/sphinx/commit/463a69664c2b7f51562eb9d15597987e6e6784cd
+            "node": node.deepcopy(),          
         }
 
         # TODO: Could tag this as Hidden to prevent the cell showing
