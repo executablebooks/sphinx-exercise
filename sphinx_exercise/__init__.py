@@ -144,7 +144,6 @@ def doctree_read(app: Sphinx, document: Node) -> None:
 
 
 def setup(app: Sphinx) -> Dict[str, Any]:
-
     app.add_config_value("hide_solutions", False, "env")
 
     app.connect("config-inited", init_numfig)  # event order - 1

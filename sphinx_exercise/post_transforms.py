@@ -47,7 +47,6 @@ class UpdateReferencesToEnumerated(SphinxPostTransform):
     default_priority = 5
 
     def run(self):
-
         if not hasattr(self.env, "sphinx_exercise_registry"):
             return
 
@@ -113,7 +112,6 @@ class ResolveTitlesInExercises(SphinxPostTransform):
         return node
 
     def run(self):
-
         if not hasattr(self.env, "sphinx_exercise_registry"):
             return
 
@@ -172,11 +170,9 @@ def resolve_solution_title(app, node, exercise_node):
 
 
 class ResolveTitlesInSolutions(SphinxPostTransform):
-
     default_priority = 21
 
     def run(self):
-
         if not hasattr(self.env, "sphinx_exercise_registry"):
             return
 
@@ -211,7 +207,6 @@ class ResolveLinkTextToSolutions(SphinxPostTransform):
     default_priority = 22
 
     def run(self):
-
         if not hasattr(self.env, "sphinx_exercise_registry"):
             return
 

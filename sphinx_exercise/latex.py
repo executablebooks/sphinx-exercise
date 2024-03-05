@@ -2,7 +2,6 @@
 
 
 class LaTeXMarkup(object):
-
     CR = "\n"
 
     def visit_admonition(self):
