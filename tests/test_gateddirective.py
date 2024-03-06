@@ -4,7 +4,7 @@ import shutil
 import sphinx
 from bs4 import BeautifulSoup
 from sphinx.errors import ExtensionError
-
+from pathlib import Path
 from sphinx.testing.util import strip_escseq
 
 SPHINX_VERSION = f".sphinx{sphinx.version_info[0]}"
@@ -14,7 +14,7 @@ SPHINX_VERSION = f".sphinx{sphinx.version_info[0]}"
 @pytest.mark.parametrize("docname", ["exercise-gated.html"])
 def test_gated_exercise_build(app, docname, file_regression):
     app.build()
-    path_to_html = app.outdir / docname
+    path_to_html = Path(app.outdir) / docname
     # get content markup
     soup = BeautifulSoup(path_to_html.read_text(encoding="utf8"), "html.parser")
     exercise_directives = soup.select("div.exercise")
@@ -27,8 +27,7 @@ def test_gated_exercise_build(app, docname, file_regression):
 @pytest.mark.parametrize("docname", ["exercise-gated"])
 def test_gated_exercise_doctree(app, docname, get_sphinx_app_doctree):
     # Clean Up Build Directory from Previous Runs
-    build_dir = "/".join(app.outdir.split("/")[:-1])
-    shutil.rmtree(build_dir)
+    shutil.rmtree(str(app.outdir))
     # Test
     app.build()
     get_sphinx_app_doctree(
@@ -45,7 +44,7 @@ def test_gated_exercise_doctree(app, docname, get_sphinx_app_doctree):
 )
 def test_gated_solution_build(app, docname, file_regression):
     app.build()
-    path_to_html = app.outdir / docname
+    path_to_html = Path(app.outdir) / docname
     # get content markup
     soup = BeautifulSoup(path_to_html.read_text(encoding="utf8"), "html.parser")
     solution_directives = soup.select("div.solution")
@@ -60,8 +59,7 @@ def test_gated_solution_build(app, docname, file_regression):
 @pytest.mark.parametrize("docname", ["solution-exercise", "solution-exercise-gated"])
 def test_gated_solution_doctree(app, docname, get_sphinx_app_doctree):
     # Clean Up Build Directory from Previous Runs
-    build_dir = "/".join(app.outdir.split("/")[:-1])
-    shutil.rmtree(build_dir)
+    shutil.rmtree(str(app.outdir))
     # Test
     app.build()
     get_sphinx_app_doctree(

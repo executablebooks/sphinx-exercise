@@ -7,6 +7,9 @@ This package is an extension for sphinx to support exercise and solutions.
 :license: MIT, see LICENSE for details.
 """
 
+__version__ = "0.4.1"
+
+
 from pathlib import Path
 from typing import Any, Dict, Set, Union, cast
 from sphinx.config import Config
@@ -17,6 +20,7 @@ from docutils.nodes import Node
 from sphinx.util import logging
 from sphinx.util.fileutil import copy_asset
 
+from ._compat import findall
 from .directive import (
     ExerciseDirective,
     ExerciseStartDirective,
@@ -129,7 +133,7 @@ def doctree_read(app: Sphinx, document: Node) -> None:
     domain = cast(StandardDomain, app.env.get_domain("std"))
 
     # Traverse sphinx-exercise nodes
-    for node in document.traverse():
+    for node in findall(document):
         if is_extension_node(node):
             name = node.get("names", [])[0]
             label = document.nameids[name]
@@ -140,7 +144,6 @@ def doctree_read(app: Sphinx, document: Node) -> None:
 
 
 def setup(app: Sphinx) -> Dict[str, Any]:
-
     app.add_config_value("hide_solutions", False, "env")
 
     app.connect("config-inited", init_numfig)  # event order - 1

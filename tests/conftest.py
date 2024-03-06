@@ -1,20 +1,35 @@
 import shutil
 import pytest
+import packaging.version
+import sphinx
+import re
 
 from pathlib import Path
-from sphinx.testing.path import path
 
 pytest_plugins = "sphinx.testing.fixtures"
 
 
-@pytest.fixture
-def rootdir(tmpdir):
-    src = path(__file__).parent.abspath() / "books"
-    dst = tmpdir.join("books")
-    shutil.copytree(src, dst)
-    books = path(dst)
-    yield books
-    shutil.rmtree(dst)
+if packaging.version.Version(sphinx.__version__) < packaging.version.Version("7.2.0"):
+
+    @pytest.fixture
+    def rootdir(tmpdir):
+        from sphinx.testing.path import path
+
+        src = path(__file__).parent.absolute() / "books"
+        dst = tmpdir.join("books")
+        shutil.copytree(src, dst)
+        yield path(dst)
+        shutil.rmtree(dst)
+
+else:
+
+    @pytest.fixture
+    def rootdir(tmp_path):
+        src = Path(__file__).parent.absolute() / "books"
+        dst = tmp_path / "books"
+        shutil.copytree(src, dst)
+        yield dst
+        shutil.rmtree(dst)
 
 
 @pytest.fixture
@@ -46,7 +61,8 @@ def get_sphinx_app_doctree(file_regression):
             extension = sphinx_version + extension
 
         # convert absolute filenames
-        for node in doctree.traverse(lambda n: "source" in n):
+        findall = getattr(doctree, "findall", doctree.traverse)
+        for node in findall(lambda n: "source" in n):
             node["source"] = Path(node["source"]).name
 
         if flatten_outdir:
@@ -60,3 +76,33 @@ def get_sphinx_app_doctree(file_regression):
         return doctree
 
     return read
+
+
+# comparison files will need updating
+# alternatively the resolution of https://github.com/ESSS/pytest-regressions/issues/32
+@pytest.fixture()
+def file_regression(file_regression):
+    return FileRegression(file_regression)
+
+
+class FileRegression:
+    ignores = ()
+    changes = (
+        # TODO: Remove when support for Sphinx<=6 is dropped,
+        (re.escape(" translation_progress=\"{'total': 0, 'translated': 0}\""), ""),
+        # TODO: Remove when support for Sphinx<7.2 is dropped,
+        (r"original_uri=\"[^\"]*\"\s", ""),
+        # TODO: Remove when support for Sphinx<7.2 is dropped
+        ("Link to", "Permalink to"),
+    )
+
+    def __init__(self, file_regression):
+        self.file_regression = file_regression
+
+    def check(self, data, **kwargs):
+        return self.file_regression.check(self._strip_ignores(data), **kwargs)
+
+    def _strip_ignores(self, data):
+        for src, dst in self.changes:
+            data = re.sub(src, dst, data)
+        return data

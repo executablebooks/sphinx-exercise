@@ -88,7 +88,6 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
     }
 
     def run(self) -> List[Node]:
-
         self.defaults = {"title_text": "Exercise"}
         self.serial_number = self.env.new_serialno()
 
@@ -160,7 +159,10 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
         self.env.sphinx_exercise_registry[label] = {
             "type": self.name,
             "docname": self.env.docname,
-            "node": node,
+            # Copy the node so that the post transforms do not modify this original state
+            # Prior to Sphinx 6.1.0, the doctree was not cached, and Sphinx loaded a new copy
+            # c.f. https://github.com/sphinx-doc/sphinx/commit/463a69664c2b7f51562eb9d15597987e6e6784cd
+            "node": node.deepcopy(),
         }
 
         # TODO: Could tag this as Hidden to prevent the cell showing
@@ -214,7 +216,6 @@ class SolutionDirective(SphinxExerciseBaseDirective):
     solution_node = solution_node
 
     def run(self) -> List[Node]:
-
         self.defaults = {"title_text": "Solution to"}
         target_label = self.arguments[0]
         self.serial_number = self.env.new_serialno()
