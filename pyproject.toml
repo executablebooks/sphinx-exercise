@@ -51,6 +51,7 @@ code_style = [
 rtd = [
     "myst-nb~=1.0.0",
     "sphinx-book-theme",
+    "sphinx_togglebutton",
     "sphinx>=5,<8",
 ]
 testing = [
