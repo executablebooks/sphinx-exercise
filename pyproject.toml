@@ -56,7 +56,7 @@ rtd = [
 testing = [
     "beautifulsoup4",
     "coverage",
-    "matplotlib",
+    "matplotlib==3.8.*",
     "myst-nb~=1.0.0",
     "pytest-cov",
     "pytest-regressions",
