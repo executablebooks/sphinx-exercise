@@ -1,3 +1,4 @@
-sphinx>=4,<6
-sphinx-book-theme
-myst-nb
+sphinx==7.*
+sphinx-book-theme==1.*
+myst-nb==1.*
+sphinx_togglebutton
