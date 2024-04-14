@@ -43,6 +43,7 @@ jobs:
         if: matrix.python-version == '3.11'
         uses: codecov/codecov-action@v4
         with:
+          use_oidc: true
           name: sphinx-exercise-pytest-py3.11
           flags: pytests
           file: ./coverage.xml
