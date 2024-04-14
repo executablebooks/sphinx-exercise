@@ -1,7 +1,7 @@
 # -- Project information -----------------------------------------------------
 
 project = "sphinx-exercise"
-copyright = "2020-2021, Exectuable Book Developers"
+copyright = "2020-2021, Executable Book Developers"
 author = "Executable Book Developers"
 master_doc = "index"
 
@@ -11,7 +11,7 @@ master_doc = "index"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named "sphinx.ext.*") or your custom
 # ones.
-extensions = ["sphinx_exercise", "myst_nb"]
+extensions = ["sphinx_exercise", "myst_nb", "sphinx_togglebutton"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

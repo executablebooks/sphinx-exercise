@@ -51,12 +51,13 @@ code_style = [
 rtd = [
     "myst-nb~=1.0.0",
     "sphinx-book-theme",
+    "sphinx_togglebutton",
     "sphinx>=5,<8",
 ]
 testing = [
     "beautifulsoup4",
     "coverage",
-    "matplotlib",
+    "matplotlib==3.8.*",
     "myst-nb~=1.0.0",
     "pytest-cov",
     "pytest-regressions",
