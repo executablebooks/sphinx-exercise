@@ -42,6 +42,8 @@ jobs:
       - name: Upload to Codecov
         if: matrix.python-version == '3.11'
         uses: codecov/codecov-action@v4
+        permissions:
+          id-token: write # This is required for requesting the JWT
         with:
           use_oidc: true
           name: sphinx-exercise-pytest-py3.11
