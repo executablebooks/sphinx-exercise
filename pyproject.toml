@@ -64,6 +64,7 @@ testing = [
     "pytest~=8.0.0",
     "sphinx>=5,<8",
     "texsoup",
+    "defusedxml", # Required by sphinx-testing
 ]
 
 [project.urls]
