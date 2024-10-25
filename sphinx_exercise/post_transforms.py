@@ -190,7 +190,10 @@ class ResolveTitlesInSolutions(SphinxPostTransform):
                 if isinstance(self.app.builder, LaTeXBuilder):
                     docname = find_parent(self.app.builder.env, node, "section")
                 else:
-                    docname = self.app.builder.current_docname
+                    try:
+                        docname = self.app.builder.current_docname
+                    except AttributeError:
+                        docname = self.env.docname  # for builder such as JupyterBuilder that don't support current_docname
                 docpath = self.env.doc2path(docname)
                 path = docpath[: docpath.rfind(".")]
                 msg = f"undefined label: {target_label}"
