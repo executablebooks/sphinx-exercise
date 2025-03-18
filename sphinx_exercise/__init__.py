@@ -100,13 +100,23 @@ def merge_exercises(
             **env.sphinx_exercise_registry,
             **other.sphinx_exercise_registry,
         }
+        
+def define_texts(app: Sphinx, config: Config) -> None:
+    if config.language is not None and config.language_map is not None:
+        lg = config.language_map[config.language]
+        if "exercise_title_text" in lg:
+            config.exercise_title_text = lg["exercise_title_text"]
+        if "solution_title_text" in lg:
+            config.solution_title_text = lg["solution_title_text"]
 
 
 def init_numfig(app: Sphinx, config: Config) -> None:
     """Initialize numfig"""
+    
+    define_texts(app, config)
 
     config["numfig"] = True
-    numfig_format = {"exercise": "Exercise %s"}
+    numfig_format = {"exercise": config.exercise_title_text + " %s"}
     # Merge with current sphinx settings
     numfig_format.update(config.numfig_format)
     config.numfig_format = numfig_format
@@ -141,9 +151,13 @@ def doctree_read(app: Sphinx, document: Node) -> None:
             section_name = node.attributes.get("title")
             domain.anonlabels[name] = docname, label
             domain.labels[name] = docname, label, section_name
-
-
+ 
 def setup(app: Sphinx) -> Dict[str, Any]:
+    #Define the extension configuration variables
+    app.add_config_value("exercise_title_text", "Exercise", "env") # The title of the exercise
+    app.add_config_value("solution_title_text", "Solution to", "env") # The title of the solution
+    if not hasattr(app.config, "language_map"):
+        app.add_config_value("language_map", None, "env") # A map of translated strings
     app.add_config_value("hide_solutions", False, "env")
 
     app.connect("config-inited", init_numfig)  # event order - 1

@@ -88,7 +88,8 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
     }
 
     def run(self) -> List[Node]:
-        self.defaults = {"title_text": "Exercise"}
+        logger.debug("Running ExerciseDirective: exercise_title_text: " + self.env.config.exercise_title_text)
+        self.defaults = {"title_text": self.env.config.exercise_title_text}
         self.serial_number = self.env.new_serialno()
 
         # Initialise Registry (if needed)
@@ -216,7 +217,8 @@ class SolutionDirective(SphinxExerciseBaseDirective):
     solution_node = solution_node
 
     def run(self) -> List[Node]:
-        self.defaults = {"title_text": "Solution to"}
+        logger.debug("Running SolutionDirective: solution_title_text: " + self.env.config.solution_title_text)
+        self.defaults = {"title_text": self.env.config.solution_title_text}
         target_label = self.arguments[0]
         self.serial_number = self.env.new_serialno()
 
