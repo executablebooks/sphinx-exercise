@@ -1,0 +1,23 @@
+[
+    {"language":"English","symbol":"en","text":"Exercise"},
+    {"language":"Spanish","symbol":"es","text":"Ejercicio"},
+    {"language":"French","symbol":"fr","text":"Exercice"},
+    {"language":"Bengali","symbol":"bn","text":"অনুশীলনী"},
+    {"language":"Russian","symbol":"ru","text":"Упражнение"},
+    {"language":"Portuguese","symbol":"pt","text":"Exercício"},
+    {"language":"Indonesian","symbol":"id","text":"Latihan"},
+    {"language":"German","symbol":"de","text":"Übung"},
+    {"language":"Vietnamese","symbol":"vi","text":"Bài tập"},
+    {"language":"Tamil","symbol":"ta","text":"பயிற்சி"},
+    {"language":"Italian","symbol":"it","text":"Esercizio"},
+    {"language":"Dutch","symbol":"nl","text":"Opgave"},
+    {"language":"Greek","symbol":"el","text":"Άσκηση"},
+    {"language":"Polish","symbol":"pl","text":"Ćwiczenie"},
+    {"language":"Ukrainian","symbol":"uk","text":"Вправа"},
+    {"language":"Malay","symbol":"ms","text":"Latihan"},
+    {"language":"Romanian","symbol":"ro","text":"Exercițiu"},
+    {"language":"Czech","symbol":"cs","text":"Cvičení"},
+    {"language":"Hungarian","symbol":"hu","text":"Gyakorlat"},
+    {"language":"Swedish","symbol":"sv","text":"Övning"},
+    {"language":"Norwegian","symbol":"no","text":"Øvelse"}
+]

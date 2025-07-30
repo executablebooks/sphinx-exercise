@@ -9,7 +9,7 @@ This package is an extension for sphinx to support exercise and solutions.
 
 __version__ = "1.0.1"
 
-
+import os
 from pathlib import Path
 from typing import Any, Dict, Set, Union, cast
 from sphinx.config import Config
@@ -19,6 +19,7 @@ from sphinx.domains.std import StandardDomain
 from docutils.nodes import Node
 from sphinx.util import logging
 from sphinx.util.fileutil import copy_asset
+from sphinx.locale import get_translation
 
 from ._compat import findall
 from .directive import (
@@ -65,9 +66,10 @@ from .post_transforms import (
 
 logger = logging.getLogger(__name__)
 
+MESSAGE_CATALOG_NAME = "exercise"
+translate = get_translation(MESSAGE_CATALOG_NAME)
 
 # Callback Functions
-
 
 def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
     """Purge sphinx_exercise registry"""
@@ -106,7 +108,7 @@ def init_numfig(app: Sphinx, config: Config) -> None:
     """Initialize numfig"""
 
     config["numfig"] = True
-    numfig_format = {"exercise": "Exercise %s"}
+    numfig_format = {"exercise": f"{translate('Exercise')} %s"}
     # Merge with current sphinx settings
     numfig_format.update(config.numfig_format)
     config.numfig_format = numfig_format
@@ -210,6 +212,11 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_post_transform(ResolveLinkTextToSolutions)
 
     app.add_css_file("exercise.css")
+
+    # add translations
+    package_dir = os.path.abspath(os.path.dirname(__file__))
+    locale_dir = os.path.join(package_dir, "translations", "locales")
+    app.add_message_catalog(MESSAGE_CATALOG_NAME, locale_dir)
 
     return {
         "version": "builtin",

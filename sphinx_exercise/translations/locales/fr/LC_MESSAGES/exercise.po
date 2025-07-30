@@ -1,0 +1,15 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Sphinx-Exercise\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Exercise"
+msgstr "Exercice"
+
+msgid "Solution to"
+msgstr "Solution de"
