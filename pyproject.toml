@@ -40,9 +40,9 @@ dependencies = [
 
 [project.optional-dependencies]
 all = [
-    "sphinx-exercise[code_style]",
-    "sphinx-exercise[rtd]",
-    "sphinx-exercise[testing]"
+    "teachbooks-sphinx-exercise[code_style]",
+    "teachbooks-sphinx-exercise[rtd]",
+    "teachbooks-sphinx-exercise[testing]"
 ]
 code_style = [
     "black",
@@ -74,7 +74,4 @@ Source = "https://github.com/executablebooks/sphinx-exercise"
 Tracker = "https://github.com/executablebooks/sphinx-exercise/issues"
 
 [tool.hatch.version]
-path = "sphinx_exercise/__init__.py"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/sphinx_exercise"]
+path = "teachbooks_sphinx_exercise/__init__.py"
