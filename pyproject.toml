@@ -3,14 +3,15 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "sphinx-exercise"
+name = "teachbooks-sphinx-exercise"
 dynamic = ["version"]
-description = "A Sphinx extension for producing exercises and solutions."
+description = "A Sphinx extension for producing exercises and solutions - TeachBooks temporary version."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.9"
 authors = [
     { name = "QuantEcon", email = "admin@quantecon.org" },
+    { name = "Dennis den Ouden-van der Horst", email = "d.denouden-vanderhorst@tudelft.nl" }
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
