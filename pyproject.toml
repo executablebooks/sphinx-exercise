@@ -75,6 +75,3 @@ Tracker = "https://github.com/executablebooks/sphinx-exercise/issues"
 
 [tool.hatch.version]
 path = "sphinx_exercise/__init__.py"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/sphinx_exercise"]
