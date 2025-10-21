@@ -20,10 +20,10 @@
             <section ids="solution-content">
                 <paragraph>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                <math_block docname="solution/_linked_enum" label="True" no-wrap="False" nowrap="False" number="True" xml:space="preserve">
+                <math_block docname="solution/_linked_enum" label="True" nowrap="False" number="True" xml:space="preserve">
                     P_t(x, y) = \mathbb 1\{x = y\} + t Q(x, y) + o(t)
                 <paragraph>
                     Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                 <target refid="equation-ex-math">
-                <math_block docname="solution/_linked_enum" ids="equation-ex-math" label="ex-math" no-wrap="False" nowrap="False" number="1" xml:space="preserve">
+                <math_block docname="solution/_linked_enum" ids="equation-ex-math" label="ex-math" nowrap="False" number="1" xml:space="preserve">
                     P_t(x, y) = \mathbb 1\{x = y\} + t Q(x, y) + o(t)
