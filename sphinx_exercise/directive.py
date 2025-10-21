@@ -9,9 +9,11 @@ A custom Sphinx Directive
 """
 
 from typing import List
+from pathlib import Path
 from docutils.nodes import Node
 
 from sphinx.util.docutils import SphinxDirective
+from sphinx.locale import get_translation
 from docutils.parsers.rst import directives
 from .nodes import (
     exercise_node,
@@ -29,7 +31,6 @@ from sphinx.util import logging
 
 logger = logging.getLogger(__name__)
 
-from sphinx.locale import get_translation
 MESSAGE_CATALOG_NAME = "exercise"
 translate = get_translation(MESSAGE_CATALOG_NAME)
 
@@ -39,8 +40,8 @@ class SphinxExerciseBaseDirective(SphinxDirective):
         """Check for duplicate labels"""
 
         if not label == "" and label in self.env.sphinx_exercise_registry.keys():
-            docpath = self.env.doc2path(self.env.docname)
-            path = docpath[: docpath.rfind(".")]
+            docpath = Path(self.env.doc2path(self.env.docname))
+            path = str(docpath.with_suffix(""))
             other_path = self.env.doc2path(
                 self.env.sphinx_exercise_registry[label]["docname"]
             )

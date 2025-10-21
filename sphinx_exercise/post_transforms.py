@@ -1,4 +1,5 @@
 import sphinx.addnodes as sphinx_nodes
+from pathlib import Path
 from sphinx.transforms.post_transforms import SphinxPostTransform
 from sphinx.util import logging
 from sphinx.builders.latex import LaTeXBuilder
@@ -194,8 +195,8 @@ class ResolveTitlesInSolutions(SphinxPostTransform):
                         docname = self.app.builder.current_docname
                     except AttributeError:
                         docname = self.env.docname  # for builder such as JupyterBuilder that don't support current_docname
-                docpath = self.env.doc2path(docname)
-                path = docpath[: docpath.rfind(".")]
+                docpath = Path(self.env.doc2path(docname))
+                path = str(docpath.with_suffix(""))
                 msg = f"undefined label: {target_label}"
                 logger.warning(msg, location=path, color="red")
                 return

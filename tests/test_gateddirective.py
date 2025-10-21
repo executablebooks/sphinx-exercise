@@ -5,7 +5,7 @@ import sphinx
 from bs4 import BeautifulSoup
 from sphinx.errors import ExtensionError
 from pathlib import Path
-from sphinx.testing.util import strip_escseq
+from sphinx.util.console import strip_escape_sequences
 
 SPHINX_VERSION = f".sphinx{sphinx.version_info[0]}"
 
@@ -71,7 +71,7 @@ def test_gated_solution_doctree(app, docname, get_sphinx_app_doctree):
 
 
 def getwarning(warnings):
-    return strip_escseq(warnings.getvalue().replace(os.sep, "/"))
+    return strip_escape_sequences(warnings.getvalue().replace(os.sep, "/"))
 
 
 @pytest.mark.sphinx("html", testroot="gateddirective")
