@@ -1,5 +1,25 @@
 # Changelog
 
+## [Unreleased]
+
+### New ✨
+
+- Added internationalization (i18n) support for 27 languages
+- Added translations for Chinese, Japanese, Korean, Arabic, Hindi, Turkish, and expanded existing language support
+- Extension now automatically detects Sphinx project language setting and displays appropriate translations
+
+### Improved 👌
+
+- Reorganized and expanded translation files with alphabetical sorting
+- Enhanced translation documentation with comprehensive guides
+- Updated README and documentation to highlight internationalization features
+
+### Documentation 📚
+
+- Added internationalization section to syntax documentation
+- Updated README with i18n feature highlights
+- Improved translation README with detailed contribution guidelines
+
 
 ## [v0.4.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.4.1) (2023-1-23)
 
