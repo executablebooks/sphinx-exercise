@@ -1,5 +1,8 @@
 from bs4 import BeautifulSoup
 import pytest
+import sphinx
+
+SPHINX_VERSION = f".sphinx{sphinx.version_info[0]}"
 
 
 @pytest.mark.sphinx("html", testroot="mybook")
@@ -54,4 +57,5 @@ def test_solution_doctree(app, docname, file_regression, get_sphinx_app_doctree)
         resolve=False,
         regress=True,
         flatten_outdir=True,  # noqa: E501 flatten files "solution/<file> -> <file>.xml" for convenience
+        sphinx_version=SPHINX_VERSION,
     )

@@ -1,0 +1,16 @@
+<document source="_unenum_ref_mathtitle.rst">
+    <section ids="unenum-ref-mathtitle" names="_unenum_ref_mathtitle">
+        <title>
+            _unenum_ref_mathtitle
+        <paragraph>
+            This is a reference 
+            <pending_xref refdoc="exercise/_unenum_ref_mathtitle" refdomain="std" refexplicit="False" reftarget="unen-exc-label-math" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    unen-exc-label-math
+            .
+        <paragraph>
+            This is a second reference 
+            <pending_xref refdoc="exercise/_unenum_ref_mathtitle" refdomain="std" refexplicit="True" reftarget="unen-exc-label-math" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    some text
+            .

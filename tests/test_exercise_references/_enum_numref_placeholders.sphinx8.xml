@@ -1,0 +1,64 @@
+<document source="_enum_numref_placeholders.rst">
+    <section ids="enum-numref-placeholders" names="_enum_numref_placeholders">
+        <title>
+            _enum_numref_placeholders
+        <paragraph>
+            This reference does not include math 
+            <pending_xref refdoc="exercise/_enum_numref_placeholders" refdomain="std" refexplicit="True" reftarget="test-exc-label" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some {number} text %s test {name}
+            .
+        <paragraph>
+            This reference does not include math 
+            <pending_xref refdoc="exercise/_enum_numref_placeholders" refdomain="std" refexplicit="True" reftarget="test-exc-label" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some {number} text %s test
+            .
+        <paragraph>
+            This reference does not include math 
+            <pending_xref refdoc="exercise/_enum_numref_placeholders" refdomain="std" refexplicit="True" reftarget="test-exc-label" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some {name} text %s test
+            .
+        <paragraph>
+            This reference does not include math 
+            <pending_xref refdoc="exercise/_enum_numref_placeholders" refdomain="std" refexplicit="True" reftarget="test-exc-label" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some {name} text {number} test
+            .
+        <paragraph>
+            This reference does not include math 
+            <pending_xref refdoc="exercise/_enum_numref_placeholders" refdomain="std" refexplicit="True" reftarget="test-exc-label" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some %s text test
+            .
+        <paragraph>
+            This reference includes math 
+            <pending_xref refdoc="exercise/_enum_numref_placeholders" refdomain="std" refexplicit="True" reftarget="test-exc-label-math" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some {number} text %s test {name}
+            .
+        <paragraph>
+            This reference includes math 
+            <pending_xref refdoc="exercise/_enum_numref_placeholders" refdomain="std" refexplicit="True" reftarget="test-exc-label-math" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some {number} text %s test
+            .
+        <paragraph>
+            This reference includes math 
+            <pending_xref refdoc="exercise/_enum_numref_placeholders" refdomain="std" refexplicit="True" reftarget="test-exc-label-math" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some {name} text %s test
+            .
+        <paragraph>
+            This reference includes math 
+            <pending_xref refdoc="exercise/_enum_numref_placeholders" refdomain="std" refexplicit="True" reftarget="test-exc-label-math" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some {name} text {number} test
+            .
+        <paragraph>
+            This reference includes math 
+            <pending_xref refdoc="exercise/_enum_numref_placeholders" refdomain="std" refexplicit="True" reftarget="test-exc-label-math" reftype="numref" refwarn="True">
+                <literal classes="xref std std-numref">
+                    some %s text test
+            .

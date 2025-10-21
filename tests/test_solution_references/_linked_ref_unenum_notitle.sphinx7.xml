@@ -1,0 +1,16 @@
+<document source="_linked_ref_unenum_notitle.rst">
+    <section ids="linked-ref-unenum-notitle" names="_linked_ref_unenum_notitle">
+        <title>
+            _linked_ref_unenum_notitle
+        <paragraph>
+            referencing: 
+            <pending_xref refdoc="solution/_linked_ref_unenum_notitle" refdomain="std" refexplicit="False" reftarget="sol-nonumber-notitle" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    sol-nonumber-notitle
+            .
+        <paragraph>
+            referencing: 
+            <pending_xref refdoc="solution/_linked_ref_unenum_notitle" refdomain="std" refexplicit="True" reftarget="sol-nonumber-notitle" reftype="ref" refwarn="True">
+                <inline classes="xref std std-ref">
+                    ex with nonumber and notitle
+            .
