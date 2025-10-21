@@ -1,11 +1,21 @@
 import os
 import pytest
+import re
 import shutil
 import sphinx
 from bs4 import BeautifulSoup
 from sphinx.errors import ExtensionError
 from pathlib import Path
-from sphinx.util.console import strip_escape_sequences as strip_escseq
+
+# strip_escape_sequences was removed in Sphinx 7
+try:
+    from sphinx.util.console import strip_escape_sequences as strip_escseq
+except ImportError:
+    # Fallback for Sphinx 7+: simple ANSI escape sequence stripper
+    def strip_escseq(text: str) -> str:
+        """Remove ANSI escape sequences from text."""
+        return re.sub(r"\x1b\[[0-9;]*m", "", text)
+
 
 SPHINX_VERSION = f".sphinx{sphinx.version_info[0]}"
 
