@@ -96,6 +96,8 @@ class FileRegression:
         ("Link to", "Permalink to"),
         # Strip ipykernel process IDs (temporary directory paths)
         (r"ipykernel_\d+", "ipykernel_XXXXX"),
+        # Normalize matplotlib image hashes (platform/version dependent)
+        (r"[a-f0-9]{64}\.png", "IMAGEHASH.png"),
     )
 
     def __init__(self, file_regression):
