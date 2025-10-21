@@ -1,6 +1,25 @@
 # Changelog
 
 
+## [v1.0.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.0.1) (2024-07-01)
+
+### Improved 👌
+
+- Updates to testing infrastructure and minor bug fixes
+- Fixed JupyterBuilder handling in test suite
+
+## [v1.0.0](https://github.com/executablebooks/sphinx-exercise/tree/v1.0.0) (2024-01-15)
+
+### Improved 👌
+
+- Added support for Sphinx 7
+- Updated build and CI infrastructure
+- Fixed deprecation warnings for Sphinx 7 compatibility
+- Improved type hints throughout codebase
+- Fixed doctree node mutation issues by copying nodes
+- Updated codecov to version 3
+- Pinned matplotlib to 3.7.* for testing stability
+
 ## [v0.4.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.4.1) (2023-1-23)
 
 ### Improved 👌
