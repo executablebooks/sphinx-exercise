@@ -1,0 +1,11 @@
+include LICENSE
+include MANIFEST.in
+include README.md
+
+recursive-include sphinx_exercise *.js
+recursive-include sphinx_exercise *.css
+
+recursive-include sphinx_exercise *.json
+recursive-include sphinx_exercise *.mo
+recursive-include sphinx_exercise *.po
+recursive-include sphinx_exercise *.py

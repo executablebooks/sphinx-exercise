@@ -1,0 +1,23 @@
+[
+    {"language":"English","symbol":"en","text":"Solution to"},
+    {"language":"Spanish","symbol":"es","text":"Solución a"},
+    {"language":"French","symbol":"fr","text":"Solution de"},
+    {"language":"Bengali","symbol":"bn","text":"সমাধান"},
+    {"language":"Russian","symbol":"ru","text":"Решение к"},
+    {"language":"Portuguese","symbol":"pt","text":"Solução para"},
+    {"language":"Indonesian","symbol":"id","text":"Solusi untuk"},
+    {"language":"German","symbol":"de","text":"Lösung zu"},
+    {"language":"Vietnamese","symbol":"vi","text":"Lời giải cho"},
+    {"language":"Tamil","symbol":"ta","text":"தீர்வு"},
+    {"language":"Italian","symbol":"it","text":"Soluzione a"},
+    {"language":"Dutch","symbol":"nl","text":"Oplossing van"},
+    {"language":"Greek","symbol":"el","text":"Λύση στο"},
+    {"language":"Polish","symbol":"pl","text":"Rozwiązanie do"},
+    {"language":"Ukrainian","symbol":"uk","text":"Розв'язок до"},
+    {"language":"Malay","symbol":"ms","text":"Penyelesaian untuk"},
+    {"language":"Romanian","symbol":"ro","text":"Soluția pentru"},
+    {"language":"Czech","symbol":"cs","text":"Řešení k"},
+    {"language":"Hungarian","symbol":"hu","text":"Megoldás a"},
+    {"language":"Swedish","symbol":"sv","text":"Lösning till"},
+    {"language":"Norwegian","symbol":"no","text":"Løsning til"}
+]

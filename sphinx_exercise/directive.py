@@ -29,6 +29,10 @@ from sphinx.util import logging
 
 logger = logging.getLogger(__name__)
 
+from sphinx.locale import get_translation
+MESSAGE_CATALOG_NAME = "exercise"
+translate = get_translation(MESSAGE_CATALOG_NAME)
+
 
 class SphinxExerciseBaseDirective(SphinxDirective):
     def duplicate_labels(self, label):
@@ -88,7 +92,7 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
     }
 
     def run(self) -> List[Node]:
-        self.defaults = {"title_text": "Exercise"}
+        self.defaults = {"title_text": f"{translate('Exercise')}"}
         self.serial_number = self.env.new_serialno()
 
         # Initialise Registry (if needed)
@@ -216,7 +220,7 @@ class SolutionDirective(SphinxExerciseBaseDirective):
     solution_node = solution_node
 
     def run(self) -> List[Node]:
-        self.defaults = {"title_text": "Solution to"}
+        self.defaults = {"title_text": f"{translate('Solution to')}"}
         target_label = self.arguments[0]
         self.serial_number = self.env.new_serialno()
 
