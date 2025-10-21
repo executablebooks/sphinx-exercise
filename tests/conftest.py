@@ -15,7 +15,8 @@ if packaging.version.Version(sphinx.__version__) < packaging.version.Version("7.
     def rootdir(tmpdir):
         from sphinx.testing.path import path
 
-        src = path(__file__).parent.absolute() / "books"
+        # In Sphinx 6, path objects don't have .absolute() method, but they are already absolute
+        src = path(__file__).parent / "books"
         dst = tmpdir.join("books")
         shutil.copytree(src, dst)
         yield path(dst)
