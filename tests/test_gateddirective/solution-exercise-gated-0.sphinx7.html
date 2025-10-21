@@ -26,7 +26,7 @@
 <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'s1 and s2'</span><span class="p">)</span>
 <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">cxy</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cohere</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span>
+<span class="n">cxy</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cohere</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">NFFT</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span>
 <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'coherence'</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -35,10 +35,6 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/var/folders/zy/dpt7pvt11fvcm_yxjd7kmv880000gn/T/ipykernel_XXXXX/803402259.py:23: MatplotlibDeprecationWarning: Passing the NFFT parameter of cohere() positionally is deprecated since Matplotlib 3.10; the parameter will become keyword-only in 3.12.
-  cxy, f = axs[1].cohere(s1, s2, 256, 1. / dt)
-</pre></div>
-</div>
 <img alt="_images/ff2d6cfc1cb5967111b6c3c5094239ee0b77720b11d3b11f66a32bb897beb13a.png" src="_images/ff2d6cfc1cb5967111b6c3c5094239ee0b77720b11d3b11f66a32bb897beb13a.png"/>
 </div>
 </div>

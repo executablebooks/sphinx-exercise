@@ -35,15 +35,12 @@
                             axs[0].set_ylabel('s1 and s2')
                             axs[0].grid(True)
                             
-                            cxy, f = axs[1].cohere(s1, s2, 256, 1. / dt)
+                            cxy, f = axs[1].cohere(s1, s2, NFFT=256, Fs=1. / dt)
                             axs[1].set_ylabel('coherence')
                             
                             fig.tight_layout()
                             plt.show()
                     <container classes="cell_output" nb_element="cell_code_output">
-                        <literal_block classes="output stderr" language="myst-ansi" xml:space="preserve">
-                            /var/folders/zy/dpt7pvt11fvcm_yxjd7kmv880000gn/T/ipykernel_XXXXX/803402259.py:23: MatplotlibDeprecationWarning: Passing the NFFT parameter of cohere() positionally is deprecated since Matplotlib 3.10; the parameter will become keyword-only in 3.12.
-                              cxy, f = axs[1].cohere(s1, s2, 256, 1. / dt)
                         <container nb_element="mime_bundle">
                             <container mime_type="text/plain">
                                 <literal_block classes="output text_plain" language="myst-ansi" xml:space="preserve">
@@ -88,15 +85,12 @@
                             axs[0].set_ylabel('s1 and s2')
                             axs[0].grid(True)
                             
-                            cxy, f = axs[1].cohere(s1, s2, 256, 1. / dt)
+                            cxy, f = axs[1].cohere(s1, s2, NFFT=256, Fs=1. / dt)
                             axs[1].set_ylabel('coherence')
                             
                             fig.tight_layout()
                             plt.show()
                     <container classes="cell_output" nb_element="cell_code_output">
-                        <literal_block classes="output stderr" language="myst-ansi" xml:space="preserve">
-                            /var/folders/zy/dpt7pvt11fvcm_yxjd7kmv880000gn/T/ipykernel_XXXXX/803402259.py:23: MatplotlibDeprecationWarning: Passing the NFFT parameter of cohere() positionally is deprecated since Matplotlib 3.10; the parameter will become keyword-only in 3.12.
-                              cxy, f = axs[1].cohere(s1, s2, 256, 1. / dt)
                         <container nb_element="mime_bundle">
                             <container mime_type="text/plain">
                                 <literal_block classes="output text_plain" language="myst-ansi" xml:space="preserve">
