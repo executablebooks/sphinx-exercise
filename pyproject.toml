@@ -60,7 +60,7 @@ testing = [
     "myst-nb>=1.1.0",
     "pytest-cov",
     "pytest-regressions",
-    "pytest~=8.0.0",
+    "pytest>=8.0",
     "sphinx>=6.1,<9",
     "texsoup",
     "defusedxml", # Required by sphinx-testing
