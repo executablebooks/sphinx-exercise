@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [v1.1.0](https://github.com/executablebooks/sphinx-exercise/tree/v1.1.0) (TBD)
 
 ### New ✨
 
@@ -19,7 +19,13 @@
 - Added internationalization section to syntax documentation
 - Updated README with i18n feature highlights
 - Improved translation README with detailed contribution guidelines
+- Created releases documentation structure in `docs/releases/`
+- Added Copilot instructions for project maintenance
 
+
+## [v1.0.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.0.1) (2024-XX-XX)
+
+_No changelog available for this version._
 
 ## [v0.4.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.4.1) (2023-1-23)
 

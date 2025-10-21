@@ -5,11 +5,7 @@ This section contains detailed release notes for sphinx-exercise versions.
 ```{toctree}
 :maxdepth: 1
 
-unreleased
+v1.1.0
 ```
 
-## Quick Links
-
-- [Latest Release](https://github.com/executablebooks/sphinx-exercise/releases/latest)
-- [All Releases](https://github.com/executablebooks/sphinx-exercise/releases)
-- [Changelog](https://github.com/executablebooks/sphinx-exercise/blob/main/CHANGELOG.md)
+For a complete list of all changes across versions, see the [CHANGELOG](https://github.com/executablebooks/sphinx-exercise/blob/main/CHANGELOG.md).
