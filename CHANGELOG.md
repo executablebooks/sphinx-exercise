@@ -1,5 +1,26 @@
 # Changelog
 
+## [v1.1.0](https://github.com/executablebooks/sphinx-exercise/tree/v1.1.0) (TBD)
+
+### New ✨
+
+- Added internationalization (i18n) support with 27 languages
+  - Arabic, Bengali, Chinese (Simplified), Czech, Dutch, French, German, Greek, Hindi
+  - Hungarian, Indonesian, Italian, Japanese, Korean, Malay, Norwegian, Polish
+  - Portuguese, Romanian, Russian, Spanish, Swedish, Tamil, Turkish, Ukrainian, Vietnamese
+- Translations available for Exercise and Solution directive labels
+
+### Improved 👌
+
+- Modernized Python support: Now requires Python 3.11+ (dropped 3.9, 3.10)
+- Modernized Sphinx support: Now requires Sphinx 6+ (dropped Sphinx 4, 5)
+- Updated test suite to test against Sphinx 7 and 8
+- Removed outdated test fixtures for Sphinx 4 and 5
+
+### Breaking Changes ⚠️
+
+- **Dropped Python 3.9 and 3.10 support** - Minimum Python version is now 3.11
+- **Dropped Sphinx <6 support** - Minimum Sphinx version is now 6.0
 
 ## [v0.4.1](https://github.com/executablebooks/sphinx-exercise/tree/v0.4.1) (2023-1-23)
 

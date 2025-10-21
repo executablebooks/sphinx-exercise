@@ -1,5 +1,10 @@
 \begin{document}
 
+\ifdefined\shorthandoff
+  \ifnum\catcode`\=\string=\active\shorthandoff{=}\fi
+  \ifnum\catcode`\"=\active\shorthandoff{"}\fi
+\fi
+
 \pagestyle{empty}
 \sphinxmaketitle
 \pagestyle{plain}
@@ -57,19 +62,19 @@ Exercise 4 Content with no Number
 \subsection{Standard References}
 \label{\detokenize{exercise:standard-references}}
 \sphinxAtStartPar
-This is a link to \DUrole{xref,std,std-ref}{exercise\sphinxhyphen{}no\sphinxhyphen{}title}
+This is a link to \DUrole{xref}{\DUrole{std}{\DUrole{std-ref}{exercise\sphinxhyphen{}no\sphinxhyphen{}title}}}
 
 \sphinxAtStartPar
 This is a link to \hyperref[exercise:exercise-1]{Exercise 1}
 
 \sphinxAtStartPar
-This is a link to {\hyperref[\detokenize{exercise:exercise-2}]{\sphinxcrossref{\DUrole{std,std-ref}{Exercise}}}}
+This is a link to {\hyperref[\detokenize{exercise:exercise-2}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Exercise}}}}}
 
 \sphinxAtStartPar
 This ia another link with custom text \hyperref[exercise:exercise-3]{Exercise 3 Custom Text}
 
 \sphinxAtStartPar
-This ia another link with custom text {\hyperref[\detokenize{exercise:exercise-4}]{\sphinxcrossref{\DUrole{std,std-ref}{Exercise 4 Custom Text}}}}
+This ia another link with custom text {\hyperref[\detokenize{exercise:exercise-4}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Exercise 4 Custom Text}}}}}
 
 
 \subsection{Numbered References}
@@ -146,19 +151,19 @@ This is a solution to exercise 4
 \subsection{Standard References}
 \label{\detokenize{solution:standard-references}}
 \sphinxAtStartPar
-This is a link to {\hyperref[\detokenize{solution:solution-1}]{\sphinxcrossref{\DUrole{std,std-ref}{Solution to Exercise 1 (n! factorial)}}}}
+This is a link to {\hyperref[\detokenize{solution:solution-1}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Solution to Exercise 1 (n! factorial)}}}}}
 
 \sphinxAtStartPar
-This is a link to {\hyperref[\detokenize{solution:solution-2}]{\sphinxcrossref{\DUrole{std,std-ref}{Solution to Exercise (n! factorial)}}}}
+This is a link to {\hyperref[\detokenize{solution:solution-2}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Solution to Exercise (n! factorial)}}}}}
 
 \sphinxAtStartPar
-This is a link to {\hyperref[\detokenize{solution:solution-3}]{\sphinxcrossref{\DUrole{std,std-ref}{Solution to Exercise 2}}}}
+This is a link to {\hyperref[\detokenize{solution:solution-3}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Solution to Exercise 2}}}}}
 
 \sphinxAtStartPar
-This is a link to {\hyperref[\detokenize{solution:solution-4}]{\sphinxcrossref{\DUrole{std,std-ref}{Solution to Exercise}}}}
+This is a link to {\hyperref[\detokenize{solution:solution-4}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Solution to Exercise}}}}}
 
 \sphinxAtStartPar
-This ia another link to a different {\hyperref[\detokenize{solution:solution-1}]{\sphinxcrossref{\DUrole{std,std-ref}{Solution to Exercise 1 (n! factorial)}}}}
+This ia another link to a different {\hyperref[\detokenize{solution:solution-1}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Solution to Exercise 1 (n! factorial)}}}}}
 
 
 \subsection{Numbered References}
