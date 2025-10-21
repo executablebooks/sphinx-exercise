@@ -8,28 +8,30 @@ A custom Sphinx Directive
 :licences: see LICENSE for details
 """
 
+import os
 from typing import List
-from docutils.nodes import Node
 
-from sphinx.util.docutils import SphinxDirective
+from docutils import nodes
+from docutils.nodes import Node
 from docutils.parsers.rst import directives
+from sphinx.locale import get_translation
+from sphinx.util import logging
+from sphinx.util.docutils import SphinxDirective
+
 from .nodes import (
-    exercise_node,
-    exercise_enumerable_node,
     exercise_end_node,
+    exercise_enumerable_node,
+    exercise_node,
+    exercise_subtitle,
+    exercise_title,
+    solution_end_node,
     solution_node,
     solution_start_node,
-    solution_end_node,
-    exercise_title,
-    exercise_subtitle,
     solution_title,
 )
-from docutils import nodes
-from sphinx.util import logging
 
 logger = logging.getLogger(__name__)
 
-from sphinx.locale import get_translation
 MESSAGE_CATALOG_NAME = "exercise"
 translate = get_translation(MESSAGE_CATALOG_NAME)
 
@@ -40,7 +42,7 @@ class SphinxExerciseBaseDirective(SphinxDirective):
 
         if not label == "" and label in self.env.sphinx_exercise_registry.keys():
             docpath = self.env.doc2path(self.env.docname)
-            path = docpath[: docpath.rfind(".")]
+            path = os.path.splitext(docpath)[0]
             other_path = self.env.doc2path(
                 self.env.sphinx_exercise_registry[label]["docname"]
             )

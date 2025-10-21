@@ -94,6 +94,8 @@ class FileRegression:
         (r"original_uri=\"[^\"]*\"\s", ""),
         # TODO: Remove when support for Sphinx<7.2 is dropped
         ("Link to", "Permalink to"),
+        # Strip ipykernel process IDs (temporary directory paths)
+        (r"ipykernel_\d+", "ipykernel_XXXXX"),
     )
 
     def __init__(self, file_regression):
