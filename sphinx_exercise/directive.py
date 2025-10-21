@@ -10,9 +10,12 @@ A custom Sphinx Directive
 
 from typing import List
 from docutils.nodes import Node
-
-from sphinx.util.docutils import SphinxDirective
+from docutils import nodes
 from docutils.parsers.rst import directives
+from sphinx.util.docutils import SphinxDirective
+from sphinx.util import logging
+from sphinx.locale import get_translation
+
 from .nodes import (
     exercise_node,
     exercise_enumerable_node,
@@ -24,12 +27,9 @@ from .nodes import (
     exercise_subtitle,
     solution_title,
 )
-from docutils import nodes
-from sphinx.util import logging
 
 logger = logging.getLogger(__name__)
 
-from sphinx.locale import get_translation
 MESSAGE_CATALOG_NAME = "exercise"
 translate = get_translation(MESSAGE_CATALOG_NAME)
 

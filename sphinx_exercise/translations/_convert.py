@@ -5,6 +5,7 @@ import subprocess
 
 MESSAGE_CATALOG_NAME = "exercise"
 
+
 def convert_json(folder=None):
     folder = folder or Path(__file__).parent
 
@@ -19,7 +20,13 @@ def convert_json(folder=None):
         english = data[0]["text"]
         for item in data[1:]:
             language = item["symbol"]
-            out_path = folder / "locales" / language / "LC_MESSAGES" / f"{MESSAGE_CATALOG_NAME}.po"
+            out_path = (
+                folder
+                / "locales"
+                / language
+                / "LC_MESSAGES"
+                / f"{MESSAGE_CATALOG_NAME}.po"
+            )
             if not out_path.parent.exists():
                 out_path.parent.mkdir(parents=True)
             if not out_path.exists():

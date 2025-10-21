@@ -71,6 +71,7 @@ translate = get_translation(MESSAGE_CATALOG_NAME)
 
 # Callback Functions
 
+
 def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
     """Purge sphinx_exercise registry"""
 
