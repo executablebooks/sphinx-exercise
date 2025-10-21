@@ -13,13 +13,12 @@ from docutils.nodes import Node
 from docutils import nodes as docutil_nodes
 from sphinx import addnodes as sphinx_nodes
 from sphinx.writers.latex import LaTeXTranslator
+from sphinx.locale import get_translation
 from .latex import LaTeXMarkup
 
 logger = logging.getLogger(__name__)
 LaTeX = LaTeXMarkup()
 
-
-from sphinx.locale import get_translation
 MESSAGE_CATALOG_NAME = "exercise"
 translate = get_translation(MESSAGE_CATALOG_NAME)
 
@@ -54,7 +53,10 @@ class solution_end_node(docutil_nodes.Admonition, docutil_nodes.Element):
 class exercise_title(docutil_nodes.title):
     def default_title(self):
         title_text = self.children[0].astext()
-        if title_text == f"{translate('Exercise')}" or title_text == f"{translate('Exercise')} %s":
+        if (
+            title_text == f"{translate('Exercise')}"
+            or title_text == f"{translate('Exercise')} %s"
+        ):
             return True
         else:
             return False
