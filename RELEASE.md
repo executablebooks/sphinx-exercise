@@ -54,26 +54,25 @@ git push origin main
 git push origin v1.1.0
 ```
 
-### 4. Create GitHub Release
+### 4. Automated PyPI Publication
+
+After pushing the tag, the GitHub Actions workflow will automatically:
+- Run all tests (pre-commit, pytest, docs)
+- Build the distribution packages
+- Publish to PyPI using the `PYPI_KEY` secret
+
+You can monitor the progress at:
+https://github.com/executablebooks/sphinx-exercise/actions
+
+### 5. Create GitHub Release
+
+Once the workflow completes successfully:
 
 1. Go to https://github.com/executablebooks/sphinx-exercise/releases/new
 2. Select tag: `v1.1.0`
 3. Release title: `v1.1.0 - Internationalization Support`
 4. Description: Copy content from `docs/source/releases/v1.1.0.md`
 5. Click "Publish release"
-
-### 5. Publish to PyPI
-
-```bash
-# Clean previous builds
-rm -rf dist/ build/ *.egg-info
-
-# Build distribution
-python -m build
-
-# Upload to PyPI (requires PyPI credentials)
-python -m twine upload dist/*
-```
 
 ### 6. Update Documentation
 
@@ -82,9 +81,23 @@ https://ebp-sphinx-exercise.readthedocs.io/en/latest/
 
 ### 7. Post-Release
 
-1. Update `docs/source/releases/index.md` to include v1.1.0
-2. Create new "Unreleased" section in CHANGELOG.md for future changes
-3. Announce release on relevant channels
+1. Verify the package is available on PyPI: https://pypi.org/project/sphinx-exercise/
+2. Update `docs/source/releases/index.md` to include v1.1.0
+3. Create new "Unreleased" section in CHANGELOG.md for future changes
+4. Announce release on relevant channels
+
+## Automated Release Process
+
+This project uses GitHub Actions to automatically publish to PyPI when a version tag is pushed:
+
+1. **Triggering**: The workflow is triggered when a tag matching `v*` is pushed
+2. **Testing**: All tests (pre-commit, pytest, documentation) must pass
+3. **Building**: The workflow builds the distribution packages using `python -m build`
+4. **Publishing**: Packages are automatically published to PyPI using the `PYPI_KEY` secret
+
+**Important**: Ensure the `PYPI_KEY` secret is configured in the repository settings with a valid PyPI API token.
+
+The workflow definition can be found in `.github/workflows/ci.yml` under the `publish` job.
 
 ## Version Numbering
 

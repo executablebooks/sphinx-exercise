@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.1.0](https://github.com/executablebooks/sphinx-exercise/tree/v1.1.0) (TBD)
+## [v1.1.0](https://github.com/executablebooks/sphinx-exercise/tree/v1.1.0) (2025-10-22)
 
 ### New ✨
 
@@ -10,9 +10,12 @@
 
 ### Improved 👌
 
+- **Updated test suite for Python 3.11-3.13 and Sphinx 6-8 compatibility** ([#79](https://github.com/executablebooks/sphinx-exercise/pull/79))
+- **Migrated from os.path to pathlib.Path throughout codebase for modern Python best practices**
 - Reorganized and expanded translation files with alphabetical sorting
 - Enhanced translation documentation with comprehensive guides
 - Updated README and documentation to highlight internationalization features
+- Fixed README badges to reference main branch instead of master
 
 ### Documentation 📚
 
@@ -21,6 +24,15 @@
 - Improved translation README with detailed contribution guidelines
 - Created releases documentation structure in `docs/releases/`
 - Added Copilot instructions for project maintenance
+
+### Testing Infrastructure 🧪
+
+- Added support for Python 3.11, 3.12, and 3.13
+- Added support for Sphinx 6, 7, and 8
+- Full test matrix: 9 combinations (3 Python versions × 3 Sphinx versions)
+- All 110 tests passing across all supported versions
+- Regenerated test fixtures for Sphinx 6 and 7 compatibility
+- Normalized image hashes for cross-platform test stability
 
 
 ## [v1.0.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.0.1) (2024-XX-XX)
