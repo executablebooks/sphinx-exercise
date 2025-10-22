@@ -17,7 +17,12 @@ except ImportError:
         return re.sub(r"\x1b\[[0-9;]*m", "", text)
 
 
-SPHINX_VERSION = f".sphinx{sphinx.version_info[0]}"
+# Sphinx 8.1.x (Python 3.10 only) has different XML output than 8.2+
+# Use .sphinx8.1 for 8.1.x, .sphinx8 for 8.2+ (the standard)
+if sphinx.version_info[0] == 8 and sphinx.version_info[1] == 1:
+    SPHINX_VERSION = f".sphinx{sphinx.version_info[0]}.{sphinx.version_info[1]}"
+else:
+    SPHINX_VERSION = f".sphinx{sphinx.version_info[0]}"
 
 
 @pytest.mark.sphinx("html", testroot="gateddirective")
