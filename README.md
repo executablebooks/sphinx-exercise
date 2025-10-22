@@ -9,6 +9,14 @@
 This package contains a [Sphinx](http://www.sphinx-doc.org/en/master/) extension
 for producing exercise and solution directives.
 
+## Features
+
+- **Automatic numbering** for exercises and solutions
+- **Cross-referencing** support with `ref` and `numref` roles
+- **Internationalization** support for 27 languages including Chinese, Japanese, Korean, Arabic, Hindi, and more
+- **HTML and PDF** output support
+- **Gated directive** syntax for including executable code and complex content
+- **Customizable styling** with class options and hidden directive support
 
 ## Get started
 

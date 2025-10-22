@@ -468,3 +468,62 @@ This is an example of how to introduce custom CSS.
 
 This is an example of how to introduce custom CSS.
 ```
+
+## Internationalization (i18n)
+
+`sphinx-exercise` includes built-in support for internationalization across 27 languages. The extension automatically detects your Sphinx project's language setting and displays "Exercise" and "Solution to" labels in the appropriate language.
+
+### Supported Languages
+
+The following languages are currently supported:
+
+- Arabic (ar)
+- Bengali (bn)
+- Chinese (zh_CN)
+- Czech (cs)
+- Dutch (nl)
+- French (fr)
+- German (de)
+- Greek (el)
+- Hindi (hi)
+- Hungarian (hu)
+- Indonesian (id)
+- Italian (it)
+- Japanese (ja)
+- Korean (ko)
+- Malay (ms)
+- Norwegian (no)
+- Polish (pl)
+- Portuguese (pt)
+- Romanian (ro)
+- Russian (ru)
+- Spanish (es)
+- Swedish (sv)
+- Tamil (ta)
+- Turkish (tr)
+- Ukrainian (uk)
+- Vietnamese (vi)
+
+### Configuring Language
+
+To configure the language for your Sphinx project, set the `language` option in your `conf.py`:
+
+```python
+# conf.py
+language = 'es'  # For Spanish
+```
+
+For Jupyter Book projects, set the language in `_config.yml`:
+
+```yaml
+# _config.yml
+sphinx:
+  config:
+    language: es
+```
+
+The exercise and solution directives will automatically use the appropriate translations. For example, with Spanish configured, "Exercise" will display as "Ejercicio" and "Solution to" as "Solución a".
+
+### Contributing Translations
+
+If you'd like to contribute translations for additional languages or improve existing ones, please see the [translation guide](https://github.com/executablebooks/sphinx-exercise/tree/main/sphinx_exercise/translations) in the repository.

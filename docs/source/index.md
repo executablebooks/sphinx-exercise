@@ -5,6 +5,7 @@
 
 install
 syntax
+releases/index
 developer
 developer-design
 ```
@@ -31,6 +32,10 @@ The **solution** directive
 
 1. supports options such as `class`, `label`, and `hidden`
 2. can be referenced through `ref` role
+
+**Internationalization**:
+
+`sphinx-exercise` supports 27 languages including Chinese, Japanese, Korean, Arabic, Hindi, Spanish, French, German, and more. The extension automatically uses the appropriate language based on your Sphinx project's `language` configuration.
 
 (getting-started)=
 ## Getting Started

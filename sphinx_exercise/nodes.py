@@ -14,6 +14,7 @@ from docutils import nodes as docutil_nodes
 from sphinx import addnodes as sphinx_nodes
 from sphinx.writers.latex import LaTeXTranslator
 from sphinx.locale import get_translation
+
 from .latex import LaTeXMarkup
 
 logger = logging.getLogger(__name__)
