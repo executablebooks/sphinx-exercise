@@ -47,10 +47,10 @@ jobs:
       - name: Create cov
         run: coverage xml
       - name: Upload to Codecov
-        if: false && (matrix.python-version == '3.10' && matrix.sphinx-version == '8')
+        if: matrix.python-version == '3.12' && matrix.sphinx-version == '8'
         uses: codecov/codecov-action@v4
         with:
-          name: sphinx-exercise-pytest-py3.10-sphinx8
+          name: sphinx-exercise-pytest-py3.12-sphinx8
           token: "${{ secrets.CODECOV_TOKEN }}"
           flags: pytests
           file: ./coverage.xml
