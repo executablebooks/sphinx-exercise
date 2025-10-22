@@ -1,5 +1,4 @@
 import json
-import os
 from pathlib import Path
 import subprocess
 
@@ -54,9 +53,9 @@ msgstr ""
         subprocess.check_call(
             [
                 "msgfmt",
-                os.path.abspath(path),
+                str(path.resolve()),
                 "-o",
-                os.path.abspath(path.parent / f"{MESSAGE_CATALOG_NAME}.mo"),
+                str((path.parent / f"{MESSAGE_CATALOG_NAME}.mo").resolve()),
             ]
         )
 
