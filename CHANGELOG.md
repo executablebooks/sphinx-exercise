@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Improved 👌
+
+- **Restored Python 3.10 support** - Re-added compatibility with Python 3.10 as it remains actively supported until October 2026
+- Updated test matrix to include Python 3.10 with Sphinx 6, 7, and 8
+- Test matrix now covers 11 combinations (excludes Python 3.13 + Sphinx 6 due to deprecation warnings)
+- **Note**: Python 3.10 is limited to Sphinx 8.1.x (max 8.1.3) due to Sphinx 8.2+ requiring Python >=3.11. This is handled automatically in the test configuration.
+
 ## [v1.1.0](https://github.com/executablebooks/sphinx-exercise/tree/v1.1.0) (2025-10-22)
 
 ### New ✨

@@ -1,0 +1,20 @@
+<document source="_linked_unenum_notitle.rst">
+    <section ids="linked-unenum-notitle" names="_linked_unenum_notitle">
+        <title>
+            _linked_unenum_notitle
+        <exercise_node classes="exercise" docname="solution/_linked_unenum_notitle" hidden="False" ids="ex-nonumber-notitle" label="ex-nonumber-notitle" names="ex-nonumber-notitle" serial_number="0" title="Exercise" type="exercise">
+            <exercise_title>
+                Exercise
+            <section ids="exercise-content">
+                <paragraph>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                <paragraph>
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                <paragraph>
+                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        <solution_node classes="solution" docname="solution/_linked_unenum_notitle" hidden="False" ids="sol-nonumber-notitle" label="sol-nonumber-notitle" names="sol-nonumber-notitle" serial_number="1" target_label="ex-nonumber-notitle" title="Solution to" type="solution">
+            <solution_title>
+                Solution to
+            <section ids="solution-content">
+                <paragraph>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
