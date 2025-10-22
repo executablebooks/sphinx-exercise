@@ -2,12 +2,16 @@
 
 ## [Unreleased]
 
+## [v1.1.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.1.1) (2025-10-23)
+
 ### Improved 👌
 
 - **Restored Python 3.10 support** - Re-added compatibility with Python 3.10 as it remains actively supported until October 2026
 - Updated test matrix to include Python 3.10 with Sphinx 6, 7, and 8
 - Test matrix now covers 11 combinations (excludes Python 3.13 + Sphinx 6 due to deprecation warnings)
 - **Note**: Python 3.10 is limited to Sphinx 8.1.x (max 8.1.3) due to Sphinx 8.2+ requiring Python >=3.11. This is handled automatically in the test configuration.
+- Updated codecov integration to use Python 3.12 + Sphinx 8 baseline
+- Configured tokenless codecov uploads for public repository
 
 ## [v1.1.0](https://github.com/executablebooks/sphinx-exercise/tree/v1.1.0) (2025-10-22)
 
