@@ -47,7 +47,7 @@ We welcome all contributions! See the [EBP Contributing Guide](https://executabl
 
 [rtd-badge]: https://readthedocs.org/projects/ebp-sphinx-exercise/badge/?version=latest
 [rtd-link]: https://ebp-sphinx-exercise.readthedocs.io/en/latest/?badge=latest
-[github-ci]: https://github.com/executablebooks/sphinx-exercise/workflows/continuous-integration/badge.svg?branch=main
-[github-link]: https://github.com/executablebooks/sphinx-exercise
+[github-ci]: https://github.com/executablebooks/sphinx-exercise/actions/workflows/ci.yml/badge.svg
+[github-link]: https://github.com/executablebooks/sphinx-exercise/actions/workflows/ci.yml
 [codecov-badge]: https://codecov.io/gh/executablebooks/sphinx-exercise/branch/main/graph/badge.svg
 [codecov-link]: https://codecov.io/gh/executablebooks/sphinx-exercise
