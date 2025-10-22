@@ -15,7 +15,8 @@ if packaging.version.Version(sphinx.__version__) < packaging.version.Version("7.
     def rootdir(tmpdir):
         from sphinx.testing.path import path
 
-        src = path(__file__).parent.absolute() / "books"
+        # In Sphinx 6, path objects don't have .absolute() method, but they are already absolute
+        src = path(__file__).parent / "books"
         dst = tmpdir.join("books")
         shutil.copytree(src, dst)
         yield path(dst)
@@ -94,6 +95,10 @@ class FileRegression:
         (r"original_uri=\"[^\"]*\"\s", ""),
         # TODO: Remove when support for Sphinx<7.2 is dropped
         ("Link to", "Permalink to"),
+        # Strip ipykernel process IDs (temporary directory paths)
+        (r"ipykernel_\d+", "ipykernel_XXXXX"),
+        # Normalize matplotlib image hashes (platform/version dependent)
+        (r"[a-f0-9]{64}\.png", "IMAGEHASH.png"),
     )
 
     def __init__(self, file_regression):
