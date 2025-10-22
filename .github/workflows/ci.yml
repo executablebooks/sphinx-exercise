@@ -51,10 +51,9 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           name: sphinx-exercise-pytest-py3.12-sphinx8
-          token: "${{ secrets.CODECOV_TOKEN }}"
           flags: pytests
           file: ./coverage.xml
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
   docs:
     name: Documentation build
