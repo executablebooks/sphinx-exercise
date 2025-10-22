@@ -1,11 +1,21 @@
 import os
 import pytest
+import re
 import shutil
 import sphinx
 from bs4 import BeautifulSoup
 from sphinx.errors import ExtensionError
 from pathlib import Path
-from sphinx.testing.util import strip_escseq
+
+# strip_escape_sequences was removed in Sphinx 7
+try:
+    from sphinx.util.console import strip_escape_sequences as strip_escseq
+except ImportError:
+    # Fallback for Sphinx 7+: simple ANSI escape sequence stripper
+    def strip_escseq(text: str) -> str:
+        """Remove ANSI escape sequences from text."""
+        return re.sub(r"\x1b\[[0-9;]*m", "", text)
+
 
 SPHINX_VERSION = f".sphinx{sphinx.version_info[0]}"
 
@@ -20,7 +30,9 @@ def test_gated_exercise_build(app, docname, file_regression):
     exercise_directives = soup.select("div.exercise")
     for idx, ed in enumerate(exercise_directives):
         basename = docname.split(".")[0] + f"-{idx}"
-        file_regression.check(str(ed), basename=basename, extension=".html")
+        file_regression.check(
+            str(ed), basename=basename, extension=f"{SPHINX_VERSION}.html"
+        )
 
 
 @pytest.mark.sphinx("html", testroot="gateddirective")
@@ -35,6 +47,7 @@ def test_gated_exercise_doctree(app, docname, get_sphinx_app_doctree):
         docname,
         resolve=False,
         regress=True,
+        sphinx_version=SPHINX_VERSION,
     )
 
 

@@ -9,7 +9,6 @@ This package is an extension for sphinx to support exercise and solutions.
 
 __version__ = "1.0.1"
 
-import os
 from pathlib import Path
 from typing import Any, Dict, Set, Union, cast
 from sphinx.config import Config
@@ -70,6 +69,7 @@ MESSAGE_CATALOG_NAME = "exercise"
 translate = get_translation(MESSAGE_CATALOG_NAME)
 
 # Callback Functions
+
 
 def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
     """Purge sphinx_exercise registry"""
@@ -214,9 +214,9 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_css_file("exercise.css")
 
     # add translations
-    package_dir = os.path.abspath(os.path.dirname(__file__))
-    locale_dir = os.path.join(package_dir, "translations", "locales")
-    app.add_message_catalog(MESSAGE_CATALOG_NAME, locale_dir)
+    package_dir = Path(__file__).parent.resolve()
+    locale_dir = package_dir / "translations" / "locales"
+    app.add_message_catalog(MESSAGE_CATALOG_NAME, str(locale_dir))
 
     return {
         "version": "builtin",

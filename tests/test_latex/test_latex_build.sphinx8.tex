@@ -1,0 +1,181 @@
+\begin{document}
+
+\ifdefined\shorthandoff
+  \ifnum\catcode`\=\string=\active\shorthandoff{=}\fi
+  \ifnum\catcode`\"=\active\shorthandoff{"}\fi
+\fi
+
+\pagestyle{empty}
+\sphinxmaketitle
+\pagestyle{plain}
+\sphinxtableofcontents
+\pagestyle{normal}
+\phantomsection\label{\detokenize{index::doc}}
+
+
+\sphinxstepscope
+
+
+\chapter{Exercise}
+\label{\detokenize{exercise:exercise}}\label{\detokenize{exercise::doc}}
+\sphinxAtStartPar
+A collection of exercise directives
+\phantomsection \label{exercise:exercise-1}
+
+\begin{sphinxadmonition}{note}{Exercise 1 (\protect\(n!\protect\) factorial)}
+
+
+
+\sphinxAtStartPar
+Exercise 1 about \(n!\) factorial
+\end{sphinxadmonition}
+\phantomsection \label{exercise:exercise-2}
+\begin{sphinxadmonition}{note}{Exercise (\protect\(n!\protect\) factorial)}
+
+
+
+\sphinxAtStartPar
+Exercise 2 about \(n!\) factorial
+\end{sphinxadmonition}
+\phantomsection \label{exercise:exercise-3}
+
+\begin{sphinxadmonition}{note}{Exercise 2}
+
+
+
+\sphinxAtStartPar
+Exercise 3 Content with Number
+\end{sphinxadmonition}
+\phantomsection \label{exercise:exercise-4}
+\begin{sphinxadmonition}{note}{Exercise}
+
+
+
+\sphinxAtStartPar
+Exercise 4 Content with no Number
+\end{sphinxadmonition}
+
+
+\section{References}
+\label{\detokenize{exercise:references}}
+
+\subsection{Standard References}
+\label{\detokenize{exercise:standard-references}}
+\sphinxAtStartPar
+This is a link to \DUrole{xref}{\DUrole{std}{\DUrole{std-ref}{exercise\sphinxhyphen{}no\sphinxhyphen{}title}}}
+
+\sphinxAtStartPar
+This is a link to \hyperref[exercise:exercise-1]{Exercise 1}
+
+\sphinxAtStartPar
+This is a link to {\hyperref[\detokenize{exercise:exercise-2}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Exercise}}}}}
+
+\sphinxAtStartPar
+This ia another link with custom text \hyperref[exercise:exercise-3]{Exercise 3 Custom Text}
+
+\sphinxAtStartPar
+This ia another link with custom text {\hyperref[\detokenize{exercise:exercise-4}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Exercise 4 Custom Text}}}}}
+
+
+\subsection{Numbered References}
+\label{\detokenize{exercise:numbered-references}}
+\sphinxAtStartPar
+This is a numbered reference to \hyperref[exercise:exercise-1]{Exercise 1}
+
+\sphinxAtStartPar
+This is a numbered reference to \sphinxcode{\sphinxupquote{exercise\sphinxhyphen{}2}} and should be broken as exercise 2 is not an
+enumerated exercise node.
+
+\sphinxAtStartPar
+This is a numbered reference to \hyperref[exercise:exercise-3]{Exercise 2}
+
+\sphinxAtStartPar
+This is a numbered reference with custom text to \hyperref[exercise:exercise-3]{Custom Text with a Number 2}
+
+\sphinxAtStartPar
+This is a numbered reference to \sphinxcode{\sphinxupquote{exercise\sphinxhyphen{}4}} and should be broken as exercise 2 is not an
+enumerated exercise node.
+
+\sphinxAtStartPar
+This is a numbered reference with custom text to \sphinxcode{\sphinxupquote{Custom Text with a Number \{number\}}} and should be broken as exercise 2 is not an
+enumerated exercise node.
+
+\sphinxstepscope
+
+
+\chapter{Solution}
+\label{\detokenize{solution:solution}}\label{\detokenize{solution::doc}}
+\sphinxAtStartPar
+A collection of solution directives
+\phantomsection \label{solution:solution-1}
+
+\begin{sphinxadmonition}{note}{Solution to Exercise 1 (\protect\(n!\protect\) factorial)}
+
+
+
+\sphinxAtStartPar
+This is a solution to exercise 1
+\end{sphinxadmonition}
+\phantomsection \label{solution:solution-2}
+
+\begin{sphinxadmonition}{note}{Solution to Exercise (\protect\(n!\protect\) factorial)}
+
+
+
+\sphinxAtStartPar
+This is a solution to exercise 2
+\end{sphinxadmonition}
+\phantomsection \label{solution:solution-3}
+
+\begin{sphinxadmonition}{note}{Solution to Exercise 2}
+
+
+
+\sphinxAtStartPar
+This is a solution to exercise 3
+\end{sphinxadmonition}
+\phantomsection \label{solution:solution-4}
+
+\begin{sphinxadmonition}{note}{Solution to Exercise}
+
+
+
+\sphinxAtStartPar
+This is a solution to exercise 4
+\end{sphinxadmonition}
+
+
+\section{References}
+\label{\detokenize{solution:references}}
+
+\subsection{Standard References}
+\label{\detokenize{solution:standard-references}}
+\sphinxAtStartPar
+This is a link to {\hyperref[\detokenize{solution:solution-1}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Solution to Exercise 1 (n! factorial)}}}}}
+
+\sphinxAtStartPar
+This is a link to {\hyperref[\detokenize{solution:solution-2}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Solution to Exercise (n! factorial)}}}}}
+
+\sphinxAtStartPar
+This is a link to {\hyperref[\detokenize{solution:solution-3}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Solution to Exercise 2}}}}}
+
+\sphinxAtStartPar
+This is a link to {\hyperref[\detokenize{solution:solution-4}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Solution to Exercise}}}}}
+
+\sphinxAtStartPar
+This ia another link to a different {\hyperref[\detokenize{solution:solution-1}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Solution to Exercise 1 (n! factorial)}}}}}
+
+
+\subsection{Numbered References}
+\label{\detokenize{solution:numbered-references}}
+\sphinxAtStartPar
+Solution nodes are not enumerated nodes so these won’t work
+
+\sphinxAtStartPar
+This is a link to \sphinxcode{\sphinxupquote{solution\sphinxhyphen{}1}}
+
+
+
+\renewcommand{\indexname}{Index}
+\printindex
+\end{document}
