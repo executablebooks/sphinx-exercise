@@ -8,7 +8,7 @@ A custom Sphinx Directive
 :licences: see LICENSE for details
 """
 
-import os
+from pathlib import Path
 from typing import List
 
 from docutils import nodes
@@ -42,7 +42,7 @@ class SphinxExerciseBaseDirective(SphinxDirective):
 
         if not label == "" and label in self.env.sphinx_exercise_registry.keys():
             docpath = self.env.doc2path(self.env.docname)
-            path = os.path.splitext(docpath)[0]
+            path = str(Path(docpath).with_suffix(""))
             other_path = self.env.doc2path(
                 self.env.sphinx_exercise_registry[label]["docname"]
             )
