@@ -148,8 +148,8 @@ def resolve_solution_title(app, node, exercise_node):
         # New Title Node
         updated_title = docutil_nodes.title()
 
-        # Check if style_solution_after_exercise is enabled
-        if app.config.style_solution_after_exercise:
+        # Check if exercise_style is set to "solution_follow_exercise"
+        if app.config.exercise_style == "solution_follow_exercise":
             # Don't create hyperlink - just add plain text and nodes
             updated_title += docutil_nodes.Text(entry_title_text)
             updated_title += docutil_nodes.Text(updated_title_text)

@@ -11,10 +11,12 @@ else:
 
 
 @pytest.mark.sphinx(
-    "html", testroot="mybook", confoverrides={"style_solution_after_exercise": True}
+    "html",
+    testroot="mybook",
+    confoverrides={"exercise_style": "solution_follow_exercise"},
 )
 def test_solution_no_link(app):
-    """Test solution directive with style_solution_after_exercise=True removes hyperlink."""
+    """Test solution directive with exercise_style='solution_follow_exercise' removes hyperlink."""
     app.build()
     path_solution_directive = app.outdir / "solution" / "_linked_enum.html"
     assert path_solution_directive.exists()
@@ -27,11 +29,11 @@ def test_solution_no_link(app):
     sol = soup.select("div.solution")[0]
     title = sol.select("p.admonition-title")[0]
 
-    # Check that there is NO hyperlink in the title when style_solution_after_exercise=True
+    # Check that there is NO hyperlink in the title when exercise_style='solution_follow_exercise'
     links = title.find_all("a")
     assert (
         len(links) == 0
-    ), "Solution title should not contain hyperlink when style_solution_after_exercise=True"
+    ), "Solution title should not contain hyperlink when exercise_style='solution_follow_exercise'"
 
     # Check that the title text still contains the exercise reference
     title_text = title.get_text()
@@ -39,11 +41,9 @@ def test_solution_no_link(app):
     assert "This is a title" in title_text
 
 
-@pytest.mark.sphinx(
-    "html", testroot="mybook", confoverrides={"style_solution_after_exercise": False}
-)
+@pytest.mark.sphinx("html", testroot="mybook", confoverrides={"exercise_style": ""})
 def test_solution_with_link(app):
-    """Test solution directive with style_solution_after_exercise=False keeps hyperlink."""
+    """Test solution directive with exercise_style='' (default) keeps hyperlink."""
     app.build()
     path_solution_directive = app.outdir / "solution" / "_linked_enum.html"
     assert path_solution_directive.exists()
@@ -56,11 +56,11 @@ def test_solution_with_link(app):
     sol = soup.select("div.solution")[0]
     title = sol.select("p.admonition-title")[0]
 
-    # Check that there IS a hyperlink in the title when style_solution_after_exercise=False (default)
+    # Check that there IS a hyperlink in the title when exercise_style='' (default)
     links = title.find_all("a")
     assert (
         len(links) == 1
-    ), "Solution title should contain hyperlink when style_solution_after_exercise=False"
+    ), "Solution title should contain hyperlink when exercise_style='' (default)"
 
     # Check that the link points to the exercise
     link = links[0]
@@ -69,10 +69,12 @@ def test_solution_with_link(app):
 
 
 @pytest.mark.sphinx(
-    "html", testroot="mybook", confoverrides={"style_solution_after_exercise": True}
+    "html",
+    testroot="mybook",
+    confoverrides={"exercise_style": "solution_follow_exercise"},
 )
 def test_solution_no_link_unenum(app):
-    """Test unnumbered solution directive with style_solution_after_exercise=True removes hyperlink."""
+    """Test unnumbered solution directive with exercise_style='solution_follow_exercise' removes hyperlink."""
     app.build()
     path_solution_directive = app.outdir / "solution" / "_linked_unenum_title.html"
     assert path_solution_directive.exists()
@@ -89,7 +91,7 @@ def test_solution_no_link_unenum(app):
     links = title.find_all("a")
     assert (
         len(links) == 0
-    ), "Solution title should not contain hyperlink when style_solution_after_exercise=True"
+    ), "Solution title should not contain hyperlink when exercise_style='solution_follow_exercise'"
 
     # Check that the title text still contains the exercise reference
     title_text = title.get_text()
