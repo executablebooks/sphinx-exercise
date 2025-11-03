@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### New ✨
+
+- Added `style_solution_after_exercise` configuration option to remove hyperlinks from solution titles when solutions follow exercises directly
+- Changed dropdown button text from "Click to show" to "Show" for cleaner visual appearance
+
+### Improved 👌
+
+- Enhanced solution title styling options for better UX in lecture-style content where solutions follow exercises
+
 ## [v1.1.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.1.1) (2025-10-23)
 
 ### Improved 👌

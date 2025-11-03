@@ -147,24 +147,49 @@ def resolve_solution_title(app, node, exercise_node):
             updated_title_text += f" {node_number}"
         # New Title Node
         updated_title = docutil_nodes.title()
-        wrap_reference = build_reference_node(app, exercise_node)
-        wrap_reference += docutil_nodes.Text(updated_title_text)
-        node["title"] = entry_title_text + updated_title_text
-        # Parse Custom Titles from Exercise
-        if len(exercise_title.children) > 1:
-            subtitle = exercise_title.children[1]
-            if isinstance(subtitle, exercise_subtitle):
-                wrap_reference += docutil_nodes.Text(" (")
-                for child in subtitle.children:
-                    if isinstance(child, docutil_nodes.math):
-                        # Ensure mathjax is loaded for pages that only contain
-                        # references to nodes that contain math
-                        domain = app.env.get_domain("math")
-                        domain.data["has_equations"][app.env.docname] = True
-                    wrap_reference += child
-                wrap_reference += docutil_nodes.Text(")")
-        updated_title += docutil_nodes.Text(entry_title_text)
-        updated_title += wrap_reference
+
+        # Check if style_solution_after_exercise is enabled
+        if app.config.style_solution_after_exercise:
+            # Don't create hyperlink - just add plain text and nodes
+            updated_title += docutil_nodes.Text(entry_title_text)
+            updated_title += docutil_nodes.Text(updated_title_text)
+            node["title"] = entry_title_text + updated_title_text
+
+            # Parse Custom Titles from Exercise
+            if len(exercise_title.children) > 1:
+                subtitle = exercise_title.children[1]
+                if isinstance(subtitle, exercise_subtitle):
+                    updated_title += docutil_nodes.Text(" (")
+                    for child in subtitle.children:
+                        if isinstance(child, docutil_nodes.math):
+                            # Ensure mathjax is loaded for pages that only contain
+                            # references to nodes that contain math
+                            domain = app.env.get_domain("math")
+                            domain.data["has_equations"][app.env.docname] = True
+                        # Add child directly (could be text or math node)
+                        updated_title += child.deepcopy()
+                    updated_title += docutil_nodes.Text(")")
+        else:
+            # Create hyperlink (original behavior)
+            wrap_reference = build_reference_node(app, exercise_node)
+            wrap_reference += docutil_nodes.Text(updated_title_text)
+            node["title"] = entry_title_text + updated_title_text
+            # Parse Custom Titles from Exercise
+            if len(exercise_title.children) > 1:
+                subtitle = exercise_title.children[1]
+                if isinstance(subtitle, exercise_subtitle):
+                    wrap_reference += docutil_nodes.Text(" (")
+                    for child in subtitle.children:
+                        if isinstance(child, docutil_nodes.math):
+                            # Ensure mathjax is loaded for pages that only contain
+                            # references to nodes that contain math
+                            domain = app.env.get_domain("math")
+                            domain.data["has_equations"][app.env.docname] = True
+                        wrap_reference += child
+                    wrap_reference += docutil_nodes.Text(")")
+            updated_title += docutil_nodes.Text(entry_title_text)
+            updated_title += wrap_reference
+
         updated_title.parent = title.parent
         node.children[0] = updated_title
     node.resolved_title = True

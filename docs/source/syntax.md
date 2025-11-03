@@ -343,6 +343,8 @@ sphinx:
 
 To hide the content, simply add `:class: dropdown` as a directive option.
 
+**Note:** The dropdown toggle button text has been customized for `sphinx-exercise` directives to display "Show" / "Hide" instead of the default "Click to show" / "Click to hide" for a cleaner visual appearance.
+
 For more use cases see [sphinx-togglebutton](https://sphinx-togglebutton.readthedocs.io/en/latest/#usage).
 
 **Example**
@@ -406,6 +408,31 @@ sphinx:
     hide_solutions: True
 ...
 ```
+
+### Solution Title Styling
+
+By default, solution titles include a hyperlink to the corresponding exercise. This behavior can be modified using the `style_solution_after_exercise` configuration option.
+
+When solutions follow exercises directly in your content (common in lecture notes), you may want to remove the hyperlink to avoid confusion when using the `dropdown` class. Set `style_solution_after_exercise` to `True` to display only text without hyperlinks in solution titles.
+
+For Sphinx projects, add the configuration key in the `conf.py` file:
+
+```python
+# conf.py
+style_solution_after_exercise = True
+```
+
+For Jupyter Book projects, set the configuration key in `_config.yml`:
+
+```yaml
+...
+sphinx:
+  config:
+    style_solution_after_exercise: True
+...
+```
+
+When `style_solution_after_exercise` is `True`, the solution title will display plain text like "Solution to Exercise 1 (Title)" instead of a hyperlink. When `False` (default), the exercise reference in the solution title remains clickable.
 
 ## Custom CSS or JavaScript
 
