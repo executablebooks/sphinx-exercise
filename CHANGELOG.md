@@ -7,12 +7,17 @@
 - Added `exercise_style` configuration option to control solution title styling
   - Set to `"solution_follow_exercise"` to remove hyperlinks from solution titles when solutions follow exercises directly
   - Default is `""` (empty string) which maintains the original clickable hyperlink behavior
-- Changed dropdown button text from "Click to show" to "Show" (and "Click to hide" to "Hide") for cleaner visual appearance
 
 ### Improved 👌
 
 - Enhanced solution title styling options for better UX in lecture-style content where solutions follow exercises
 - Improved configuration option naming for better clarity when used alongside other Sphinx extensions
+
+### Changed 🔄
+
+- Removed dropdown button text customization from `sphinx-exercise` CSS
+  - This styling is better handled at the theme level (e.g., in `quantecon-book-theme`) for consistent global behavior
+  - Projects can customize dropdown text in their theme or custom CSS if desired
 
 ## [v1.1.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.1.1) (2025-10-23)
 

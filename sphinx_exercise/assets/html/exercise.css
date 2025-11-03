@@ -41,17 +41,3 @@ div.solution p.admonition-title {
 div.solution p.admonition-title::after {
   content: none;
 }
-
-/*********************************************
-* Dropdown customization *
-*********************************************/
-/* Change "Click to show" to "Show" for dropdowns */
-div.exercise.dropdown button.toggle-button::before,
-div.solution.dropdown button.toggle-button::before {
-  content: "Show";
-}
-
-div.exercise.dropdown.toggle-shown button.toggle-button::before,
-div.solution.dropdown.toggle-shown button.toggle-button::before {
-  content: "Hide";
-}

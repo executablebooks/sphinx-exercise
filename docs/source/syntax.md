@@ -343,9 +343,11 @@ sphinx:
 
 To hide the content, simply add `:class: dropdown` as a directive option.
 
-**Note:** The dropdown toggle button text has been customized for `sphinx-exercise` directives to display "Show" / "Hide" instead of the default "Click to show" / "Click to hide" for a cleaner visual appearance.
-
 For more use cases see [sphinx-togglebutton](https://sphinx-togglebutton.readthedocs.io/en/latest/#usage).
+
+```{tip}
+To customize the dropdown toggle button text (e.g., "Show" instead of "Click to show"), add custom CSS in your theme or project. This is typically handled at the theme level for consistent styling across all toggle buttons.
+```
 
 **Example**
 
