@@ -16,5 +16,5 @@ git clone https://github.com/executablebooks/sphinx-exercise
 then run:
 
 ```bash
-python setup.py install
+pip install -e .
 ```

@@ -87,6 +87,13 @@ def purge_exercises(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
         for label in remove_labels:
             del env.sphinx_exercise_registry[label]
 
+    # Purge node order tracking for this document
+    if (
+        hasattr(env, "sphinx_exercise_node_order")
+        and docname in env.sphinx_exercise_node_order
+    ):
+        del env.sphinx_exercise_node_order[docname]
+
 
 def merge_exercises(
     app: Sphinx, env: BuildEnvironment, docnames: Set[str], other: BuildEnvironment
@@ -101,6 +108,16 @@ def merge_exercises(
         env.sphinx_exercise_registry = {
             **env.sphinx_exercise_registry,
             **other.sphinx_exercise_registry,
+        }
+
+    # Merge node order tracking
+    if not hasattr(env, "sphinx_exercise_node_order"):
+        env.sphinx_exercise_node_order = {}
+
+    if hasattr(other, "sphinx_exercise_node_order"):
+        env.sphinx_exercise_node_order = {
+            **env.sphinx_exercise_node_order,
+            **other.sphinx_exercise_node_order,
         }
 
 
@@ -127,6 +144,95 @@ def copy_asset_files(app: Sphinx, exc: Union[bool, Exception]):
             copy_asset(path, str(Path(app.outdir).joinpath("_static").absolute()))
 
 
+def validate_exercise_solution_order(app: Sphinx, env: BuildEnvironment) -> None:
+    """
+    Validate that solutions follow their referenced exercises when
+    exercise_style='solution_follow_exercise' is set.
+    """
+    # Only validate if the config option is set
+    if app.config.exercise_style != "solution_follow_exercise":
+        return
+
+    if not hasattr(env, "sphinx_exercise_node_order"):
+        return
+
+    logger = logging.getLogger(__name__)
+
+    # Process each document
+    for docname, nodes in env.sphinx_exercise_node_order.items():
+        # Build a map of exercise labels to their positions and info
+        exercise_info = {}
+        for i, node_info in enumerate(nodes):
+            if node_info["type"] == "exercise":
+                exercise_info[node_info["label"]] = {
+                    "position": i,
+                    "line": node_info.get("line"),
+                }
+
+        # Check each solution
+        for i, node_info in enumerate(nodes):
+            if node_info["type"] == "solution":
+                target_label = node_info["target_label"]
+                solution_label = node_info["label"]
+                solution_line = node_info.get("line")
+
+                if not target_label:
+                    continue
+
+                # Check if target exercise exists in this document
+                if target_label not in exercise_info:
+                    # Exercise is in a different document or doesn't exist
+                    docpath = env.doc2path(docname)
+                    path = str(Path(docpath).with_suffix(""))
+
+                    # Build location string with line number if available
+                    location = f"{path}:{solution_line}" if solution_line else path
+
+                    logger.warning(
+                        f"[sphinx-exercise] Solution '{solution_label}' references exercise '{target_label}' "
+                        f"which is not in the same document. When exercise_style='solution_follow_exercise', "
+                        f"solutions should appear in the same document as their exercises.",
+                        location=location,
+                        color="yellow",
+                    )
+                    continue
+
+                # Check if solution comes after exercise
+                exercise_data = exercise_info[target_label]
+                exercise_pos = exercise_data["position"]
+                exercise_line = exercise_data.get("line")
+
+                if i <= exercise_pos:
+                    docpath = env.doc2path(docname)
+                    path = str(Path(docpath).with_suffix(""))
+
+                    # Build more informative message with line numbers
+                    if solution_line and exercise_line:
+                        location = f"{path}:{solution_line}"
+                        msg = (
+                            f"[sphinx-exercise] Solution '{solution_label}' (line {solution_line}) does not follow "
+                            f"exercise '{target_label}' (line {exercise_line}). "
+                            f"When exercise_style='solution_follow_exercise', solutions should "
+                            f"appear after their referenced exercises."
+                        )
+                    elif solution_line:
+                        location = f"{path}:{solution_line}"
+                        msg = (
+                            f"[sphinx-exercise] Solution '{solution_label}' does not follow exercise '{target_label}'. "
+                            f"When exercise_style='solution_follow_exercise', solutions should "
+                            f"appear after their referenced exercises."
+                        )
+                    else:
+                        location = path
+                        msg = (
+                            f"[sphinx-exercise] Solution '{solution_label}' does not follow exercise '{target_label}'. "
+                            f"When exercise_style='solution_follow_exercise', solutions should "
+                            f"appear after their referenced exercises."
+                        )
+
+                    logger.warning(msg, location=location, color="yellow")
+
+
 def doctree_read(app: Sphinx, document: Node) -> None:
     """
     Read the doctree and apply updates to sphinx-exercise nodes
@@ -134,24 +240,47 @@ def doctree_read(app: Sphinx, document: Node) -> None:
 
     domain = cast(StandardDomain, app.env.get_domain("std"))
 
+    # Initialize node order tracking for this document
+    if not hasattr(app.env, "sphinx_exercise_node_order"):
+        app.env.sphinx_exercise_node_order = {}
+
+    docname = app.env.docname
+    if docname not in app.env.sphinx_exercise_node_order:
+        app.env.sphinx_exercise_node_order[docname] = []
+
     # Traverse sphinx-exercise nodes
     for node in findall(document):
         if is_extension_node(node):
             name = node.get("names", [])[0]
             label = document.nameids[name]
-            docname = app.env.docname
             section_name = node.attributes.get("title")
             domain.anonlabels[name] = docname, label
             domain.labels[name] = docname, label, section_name
 
+            # Track node order for validation
+            node_type = node.get("type", "unknown")
+            node_label = node.get("label", "")
+            target_label = node.get("target_label", None)  # Only for solution nodes
+
+            app.env.sphinx_exercise_node_order[docname].append(
+                {
+                    "type": node_type,
+                    "label": node_label,
+                    "target_label": target_label,
+                    "line": node.line if hasattr(node, "line") else None,
+                }
+            )
+
 
 def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("hide_solutions", False, "env")
+    app.add_config_value("exercise_style", "", "env")
 
     app.connect("config-inited", init_numfig)  # event order - 1
     app.connect("env-purge-doc", purge_exercises)  # event order - 5 per file
     app.connect("doctree-read", doctree_read)  # event order - 8
     app.connect("env-merge-info", merge_exercises)  # event order - 9
+    app.connect("env-updated", validate_exercise_solution_order)  # event order - 10
     app.connect("build-finished", copy_asset_files)  # event order - 16
 
     app.add_node(

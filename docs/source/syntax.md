@@ -345,6 +345,10 @@ To hide the content, simply add `:class: dropdown` as a directive option.
 
 For more use cases see [sphinx-togglebutton](https://sphinx-togglebutton.readthedocs.io/en/latest/#usage).
 
+```{tip}
+To customize the dropdown toggle button text (e.g., "Show" instead of "Click to show"), add custom CSS in your theme or project. This is typically handled at the theme level for consistent styling across all toggle buttons.
+```
+
 **Example**
 
 ```{exercise}
@@ -406,6 +410,36 @@ sphinx:
     hide_solutions: True
 ...
 ```
+
+### Solution Title Styling
+
+By default, solution titles include a hyperlink to the corresponding exercise. This behavior can be modified using the `exercise_style` configuration option.
+
+When solutions follow exercises directly in your content (common in lecture notes), you may want to simplify the solution title. Set `exercise_style` to `"solution_follow_exercise"` to display a simplified title without hyperlinks or exercise references.
+
+For Sphinx projects, add the configuration key in the `conf.py` file:
+
+```python
+# conf.py
+exercise_style = "solution_follow_exercise"
+```
+
+For Jupyter Book projects, set the configuration key in `_config.yml`:
+
+```yaml
+...
+sphinx:
+  config:
+    exercise_style: "solution_follow_exercise"
+...
+```
+
+When `exercise_style` is set to `"solution_follow_exercise"`:
+- The solution title displays just "Solution" (plain text, no hyperlink)
+- The extension validates that solutions follow their referenced exercises and warns if they don't
+- Solutions must be in the same document as their exercises (warnings if not)
+
+When empty `""` (default), the solution title shows "Solution to Exercise #.#" with a clickable hyperlink to the exercise.
 
 ## Custom CSS or JavaScript
 
