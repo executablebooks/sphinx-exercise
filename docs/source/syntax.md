@@ -415,7 +415,7 @@ sphinx:
 
 By default, solution titles include a hyperlink to the corresponding exercise. This behavior can be modified using the `exercise_style` configuration option.
 
-When solutions follow exercises directly in your content (common in lecture notes), you may want to remove the hyperlink to avoid confusion when using the `dropdown` class. Set `exercise_style` to `"solution_follow_exercise"` to display only text without hyperlinks in solution titles.
+When solutions follow exercises directly in your content (common in lecture notes), you may want to simplify the solution title. Set `exercise_style` to `"solution_follow_exercise"` to display a simplified title without hyperlinks or exercise references.
 
 For Sphinx projects, add the configuration key in the `conf.py` file:
 
@@ -434,7 +434,12 @@ sphinx:
 ...
 ```
 
-When `exercise_style` is set to `"solution_follow_exercise"`, the solution title will display plain text like "Solution to Exercise 1 (Title)" instead of a hyperlink. When empty `""` (default), the exercise reference in the solution title remains clickable.
+When `exercise_style` is set to `"solution_follow_exercise"`:
+- The solution title displays just "Solution" (plain text, no hyperlink)
+- The extension validates that solutions follow their referenced exercises and warns if they don't
+- Solutions must be in the same document as their exercises (warnings if not)
+
+When empty `""` (default), the solution title shows "Solution to Exercise #.#" with a clickable hyperlink to the exercise.
 
 ## Custom CSS or JavaScript
 

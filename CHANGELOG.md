@@ -5,13 +5,19 @@
 ### New ✨
 
 - Added `exercise_style` configuration option to control solution title styling
-  - Set to `"solution_follow_exercise"` to remove hyperlinks from solution titles when solutions follow exercises directly
-  - Default is `""` (empty string) which maintains the original clickable hyperlink behavior
+  - Set to `"solution_follow_exercise"` to simplify solution titles to just "Solution" (no hyperlinks, no exercise references)
+  - Default is `""` (empty string) which maintains the original behavior: "Solution to Exercise #.#" with clickable hyperlink
+- Added order validation system when `exercise_style = "solution_follow_exercise"`
+  - Validates that solutions appear after their referenced exercises
+  - Validates that solutions are in the same document as their exercises
+  - Provides helpful warnings with file paths and line numbers
+  - Warnings are prefixed with `[sphinx-exercise]` for clarity
 
 ### Improved 👌
 
 - Enhanced solution title styling options for better UX in lecture-style content where solutions follow exercises
 - Improved configuration option naming for better clarity when used alongside other Sphinx extensions
+- Cleaner code in `post_transforms.py` with removed redundant title building logic
 
 ### Changed 🔄
 
