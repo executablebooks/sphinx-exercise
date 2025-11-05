@@ -1,13 +1,13 @@
 # Changelog
 
-## [Unreleased]
+## [v1.2.0](https://github.com/executablebooks/sphinx-exercise/tree/v1.2.0) (2025-11-05)
 
 ### New ✨
 
-- Added `exercise_style` configuration option to control solution title styling
+- Added `exercise_style` configuration option to control solution title styling ([#81](https://github.com/executablebooks/sphinx-exercise/pull/81))
   - Set to `"solution_follow_exercise"` to simplify solution titles to just "Solution" (no hyperlinks, no exercise references)
   - Default is `""` (empty string) which maintains the original behavior: "Solution to Exercise #.#" with clickable hyperlink
-- Added order validation system when `exercise_style = "solution_follow_exercise"`
+- Added order validation system when `exercise_style = "solution_follow_exercise"` ([#81](https://github.com/executablebooks/sphinx-exercise/pull/81))
   - Validates that solutions appear after their referenced exercises
   - Validates that solutions are in the same document as their exercises
   - Provides helpful warnings with file paths and line numbers
@@ -18,12 +18,6 @@
 - Enhanced solution title styling options for better UX in lecture-style content where solutions follow exercises
 - Improved configuration option naming for better clarity when used alongside other Sphinx extensions
 - Cleaner code in `post_transforms.py` with removed redundant title building logic
-
-### Changed 🔄
-
-- Removed dropdown button text customization from `sphinx-exercise` CSS
-  - This styling is better handled at the theme level (e.g., in `quantecon-book-theme`) for consistent global behavior
-  - Projects can customize dropdown text in their theme or custom CSS if desired
 
 ## [v1.1.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.1.1) (2025-10-23)
 
