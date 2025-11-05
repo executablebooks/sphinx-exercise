@@ -38,8 +38,8 @@ def test_solution_no_link(app):
     # Check that the title is just "Solution" without exercise reference
     title_text = title.get_text()
     assert (
-        title_text.strip() == "Solution to"
-    ), "Solution title should be just 'Solution to' when exercise_style='solution_follow_exercise'"
+        title_text.strip() == "Solution"
+    ), "Solution title should be just 'Solution' when exercise_style='solution_follow_exercise'"
 
 
 @pytest.mark.sphinx("html", testroot="mybook", confoverrides={"exercise_style": ""})
@@ -97,5 +97,5 @@ def test_solution_no_link_unenum(app):
     # Check that the title is just "Solution" without exercise reference
     title_text = title.get_text()
     assert (
-        title_text.strip() == "Solution to"
-    ), "Solution title should be just 'Solution to' when exercise_style='solution_follow_exercise'"
+        title_text.strip() == "Solution"
+    ), "Solution title should be just 'Solution' when exercise_style='solution_follow_exercise'"

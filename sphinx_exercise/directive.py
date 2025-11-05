@@ -222,7 +222,11 @@ class SolutionDirective(SphinxExerciseBaseDirective):
     solution_node = solution_node
 
     def run(self) -> List[Node]:
-        self.defaults = {"title_text": f"{translate('Solution to')}"}
+        # Set default title based on exercise_style config
+        if self.env.app.config.exercise_style == "solution_follow_exercise":
+            self.defaults = {"title_text": f"{translate('Solution')}"}
+        else:
+            self.defaults = {"title_text": f"{translate('Solution to')}"}
         target_label = self.arguments[0]
         self.serial_number = self.env.new_serialno()
 
