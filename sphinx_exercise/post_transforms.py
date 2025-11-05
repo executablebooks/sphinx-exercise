@@ -141,39 +141,26 @@ def resolve_solution_title(app, node, exercise_node):
     exercise_title = exercise_node.children[0]
     if isinstance(title, solution_title):
         entry_title_text = node.get("title")
-        updated_title_text = " " + exercise_title.children[0].astext()
-        if isinstance(exercise_node, exercise_enumerable_node):
-            node_number = get_node_number(app, exercise_node, "exercise")
-            updated_title_text += f" {node_number}"
+
         # New Title Node
         updated_title = docutil_nodes.title()
 
         # Check if exercise_style is set to "solution_follow_exercise"
         if app.config.exercise_style == "solution_follow_exercise":
-            # Don't create hyperlink - just add plain text and nodes
+            # Simple title: just "Solution" without reference to exercise
             updated_title += docutil_nodes.Text(entry_title_text)
-            updated_title += docutil_nodes.Text(updated_title_text)
-            node["title"] = entry_title_text + updated_title_text
-
-            # Parse Custom Titles from Exercise
-            if len(exercise_title.children) > 1:
-                subtitle = exercise_title.children[1]
-                if isinstance(subtitle, exercise_subtitle):
-                    updated_title += docutil_nodes.Text(" (")
-                    for child in subtitle.children:
-                        if isinstance(child, docutil_nodes.math):
-                            # Ensure mathjax is loaded for pages that only contain
-                            # references to nodes that contain math
-                            domain = app.env.get_domain("math")
-                            domain.data["has_equations"][app.env.docname] = True
-                        # Add child directly (could be text or math node)
-                        updated_title += child.deepcopy()
-                    updated_title += docutil_nodes.Text(")")
+            node["title"] = entry_title_text
         else:
+            # Build full title with exercise reference
+            updated_title_text = " " + exercise_title.children[0].astext()
+            if isinstance(exercise_node, exercise_enumerable_node):
+                node_number = get_node_number(app, exercise_node, "exercise")
+                updated_title_text += f" {node_number}"
+
             # Create hyperlink (original behavior)
             wrap_reference = build_reference_node(app, exercise_node)
             wrap_reference += docutil_nodes.Text(updated_title_text)
-            node["title"] = entry_title_text + updated_title_text
+
             # Parse Custom Titles from Exercise
             if len(exercise_title.children) > 1:
                 subtitle = exercise_title.children[1]
@@ -187,8 +174,11 @@ def resolve_solution_title(app, node, exercise_node):
                             domain.data["has_equations"][app.env.docname] = True
                         wrap_reference += child
                     wrap_reference += docutil_nodes.Text(")")
+
+            # Build the title with entry text + hyperlinked reference
             updated_title += docutil_nodes.Text(entry_title_text)
             updated_title += wrap_reference
+            node["title"] = entry_title_text + updated_title_text
 
         updated_title.parent = title.parent
         node.children[0] = updated_title

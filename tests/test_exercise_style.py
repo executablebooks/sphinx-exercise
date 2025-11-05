@@ -35,10 +35,11 @@ def test_solution_no_link(app):
         len(links) == 0
     ), "Solution title should not contain hyperlink when exercise_style='solution_follow_exercise'"
 
-    # Check that the title text still contains the exercise reference
+    # Check that the title is just "Solution" without exercise reference
     title_text = title.get_text()
-    assert "Exercise" in title_text
-    assert "This is a title" in title_text
+    assert (
+        title_text.strip() == "Solution to"
+    ), "Solution title should be just 'Solution to' when exercise_style='solution_follow_exercise'"
 
 
 @pytest.mark.sphinx("html", testroot="mybook", confoverrides={"exercise_style": ""})
@@ -93,7 +94,8 @@ def test_solution_no_link_unenum(app):
         len(links) == 0
     ), "Solution title should not contain hyperlink when exercise_style='solution_follow_exercise'"
 
-    # Check that the title text still contains the exercise reference
+    # Check that the title is just "Solution" without exercise reference
     title_text = title.get_text()
-    assert "Exercise" in title_text
-    assert "This is a title" in title_text
+    assert (
+        title_text.strip() == "Solution to"
+    ), "Solution title should be just 'Solution to' when exercise_style='solution_follow_exercise'"
