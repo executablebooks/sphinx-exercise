@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.2.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.2.1) (2025-11-17)
+
+### Fixes 🐛
+
+- Fixed `ValueError: list.remove(x): x not in list` when building LaTeX/PDF output ([#82](https://github.com/executablebooks/sphinx-exercise/pull/82))
+  - Added defensive check before removing 'std-ref' class in `UpdateReferencesToEnumerated` transform
+  - The 'std-ref' class may not be present in all build scenarios (particularly LaTeX/PDF builds)
+  - Fix ensures compatibility across different Sphinx builders and versions
+
 ## [v1.2.0](https://github.com/executablebooks/sphinx-exercise/tree/v1.2.0) (2025-11-05)
 
 ### New ✨
