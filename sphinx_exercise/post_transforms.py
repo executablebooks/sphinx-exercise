@@ -66,7 +66,8 @@ class UpdateReferencesToEnumerated(SphinxPostTransform):
                         # Get Metadata from Inline
                         inline = node.children[0]
                         classes = inline["classes"]
-                        classes.remove("std-ref")
+                        if "std-ref" in classes:
+                            classes.remove("std-ref")
                         classes.append("std-numref")
                         # Construct a Literal Node
                         literal = docutil_nodes.literal()
