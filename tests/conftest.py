@@ -99,6 +99,15 @@ class FileRegression:
         (r"ipykernel_\d+", "ipykernel_XXXXX"),
         # Normalize matplotlib image hashes (platform/version dependent)
         (r"[a-f0-9]{64}\.png", "IMAGEHASH.png"),
+        # Strip matplotlib font cache warning (appears in CI on first run)
+        (
+            r'<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Matplotlib is building the font cache; this may take a moment\.\n</pre></div>\n</div>\n',
+            "",
+        ),
+        (
+            r'<literal_block classes="output stderr" language="myst-ansi" xml:space="preserve">\s*Matplotlib is building the font cache; this may take a moment\.\n\s*',
+            "",
+        ),
     )
 
     def __init__(self, file_regression):
