@@ -50,11 +50,16 @@ from .nodes import (
     exercise_latex_number_reference,
     visit_exercise_latex_number_reference,
     depart_exercise_latex_number_reference,
+    visit_exercise_subtitle,
+    depart_exercise_subtitle,
+    visit_solution_subtitle,
+    depart_solution_subtitle,
 )
 from .transforms import (
     CheckGatedDirectives,
     MergeGatedSolutions,
     MergeGatedExercises,
+    setup_i18n_for_subtitles,
 )
 from .post_transforms import (
     ResolveTitlesInExercises,
@@ -279,6 +284,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.connect("config-inited", init_numfig)  # event order - 1
     app.connect("env-purge-doc", purge_exercises)  # event order - 5 per file
     app.connect("doctree-read", doctree_read)  # event order - 8
+    app.connect("doctree-read", setup_i18n_for_subtitles)  # mark subtitles translatable
     app.connect("env-merge-info", merge_exercises)  # event order - 9
     app.connect("env-updated", validate_exercise_solution_order)  # event order - 10
     app.connect("build-finished", copy_asset_files)  # event order - 16
@@ -312,9 +318,17 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_node(solution_start_node)
     app.add_node(solution_end_node)
     app.add_node(exercise_title)
-    app.add_node(exercise_subtitle)
+    app.add_node(exercise_subtitle,
+        singlehtml=(visit_exercise_subtitle, depart_exercise_subtitle),
+        html=(visit_exercise_subtitle, depart_exercise_subtitle),
+        latex=(visit_exercise_subtitle, depart_exercise_subtitle),
+    )
     app.add_node(solution_title)
-    app.add_node(solution_subtitle)
+    app.add_node(solution_subtitle,
+        singlehtml=(visit_solution_subtitle, depart_solution_subtitle),
+        html=(visit_solution_subtitle, depart_solution_subtitle),
+        latex=(visit_solution_subtitle, depart_solution_subtitle),
+    )
 
     app.add_node(
         exercise_latex_number_reference,

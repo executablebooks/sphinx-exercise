@@ -191,3 +191,24 @@ def visit_exercise_latex_number_reference(self, node):
 
 def depart_exercise_latex_number_reference(self, node):
     pass
+
+# Visitor functions for subtitle nodes
+# These skip rendering - subtitle is only used in title for i18n
+def visit_exercise_subtitle(self, node):
+    """Visit exercise_subtitle - skip rendering (only in title)"""
+    raise docutil_nodes.SkipNode
+
+
+def depart_exercise_subtitle(self, node):
+    """Depart exercise_subtitle"""
+    pass
+
+
+def visit_solution_subtitle(self, node):
+    """Visit solution_subtitle - skip rendering"""
+    raise docutil_nodes.SkipNode
+
+
+def depart_solution_subtitle(self, node):
+    """Depart solution_subtitle"""
+    pass
