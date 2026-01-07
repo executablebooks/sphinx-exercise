@@ -121,7 +121,14 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
             subtitle_nodes, _ = self.state.inline_text(subtitle_text, self.lineno)
             for subtitle_node in subtitle_nodes:
                 subtitle += subtitle_node
+            # Set attributes needed for i18n extraction
+            subtitle.rawsource = subtitle_text
+            subtitle.source = self.state.document.current_source
+            subtitle.line = self.lineno
+            # Also add as child of title for post-transforms to find
             title += subtitle
+        else:
+            subtitle = None
 
         # State Parsing
         section = nodes.section(ids=["exercise-content"])
@@ -149,7 +156,9 @@ class ExerciseDirective(SphinxExerciseBaseDirective):
         self.options["name"] = label
 
         # Construct Node
-        node += title
+        node += title # Add title as child of node to be found for translation
+        if subtitle is not None:
+            node += subtitle
         node += section
         node["classes"].extend(classes)
         node["ids"].append(label)

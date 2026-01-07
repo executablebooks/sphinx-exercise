@@ -182,3 +182,19 @@ class MergeGatedExercises(SphinxTransform):
             if node.gated:
                 self.merge_nodes(node)
             node.gated = False
+
+
+def setup_i18n_for_subtitles(app, document):
+    """
+    Event handler for 'doctree-read' event.
+    Marks exercise and solution subtitle nodes as translatable.
+    """
+    from .nodes import exercise_subtitle, solution_subtitle
+    
+    # Mark exercise subtitles as translatable
+    for node in findall(document, exercise_subtitle):
+        node['translatable'] = True
+    
+    # Mark solution subtitles as translatable
+    for node in findall(document, solution_subtitle):
+        node['translatable'] = True
