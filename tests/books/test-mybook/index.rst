@@ -32,8 +32,6 @@ A Test Program!
 
    solution/_linked_enum
    solution/_linked_enum_class
-   solution/_linked_enum_dropdown
-   solution/_linked_gated
    solution/_linked_missing_arg
    solution/_linked_unenum_mathtitle
    solution/_linked_unenum_mathtitle2
@@ -49,3 +47,10 @@ A Test Program!
 
    solution/_linked_ref_wronglabel
    solution/_linked_duplicate_label
+
+   .. NOTE: append new entries here. Documents containing enumerated
+      exercises must never be inserted above existing entries, or the
+      global exercise numbers baked into the regression fixtures shift.
+
+   solution/_linked_enum_dropdown
+   solution/_linked_gated

@@ -8,7 +8,7 @@
   - Set to `True` to add the `dropdown` class to every solution, so readers opt in to seeing the answer
   - Works with both the `{solution}` directive and gated `{solution-start}` / `{solution-end}` pairs
   - Directive-level `:class:` values are preserved, and `:class: toggle-shown` keeps an individual solution expanded
-  - Requires `sphinx_togglebutton`; a warning is issued during HTML builds if it is not loaded
+  - Requires `sphinx_togglebutton`; a warning is issued during HTML builds if it is not loaded, suppressible with `suppress_warnings = ["exercise.solution_collapsed"]`
   - Default is `False`, which maintains the original behaviour
 
 ## [v1.2.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.2.1) (2025-11-17)

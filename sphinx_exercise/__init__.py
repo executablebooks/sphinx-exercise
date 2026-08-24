@@ -272,8 +272,14 @@ def doctree_read(app: Sphinx, document: Node) -> None:
             )
 
 
-# Extensions that provide the collapsible behaviour for the "dropdown" class
-TOGGLE_EXTENSIONS = ("sphinx_togglebutton", "sphinx_design")
+# Extensions that make the "dropdown" class collapsible.
+#
+# Only sphinx-togglebutton qualifies: its default togglebutton_selector is
+# ".toggle, .admonition.dropdown". Note that sphinx-design does NOT belong
+# here - its dropdown is a directive emitting ".sd-dropdown", and it ships no
+# rule for a bare "dropdown" class. Adding it would suppress the warning below
+# for Jupyter Book projects, which load sphinx-design by default.
+TOGGLE_EXTENSIONS = ("sphinx_togglebutton",)
 
 
 def check_collapsed_solutions(app: Sphinx) -> None:
@@ -283,6 +289,9 @@ def check_collapsed_solutions(app: Sphinx) -> None:
 
     Without one of TOGGLE_EXTENSIONS the class is inert, so solutions would
     render fully expanded and the option would silently do nothing.
+
+    Projects that supply their own ".admonition.dropdown" CSS can silence this
+    with suppress_warnings = ["exercise.solution_collapsed"].
     """
     if not app.config.solution_collapsed:
         return
@@ -299,6 +308,8 @@ def check_collapsed_solutions(app: Sphinx) -> None:
         "[sphinx-exercise] solution_collapsed=True requires 'sphinx_togglebutton' "
         "to be added to your extensions, otherwise solutions will render "
         "expanded. See https://sphinx-togglebutton.readthedocs.io",
+        type="exercise",
+        subtype="solution_collapsed",
         color="yellow",
     )
 

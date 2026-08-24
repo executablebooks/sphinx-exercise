@@ -445,7 +445,13 @@ Setting `solution_collapsed` to `True` is equivalent to adding `:class: dropdown
 ```{note}
 The `dropdown` class only affects HTML output. Other builders, such as LaTeX/PDF, render the solution inline as usual.
 
-If `solution_collapsed` is set to `True` but no extension providing the `dropdown` class is loaded, a warning is issued during an HTML build and solutions render expanded.
+If `solution_collapsed` is set to `True` but `sphinx_togglebutton` is not loaded, a warning is issued during an HTML build and solutions render expanded. If your theme supplies its own `.admonition.dropdown` styling and you do not need the extension, silence the warning with `suppress_warnings = ["exercise.solution_collapsed"]`.
+```
+
+```{warning}
+A collapsed solution is hidden by setting its height to zero rather than by removing it from the page. Outputs that measure their own size when the page loads — such as plotly, bokeh, ipywidgets and altair figures produced by `{code-cell}` blocks — will therefore render at zero size inside a collapsed solution, and may stay blank until the reader toggles it open.
+
+Static images, including matplotlib figures, are unaffected. If a solution contains an interactive output, keep that one expanded with `:class: toggle-shown`.
 ```
 
 To keep an individual solution expanded while the rest of the project is collapsed, add `:class: toggle-shown` to that directive:

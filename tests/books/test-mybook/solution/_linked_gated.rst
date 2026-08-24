@@ -3,6 +3,7 @@ _linked_gated
 
 .. exercise:: A gated example
 	:label: gated-ex-label
+	:nonumber:
 
 	Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 

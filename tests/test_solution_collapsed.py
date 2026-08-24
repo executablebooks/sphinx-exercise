@@ -134,6 +134,28 @@ def test_solution_collapsed_no_warning_with_togglebutton(app, warnings):
 
 
 @pytest.mark.sphinx(
+    "html",
+    testroot="mybook",
+    confoverrides={
+        "solution_collapsed": True,
+        "suppress_warnings": ["exercise.solution_collapsed"],
+    },
+)
+def test_solution_collapsed_warning_is_suppressible(app, warnings):
+    """The warning is typed, so projects supplying their own CSS can silence it.
+
+    Without a type/subtype the warning would be unsuppressible and would break
+    any ``-W`` build for a project that provides its own ``.admonition.dropdown``
+    rules instead of loading sphinx-togglebutton.
+    """
+    app.build()
+    assert "solution_collapsed=True requires" not in warnings(app)
+    # the class is still applied - suppression only silences the warning
+    classes = get_solution_classes(app, "solution/_linked_enum.html")
+    assert "dropdown" in classes, f"expected 'dropdown' in {classes}"
+
+
+@pytest.mark.sphinx(
     "latex", testroot="mybook", confoverrides={"solution_collapsed": True}
 )
 def test_solution_collapsed_no_warning_for_latex(app, warnings):
