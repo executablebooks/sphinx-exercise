@@ -111,6 +111,23 @@ def test_solution_collapsed_gated_default_is_off(app):
 
 
 @pytest.mark.sphinx(
+    "html", testroot="gateddirective", confoverrides={"solution_collapsed": True}
+)
+def test_solution_collapsed_gated_myst_source(app):
+    """The gated path is also covered from MyST source, not just RST.
+
+    The other gated tests here use the RST ``.. solution-start::`` form in the
+    'mybook' root. This one uses the MyST ```{solution-start}``` form, so the
+    directive-option parsing both parsers feed into is exercised from each side.
+    """
+    app.build()
+    classes = get_solution_classes(app, "solution-exercise-gated.html")
+    assert (
+        "dropdown" in classes
+    ), f"MyST-sourced gated solutions should be collapsed too, got {classes}"
+
+
+@pytest.mark.sphinx(
     "html", testroot="mybook", confoverrides={"solution_collapsed": True}
 )
 def test_solution_collapsed_warns_without_togglebutton(app, warnings):
