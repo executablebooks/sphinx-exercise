@@ -18,6 +18,7 @@ from sphinx.locale import get_translation
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective
 
+from .utils import solutions_are_collapsed
 from .nodes import (
     exercise_end_node,
     exercise_enumerable_node,
@@ -266,6 +267,15 @@ class SolutionDirective(SphinxExerciseBaseDirective):
         classes = [f"{self.name}"]
         if self.options.get("class"):
             classes += self.options.get("class")
+
+        # Fold the solution by default when collapsing is in effect - either
+        # opted into with solution_collapsed, or implied by the
+        # solution_follow_exercise style. The "dropdown" class is consumed by
+        # sphinx-togglebutton, whose default selector is
+        # ".toggle, .admonition.dropdown". Authors can still opt an individual
+        # solution back open with :class: toggle-shown.
+        if solutions_are_collapsed(self.env.app.config) and "dropdown" not in classes:
+            classes.append("dropdown")
 
         # Construct Node
         node = self.solution_node()

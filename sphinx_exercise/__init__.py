@@ -21,6 +21,7 @@ from sphinx.util.fileutil import copy_asset
 from sphinx.locale import get_translation
 
 from ._compat import findall
+from .utils import solutions_are_collapsed, collapsed_is_implied_by_style
 from .directive import (
     ExerciseDirective,
     ExerciseStartDirective,
@@ -272,11 +273,72 @@ def doctree_read(app: Sphinx, document: Node) -> None:
             )
 
 
+# Extensions that make the "dropdown" class collapsible.
+#
+# Only sphinx-togglebutton qualifies: its default togglebutton_selector is
+# ".toggle, .admonition.dropdown". Note that sphinx-design does NOT belong
+# here - its dropdown is a directive emitting ".sd-dropdown", and it ships no
+# rule for a bare "dropdown" class. Adding it would suppress the warning below
+# for Jupyter Book projects, which load sphinx-design by default.
+TOGGLE_EXTENSIONS = ("sphinx_togglebutton",)
+
+
+def check_collapsed_solutions(app: Sphinx) -> None:
+    """
+    Warn when solution_collapsed is enabled for an HTML build but no extension
+    that implements the "dropdown" class is loaded.
+
+    Without one of TOGGLE_EXTENSIONS the class is inert, so solutions would
+    render fully expanded and the option would silently do nothing.
+
+    Projects that supply their own ".admonition.dropdown" CSS can silence this
+    with suppress_warnings = ["exercise.solution_collapsed"].
+    """
+    if not solutions_are_collapsed(app.config):
+        return
+
+    # The dropdown class is only meaningful to HTML-family builders; LaTeX and
+    # other builders render the solution inline, which is the intended fallback
+    if getattr(app.builder, "format", None) != "html":
+        return
+
+    if any(ext in app.extensions for ext in TOGGLE_EXTENSIONS):
+        return
+
+    if collapsed_is_implied_by_style(app.config):
+        # The author never asked for collapsing, so tell them how to turn it
+        # off as well as how to make it work
+        message = (
+            "exercise_style='solution_follow_exercise' collapses solutions by "
+            "default, but 'sphinx_togglebutton' is not loaded, so they will "
+            "render expanded. Add 'sphinx_togglebutton' to your extensions, or "
+            "set solution_collapsed = False to keep solutions expanded."
+        )
+    else:
+        message = (
+            "solution_collapsed=True requires 'sphinx_togglebutton', which is "
+            "not loaded, so solutions will render expanded. Add "
+            "'sphinx_togglebutton' to your extensions."
+        )
+
+    logger.warning(
+        f"[sphinx-exercise] {message} "
+        "See https://sphinx-togglebutton.readthedocs.io",
+        type="exercise",
+        subtype="solution_collapsed",
+        color="yellow",
+    )
+
+
 def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("hide_solutions", False, "env")
     app.add_config_value("exercise_style", "", "env")
+    # Tri-state: None (default) defers to exercise_style, True/False are
+    # explicit author choices. See utils.solutions_are_collapsed.
+    app.add_config_value("solution_collapsed", None, "env")
 
     app.connect("config-inited", init_numfig)  # event order - 1
+    app.connect("builder-inited", check_collapsed_solutions)  # event order - 2
     app.connect("env-purge-doc", purge_exercises)  # event order - 5 per file
     app.connect("doctree-read", doctree_read)  # event order - 8
     app.connect("env-merge-info", merge_exercises)  # event order - 9

@@ -47,3 +47,10 @@ A Test Program!
 
    solution/_linked_ref_wronglabel
    solution/_linked_duplicate_label
+
+   .. NOTE: append new entries here. Documents containing enumerated
+      exercises must never be inserted above existing entries, or the
+      global exercise numbers baked into the regression fixtures shift.
+
+   solution/_linked_enum_dropdown
+   solution/_linked_gated

@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+### Changed ⚠️
+
+- `exercise_style = "solution_follow_exercise"` now renders solutions **collapsed by default** ([#84](https://github.com/executablebooks/sphinx-exercise/issues/84))
+  - That style places each solution directly beneath its exercise, where an expanded solution is too tempting to read; it now folds into a drop-down instead
+  - **To keep the previous behaviour, set `solution_collapsed = False` explicitly**
+  - No change for projects that do not set `exercise_style`, and no source files need editing either way
+  - Requires `sphinx_togglebutton`, which Jupyter Book loads by default; plain Sphinx projects should add it to `extensions`
+
+### New ✨
+
+- Added `solution_collapsed` configuration option to control whether solutions render folded ([#85](https://github.com/executablebooks/sphinx-exercise/issues/85))
+  - Tri-state: unset follows `exercise_style`, `True` always collapses, `False` never collapses
+  - Works with both the `{solution}` directive and gated `{solution-start}` / `{solution-end}` pairs
+  - Directive-level `:class:` values are preserved, and `:class: toggle-shown` keeps an individual solution expanded
+  - A warning is issued during HTML builds when collapsing is in effect but `sphinx_togglebutton` is not loaded, suppressible with `suppress_warnings = ["exercise.solution_collapsed"]`
+  - Non-HTML builders, such as LaTeX/PDF, render solutions inline as before
+
 ## [v1.2.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.2.1) (2025-11-17)
 
 ### Fixes 🐛

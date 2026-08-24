@@ -411,6 +411,71 @@ sphinx:
 ...
 ```
 
+### Collapse All Solutions
+
+All solution directives can be rendered folded by default, so readers have to opt in to seeing the answer. This is controlled by `solution_collapsed`, which takes three values:
+
+| Value | Behaviour |
+|---|---|
+| unset (default) | Follow the exercise style: solutions are collapsed when `exercise_style = "solution_follow_exercise"`, and expanded otherwise. |
+| `True` | Always collapse solutions, whatever the exercise style. |
+| `False` | Never collapse solutions, whatever the exercise style. |
+
+The `solution_follow_exercise` style places each solution directly beneath its exercise, which is precisely the layout where an expanded solution is hard to look away from — so that style collapses solutions by default. See the **Solution Title Styling** section below.
+
+```{important}
+If you use `exercise_style = "solution_follow_exercise"` and want your solutions to stay expanded, set `solution_collapsed = False` explicitly.
+```
+
+This option requires [sphinx-togglebutton](https://sphinx-togglebutton.readthedocs.io/en/latest/) to be enabled, as it provides the drop-down behaviour for the `dropdown` class. For Sphinx projects, add the configuration key in the `conf.py` file:
+
+```python
+# conf.py
+extensions = [
+    ...
+    "sphinx_togglebutton"
+    ...
+]
+
+solution_collapsed = True
+```
+
+For Jupyter Book projects, set the configuration key in `_config.yml`:
+
+```yaml
+...
+sphinx:
+  extra_extensions:
+    - sphinx_togglebutton
+  config:
+    solution_collapsed: True
+...
+```
+
+Collapsing is equivalent to adding `:class: dropdown` to every solution directive in your project, and applies to both the `{solution}` directive and gated `{solution-start}` / `{solution-end}` pairs. Any classes you have set on an individual directive are preserved.
+
+```{note}
+The `dropdown` class only affects HTML output. Other builders, such as LaTeX/PDF, render the solution inline as usual.
+
+If solutions would be collapsed but `sphinx_togglebutton` is not loaded, a warning is issued during an HTML build and solutions render expanded. If your theme supplies its own `.admonition.dropdown` styling and you do not need the extension, silence the warning with `suppress_warnings = ["exercise.solution_collapsed"]`.
+```
+
+```{warning}
+A collapsed solution is hidden by setting its height to zero rather than by removing it from the page. Outputs that measure their own size when the page loads — such as plotly, bokeh, ipywidgets and altair figures produced by `{code-cell}` blocks — will therefore render at zero size inside a collapsed solution, and may stay blank until the reader toggles it open.
+
+Static images, including matplotlib figures, are unaffected. If a solution contains an interactive output, keep that one expanded with `:class: toggle-shown`.
+```
+
+To keep an individual solution expanded while the rest of the project is collapsed, add `:class: toggle-shown` to that directive:
+
+````md
+```{solution} my-exercise
+:class: toggle-shown
+
+This solution stays open even when the rest of the project is collapsed.
+```
+````
+
 ### Solution Title Styling
 
 By default, solution titles include a hyperlink to the corresponding exercise. This behavior can be modified using the `exercise_style` configuration option.
@@ -436,6 +501,7 @@ sphinx:
 
 When `exercise_style` is set to `"solution_follow_exercise"`:
 - The solution title displays just "Solution" (plain text, no hyperlink)
+- **Solutions are collapsed by default**, so readers opt in to seeing the answer. Set `solution_collapsed = False` to keep them expanded, and see the **Collapse All Solutions** section above for the details
 - The extension validates that solutions follow their referenced exercises and warns if they don't
 - Solutions must be in the same document as their exercises (warnings if not)
 
