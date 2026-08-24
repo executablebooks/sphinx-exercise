@@ -48,7 +48,11 @@ exclude_patterns = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_book_theme"
+# Use the built-in alabaster theme, as the other HTML test roots do.
+# The regression fixtures only capture the exercise/solution markup this
+# extension generates, so no third-party theme is needed to exercise them,
+# and depending on one couples the suite to that theme's Sphinx support.
+html_theme = "alabaster"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
