@@ -81,7 +81,7 @@ def test_solution_collapsed_off_keeps_explicit_dropdown(app):
 
 
 @pytest.mark.sphinx(
-    "html", testroot="gateddirective", confoverrides={"solution_collapsed": True}
+    "html", testroot="mybook", confoverrides={"solution_collapsed": True}
 )
 def test_solution_collapsed_gated_directive(app):
     """Gated solution-start/solution-end pairs are collapsed too.
@@ -91,10 +91,18 @@ def test_solution_collapsed_gated_directive(app):
     dropped in the process.
     """
     app.build()
-    classes = get_solution_classes(app, "solution-exercise-gated.html")
+    classes = get_solution_classes(app, "solution/_linked_gated.html")
     assert (
         "dropdown" in classes
     ), f"gated solutions should also be collapsed, got {classes}"
+
+
+@pytest.mark.sphinx("html", testroot="mybook")
+def test_solution_collapsed_gated_default_is_off(app):
+    """Gated solutions get no 'dropdown' class by default."""
+    app.build()
+    classes = get_solution_classes(app, "solution/_linked_gated.html")
+    assert "dropdown" not in classes, f"expected no 'dropdown' in {classes}"
 
 
 @pytest.mark.sphinx(

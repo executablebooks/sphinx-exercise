@@ -33,6 +33,7 @@ A Test Program!
    solution/_linked_enum
    solution/_linked_enum_class
    solution/_linked_enum_dropdown
+   solution/_linked_gated
    solution/_linked_missing_arg
    solution/_linked_unenum_mathtitle
    solution/_linked_unenum_mathtitle2
