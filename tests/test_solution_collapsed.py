@@ -1,8 +1,13 @@
 """Tests for the ``solution_collapsed`` configuration option.
 
-``solution_collapsed = True`` adds the ``dropdown`` class to every solution
-directive so that solutions render folded by default. The class is consumed by
-sphinx-togglebutton, whose default selector is ``.toggle, .admonition.dropdown``.
+Collapsing adds the ``dropdown`` class to every solution directive so solutions
+render folded by default. The class is consumed by sphinx-togglebutton, whose
+default selector is ``.toggle, .admonition.dropdown``.
+
+``solution_collapsed`` is tri-state: ``True``/``False`` are explicit author
+choices that always win, while ``None`` (the default) defers to
+``exercise_style`` - and the ``solution_follow_exercise`` style implies
+collapsed solutions.
 """
 
 import importlib.util
@@ -162,3 +167,104 @@ def test_solution_collapsed_no_warning_for_latex(app, warnings):
     """Non-HTML builders render solutions inline, so no warning is emitted."""
     app.build()
     assert "solution_collapsed=True requires" not in warnings(app)
+
+
+# --- interaction with exercise_style -----------------------------------------
+
+
+@pytest.mark.sphinx(
+    "html",
+    testroot="mybook",
+    confoverrides={"exercise_style": "solution_follow_exercise"},
+)
+def test_follow_exercise_style_collapses_by_default(app):
+    """The solution_follow_exercise style implies collapsed solutions.
+
+    That style places the solution directly beneath its exercise, which is the
+    layout the collapsing is meant to address, so it opts in by default.
+    """
+    app.build()
+    classes = get_solution_classes(app, "solution/_linked_enum.html")
+    assert "dropdown" in classes, (
+        f"exercise_style='solution_follow_exercise' should collapse solutions, "
+        f"got {classes}"
+    )
+
+
+@pytest.mark.sphinx(
+    "html",
+    testroot="mybook",
+    confoverrides={
+        "exercise_style": "solution_follow_exercise",
+        "solution_collapsed": False,
+    },
+)
+def test_explicit_false_overrides_the_style(app):
+    """An explicit solution_collapsed=False switches the style's implied collapse off.
+
+    This is the reason the config value is tri-state: with a plain False default
+    Sphinx could not tell "unset" from "explicitly False", so this opt-out would
+    be impossible to express.
+    """
+    app.build()
+    classes = get_solution_classes(app, "solution/_linked_enum.html")
+    assert (
+        "dropdown" not in classes
+    ), f"solution_collapsed=False must override the style, got {classes}"
+
+
+@pytest.mark.sphinx(
+    "html",
+    testroot="mybook",
+    confoverrides={
+        "exercise_style": "solution_follow_exercise",
+        "solution_collapsed": True,
+    },
+)
+def test_explicit_true_agrees_with_the_style(app):
+    """solution_collapsed=True alongside the style collapses, without duplicating."""
+    app.build()
+    classes = get_solution_classes(app, "solution/_linked_enum.html")
+    assert classes.count("dropdown") == 1, f"expected one 'dropdown', got {classes}"
+
+
+@pytest.mark.sphinx(
+    "html",
+    testroot="mybook",
+    confoverrides={"exercise_style": "solution_follow_exercise"},
+)
+def test_style_implied_warning_mentions_the_opt_out(app, warnings):
+    """The implied-collapse warning tells authors how to switch it back off.
+
+    An author who set exercise_style but never asked for collapsing needs the
+    opt-out, not just the "install sphinx-togglebutton" remedy.
+    """
+    app.build()
+    captured = warnings(app)
+    assert "collapses solutions by default" in captured
+    assert "solution_collapsed = False" in captured
+
+
+@pytest.mark.sphinx(
+    "html", testroot="mybook", confoverrides={"solution_collapsed": True}
+)
+def test_explicit_warning_does_not_mention_the_opt_out(app, warnings):
+    """An author who opted in explicitly does not need to be told to opt out."""
+    app.build()
+    captured = warnings(app)
+    assert "solution_collapsed=True requires" in captured
+    assert "solution_collapsed = False" not in captured
+
+
+@pytest.mark.sphinx(
+    "html",
+    testroot="mybook",
+    confoverrides={
+        "exercise_style": "solution_follow_exercise",
+        "solution_collapsed": False,
+    },
+)
+def test_no_warning_when_style_collapse_is_switched_off(app, warnings):
+    """Opting out of the implied collapse also silences the togglebutton warning."""
+    app.build()
+    assert "sphinx_togglebutton" not in warnings(app)

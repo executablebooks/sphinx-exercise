@@ -21,6 +21,7 @@ from sphinx.util.fileutil import copy_asset
 from sphinx.locale import get_translation
 
 from ._compat import findall
+from .utils import solutions_are_collapsed, collapsed_is_implied_by_style
 from .directive import (
     ExerciseDirective,
     ExerciseStartDirective,
@@ -293,7 +294,7 @@ def check_collapsed_solutions(app: Sphinx) -> None:
     Projects that supply their own ".admonition.dropdown" CSS can silence this
     with suppress_warnings = ["exercise.solution_collapsed"].
     """
-    if not app.config.solution_collapsed:
+    if not solutions_are_collapsed(app.config):
         return
 
     # The dropdown class is only meaningful to HTML-family builders; LaTeX and
@@ -304,10 +305,25 @@ def check_collapsed_solutions(app: Sphinx) -> None:
     if any(ext in app.extensions for ext in TOGGLE_EXTENSIONS):
         return
 
+    if collapsed_is_implied_by_style(app.config):
+        # The author never asked for collapsing, so tell them how to turn it
+        # off as well as how to make it work
+        message = (
+            "exercise_style='solution_follow_exercise' collapses solutions by "
+            "default, but 'sphinx_togglebutton' is not loaded, so they will "
+            "render expanded. Add 'sphinx_togglebutton' to your extensions, or "
+            "set solution_collapsed = False to keep solutions expanded."
+        )
+    else:
+        message = (
+            "solution_collapsed=True requires 'sphinx_togglebutton', which is "
+            "not loaded, so solutions will render expanded. Add "
+            "'sphinx_togglebutton' to your extensions."
+        )
+
     logger.warning(
-        "[sphinx-exercise] solution_collapsed=True requires 'sphinx_togglebutton' "
-        "to be added to your extensions, otherwise solutions will render "
-        "expanded. See https://sphinx-togglebutton.readthedocs.io",
+        f"[sphinx-exercise] {message} "
+        "See https://sphinx-togglebutton.readthedocs.io",
         type="exercise",
         subtype="solution_collapsed",
         color="yellow",
@@ -317,7 +333,9 @@ def check_collapsed_solutions(app: Sphinx) -> None:
 def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("hide_solutions", False, "env")
     app.add_config_value("exercise_style", "", "env")
-    app.add_config_value("solution_collapsed", False, "env")
+    # Tri-state: None (default) defers to exercise_style, True/False are
+    # explicit author choices. See utils.solutions_are_collapsed.
+    app.add_config_value("solution_collapsed", None, "env")
 
     app.connect("config-inited", init_numfig)  # event order - 1
     app.connect("builder-inited", check_collapsed_solutions)  # event order - 2
