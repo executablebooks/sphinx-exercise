@@ -63,6 +63,7 @@ testing = [
     "pytest-regressions",
     "pytest>=8.0",
     "sphinx>=6.1,<9",
+    "sphinx_togglebutton",
     "texsoup",
     "defusedxml", # Required by sphinx-testing
 ]

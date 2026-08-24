@@ -411,6 +411,53 @@ sphinx:
 ...
 ```
 
+### Collapse All Solutions
+
+All solution directives can be rendered folded by default, so readers have to opt in to seeing the answer, by setting `solution_collapsed` to `True`. This is useful when solutions are written directly after their exercises (see the **Solution Title Styling** section below), where an inline solution is otherwise hard to look away from.
+
+This option requires [sphinx-togglebutton](https://sphinx-togglebutton.readthedocs.io/en/latest/) to be enabled, as it provides the drop-down behaviour for the `dropdown` class. For Sphinx projects, add the configuration key in the `conf.py` file:
+
+```python
+# conf.py
+extensions = [
+    ...
+    "sphinx_togglebutton"
+    ...
+]
+
+solution_collapsed = True
+```
+
+For Jupyter Book projects, set the configuration key in `_config.yml`:
+
+```yaml
+...
+sphinx:
+  extra_extensions:
+    - sphinx_togglebutton
+  config:
+    solution_collapsed: True
+...
+```
+
+Setting `solution_collapsed` to `True` is equivalent to adding `:class: dropdown` to every solution directive in your project, and applies to both the `{solution}` directive and gated `{solution-start}` / `{solution-end}` pairs. Any classes you have set on an individual directive are preserved.
+
+```{note}
+The `dropdown` class only affects HTML output. Other builders, such as LaTeX/PDF, render the solution inline as usual.
+
+If `solution_collapsed` is set to `True` but no extension providing the `dropdown` class is loaded, a warning is issued during an HTML build and solutions render expanded.
+```
+
+To keep an individual solution expanded while the rest of the project is collapsed, add `:class: toggle-shown` to that directive:
+
+````md
+```{solution} my-exercise
+:class: toggle-shown
+
+This solution stays open even when `solution_collapsed = True`.
+```
+````
+
 ### Solution Title Styling
 
 By default, solution titles include a hyperlink to the corresponding exercise. This behavior can be modified using the `exercise_style` configuration option.

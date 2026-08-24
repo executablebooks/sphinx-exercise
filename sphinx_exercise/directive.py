@@ -267,6 +267,13 @@ class SolutionDirective(SphinxExerciseBaseDirective):
         if self.options.get("class"):
             classes += self.options.get("class")
 
+        # Fold the solution by default when solution_collapsed is enabled.
+        # The "dropdown" class is consumed by sphinx-togglebutton, whose
+        # default selector is ".toggle, .admonition.dropdown". Authors can
+        # still opt an individual solution back open with :class: toggle-shown.
+        if self.env.app.config.solution_collapsed and "dropdown" not in classes:
+            classes.append("dropdown")
+
         # Construct Node
         node = self.solution_node()
         node += title

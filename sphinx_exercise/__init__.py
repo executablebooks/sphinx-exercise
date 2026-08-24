@@ -272,11 +272,44 @@ def doctree_read(app: Sphinx, document: Node) -> None:
             )
 
 
+# Extensions that provide the collapsible behaviour for the "dropdown" class
+TOGGLE_EXTENSIONS = ("sphinx_togglebutton", "sphinx_design")
+
+
+def check_collapsed_solutions(app: Sphinx) -> None:
+    """
+    Warn when solution_collapsed is enabled for an HTML build but no extension
+    that implements the "dropdown" class is loaded.
+
+    Without one of TOGGLE_EXTENSIONS the class is inert, so solutions would
+    render fully expanded and the option would silently do nothing.
+    """
+    if not app.config.solution_collapsed:
+        return
+
+    # The dropdown class is only meaningful to HTML-family builders; LaTeX and
+    # other builders render the solution inline, which is the intended fallback
+    if getattr(app.builder, "format", None) != "html":
+        return
+
+    if any(ext in app.extensions for ext in TOGGLE_EXTENSIONS):
+        return
+
+    logger.warning(
+        "[sphinx-exercise] solution_collapsed=True requires 'sphinx_togglebutton' "
+        "to be added to your extensions, otherwise solutions will render "
+        "expanded. See https://sphinx-togglebutton.readthedocs.io",
+        color="yellow",
+    )
+
+
 def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("hide_solutions", False, "env")
     app.add_config_value("exercise_style", "", "env")
+    app.add_config_value("solution_collapsed", False, "env")
 
     app.connect("config-inited", init_numfig)  # event order - 1
+    app.connect("builder-inited", check_collapsed_solutions)  # event order - 2
     app.connect("env-purge-doc", purge_exercises)  # event order - 5 per file
     app.connect("doctree-read", doctree_read)  # event order - 8
     app.connect("env-merge-info", merge_exercises)  # event order - 9
