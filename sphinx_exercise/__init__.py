@@ -42,6 +42,8 @@ from .nodes import (
     depart_solution_node,
     solution_start_node,
     solution_end_node,
+    visit_gated_end_node,
+    depart_gated_end_node,
     is_extension_node,
     exercise_title,
     exercise_subtitle,
@@ -306,11 +308,24 @@ def setup(app: Sphinx) -> Dict[str, Any]:
         latex=(visit_solution_node, depart_solution_node),
     )
 
+    # Gated *-end markers are consumed by merge transforms. Skip leftovers
+    # when the matching start was suppressed (hide_solutions or :hidden:).
+    app.add_node(
+        exercise_end_node,
+        html=(visit_gated_end_node, depart_gated_end_node),
+        singlehtml=(visit_gated_end_node, depart_gated_end_node),
+        latex=(visit_gated_end_node, depart_gated_end_node),
+    )
+    app.add_node(
+        solution_end_node,
+        html=(visit_gated_end_node, depart_gated_end_node),
+        singlehtml=(visit_gated_end_node, depart_gated_end_node),
+        latex=(visit_gated_end_node, depart_gated_end_node),
+    )
+
     # Internal Title Nodes that don't need visit_ and depart_ methods
     # as they are resolved in post_transforms to docutil and sphinx nodes
-    app.add_node(exercise_end_node)
     app.add_node(solution_start_node)
-    app.add_node(solution_end_node)
     app.add_node(exercise_title)
     app.add_node(exercise_subtitle)
     app.add_node(solution_title)
