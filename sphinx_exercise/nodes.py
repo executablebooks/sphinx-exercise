@@ -191,3 +191,14 @@ def visit_exercise_latex_number_reference(self, node):
 
 def depart_exercise_latex_number_reference(self, node):
     pass
+
+
+def visit_gated_end_node(self, node: Node) -> None:
+    # Gated *-end markers are consumed by merge transforms. When the matching
+    # start is suppressed (hide_solutions or :hidden:), the end node is
+    # orphaned; skip it so writers neither raise nor emit output.
+    raise docutil_nodes.SkipNode
+
+
+def depart_gated_end_node(self, node: Node) -> None:
+    pass
