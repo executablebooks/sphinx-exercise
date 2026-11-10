@@ -216,3 +216,17 @@ def test_gated_solution_errors_3(app, warning):
         assert True
     else:
         assert False
+
+
+@pytest.mark.sphinx("html", testroot="gatedclasses")
+def test_gated_user_classes_preserved(app):
+    app.build()
+    soup = BeautifulSoup(
+        (Path(app.outdir) / "index.html").read_text(encoding="utf8"), "html.parser"
+    )
+    exercise = soup.select_one("div#ex-gated-class")
+    assert exercise["class"] == ["exercise", "quick-start", "admonition"]
+    solution = soup.select_one("div#sol-gated-class")
+    assert "my-solution-start-thing" in solution["class"]
+    assert "solution" in solution["class"]
+    assert "solution-start" not in solution["class"]

@@ -100,8 +100,8 @@ class MergeGatedSolutions(SphinxTransform):
             new_node.attributes = node.attributes
             # Update Attributes
             new_node["classes"] = [
-                attr.replace("solution-start", "solution")
-                for attr in node.attributes["classes"]
+                "solution" if cls == "solution-start" else cls
+                for cls in node.attributes["classes"]
             ]
             new_node["type"] = "solution"
             new_node.parent = node.parent
@@ -157,9 +157,11 @@ class MergeGatedExercises(SphinxTransform):
         if not parent_end:
             return
         parent = node.parent
-        # Use Current Node and remove "-start" from class names and type
+        # Use Current Node and drop "-start" from the marker class and type,
+        # leaving user supplied classes untouched
         updated_classes = [
-            cls.replace("-start", "") for cls in node.attributes["classes"]
+            "exercise" if cls == "exercise-start" else cls
+            for cls in node.attributes["classes"]
         ]
         node.attributes["classes"] = updated_classes
         node.attributes["type"] = node.attributes["type"].replace("-start", "")
