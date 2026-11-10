@@ -5,6 +5,7 @@ Figures in exercise and solution boxes
    :label: ex-numbered
 
    .. figure:: plot.png
+      :name: fig-numbered-exercise
 
       Figure in a numbered exercise
 
@@ -13,6 +14,7 @@ Figures in exercise and solution boxes
    :nonumber:
 
    .. figure:: plot.png
+      :name: fig-unnumbered-exercise
 
       Figure in an unnumbered exercise
 
@@ -20,6 +22,7 @@ Figures in exercise and solution boxes
    :label: sol-numbered
 
    .. figure:: plot.png
+      :name: fig-solution
 
       Figure in a solution
 
@@ -27,6 +30,7 @@ Figures in exercise and solution boxes
    :label: ex-gated
 
 .. figure:: plot.png
+   :name: fig-gated-exercise
 
    Figure in a gated exercise
 
@@ -36,11 +40,18 @@ Figures in exercise and solution boxes
    :label: sol-gated
 
 .. figure:: plot.png
+   :name: fig-gated-solution
 
    Figure in a gated solution
 
 .. solution-end::
 
 .. figure:: plot.png
+   :name: fig-outside
 
    Figure outside any box
+
+.. toctree::
+   :hidden:
+
+   notebook
