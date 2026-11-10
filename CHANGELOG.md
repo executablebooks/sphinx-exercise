@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [v1.2.2](https://github.com/executablebooks/sphinx-exercise/tree/v1.2.2) (2026-11-10)
 
 ### Fixes 🐛
 
@@ -8,6 +8,7 @@
   - Figures inside exercise and solution boxes, including gated `exercise-start` / `solution-start` blocks, are now written as `\begin{figure}[H]` so they stay in place, as Sphinx already does for figures inside its own admonitions
   - This also fixes `code-cell` outputs with `mystnb: figure: caption:` metadata inside a solution
   - HTML output is unchanged
+- Fixed CI test failures on Sphinx 6 and 7 caused by a newer `pydata-sphinx-theme`, by switching the gated directive test root to the `alabaster` theme ([#88](https://github.com/executablebooks/sphinx-exercise/pull/88))
 
 ## [v1.2.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.2.1) (2025-11-17)
 
