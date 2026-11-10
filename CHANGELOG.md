@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixes 🐛
+
+- Fixed `LaTeX Error: Not in outer par mode` when building LaTeX/PDF output with a captioned figure inside an exercise or solution ([#94](https://github.com/executablebooks/sphinx-exercise/issues/94))
+  - Figures inside exercise and solution boxes, including gated `exercise-start` / `solution-start` blocks, are now written as `\begin{figure}[H]` so they stay in place, as Sphinx already does for figures inside its own admonitions
+  - This also fixes `code-cell` outputs with `mystnb: figure: caption:` metadata inside a solution
+  - HTML output is unchanged
+
 ## [v1.2.1](https://github.com/executablebooks/sphinx-exercise/tree/v1.2.1) (2025-11-17)
 
 ### Fixes 🐛

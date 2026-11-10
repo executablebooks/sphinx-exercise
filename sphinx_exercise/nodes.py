@@ -110,13 +110,25 @@ def is_extension_node(node):
 # Visit and Depart Functions
 
 
+def visit_latex_admonition(self) -> None:
+    self.body.append(LaTeX.visit_admonition())
+    # Write figures inside the box as [H] rather than floats, which LaTeX
+    # rejects there, as Sphinx does for its own admonitions
+    self.no_latex_floats += 1
+
+
+def depart_latex_admonition(self) -> None:
+    self.body.append(LaTeX.depart_admonition())
+    self.no_latex_floats -= 1
+
+
 def visit_exercise_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
         label = (
             "\\phantomsection \\label{" + f"exercise:{node.attributes['label']}" + "}"
         )  # TODO: Check this resolves.
         self.body.append(label)
-        self.body.append(LaTeX.visit_admonition())
+        visit_latex_admonition(self)
     else:
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
         self.body.append("\n")
@@ -124,7 +136,7 @@ def visit_exercise_node(self, node: Node) -> None:
 
 def depart_exercise_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
-        self.body.append(LaTeX.depart_admonition())
+        depart_latex_admonition(self)
     else:
         self.body.append("</div>")
 
@@ -139,7 +151,7 @@ def visit_exercise_enumerable_node(self, node: Node) -> None:
             "\\phantomsection \\label{" + f"exercise:{node.attributes['label']}" + "}\n"
         )
         self.body.append(label)
-        self.body.append(LaTeX.visit_admonition())
+        visit_latex_admonition(self)
     else:
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
         self.body.append("\n")
@@ -147,7 +159,7 @@ def visit_exercise_enumerable_node(self, node: Node) -> None:
 
 def depart_exercise_enumerable_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
-        self.body.append(LaTeX.depart_admonition())
+        depart_latex_admonition(self)
     else:
         self.body.append("</div>")
         self.body.append("\n")
@@ -167,7 +179,7 @@ def visit_solution_node(self, node: Node) -> None:
             + "}\n"
         )
         self.body.append(label)
-        self.body.append(LaTeX.visit_admonition())
+        visit_latex_admonition(self)
     else:
         self.body.append(self.starttag(node, "div", CLASS="admonition"))
         self.body.append("\n")
@@ -175,7 +187,7 @@ def visit_solution_node(self, node: Node) -> None:
 
 def depart_solution_node(self, node: Node) -> None:
     if isinstance(self, LaTeXTranslator):
-        self.body.append(LaTeX.depart_admonition())
+        depart_latex_admonition(self)
     else:
         self.body.append("</div>")
         self.body.append("\n")
