@@ -91,7 +91,7 @@ jobs:
           pip install wheel build
           python -m build
       - name: Publish
-        uses: pypa/gh-action-pypi-publish@v1.3.1
+        uses: pypa/gh-action-pypi-publish@v1.14.3
         with:
           user: __token__
           password: ${{ secrets.PYPI_KEY }}
